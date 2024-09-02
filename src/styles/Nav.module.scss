@@ -1,0 +1,100 @@
+.container {
+  background-color: rgba(162, 161, 168, 0.01);
+  width: 280px;
+  height: auto;
+  float: left;
+}
+
+.logostyle {
+  margin-top: 39px;
+  margin-left: 30px;
+}
+
+.listContainer {
+  margin-top: 30px;
+  margin-left: 30px;
+}
+
+.select {
+  position: relative;
+  background: rgba(113, 82, 243, 0.05);
+  color: #7152f3;
+  font-family: Lexend;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: left;
+  margin: 5px 0;
+  width: 220px;
+  height: 50px;
+  border-radius: 0px 10px 10px 0px;
+  flex-shrink: 0;
+  border-left: 4px solid #7152f3;
+  transition: all 0.3s ease;
+}
+
+.innerContainer {
+  padding-top: 5.5%;
+  position: relative;
+}
+
+.innertext {
+  position: absolute;
+  padding-top: 2px;
+}
+
+.nonselect {
+  color: #16151c;
+  font-family: Lexend;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+  margin: 5px 0;
+  text-align: left;
+  padding-left: 4px;
+  width: 220px;
+  height: 50px;
+  border-radius: 0px 10px 10px 0px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.nonselect:hover {
+  background-color: rgba(113, 82, 243, 0.1);
+  color: #7152f3;
+}
+
+.expandableContainer {
+  margin: 5px 0;
+  transition: margin-bottom 0.5s ease-in-out;
+}
+
+.expandableContainer:hover {
+  margin-bottom: 0px;
+}
+
+.expandableMenu {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.expandableContainer:hover .expandableMenu {
+  max-height: 150px;
+}
+
+.expandableMenuItem {
+  padding-left: 15%;
+  font-family: Lexend;
+  font-size: 14px;
+  font-weight: 300;
+  color: #16151c;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.expandableMenuItem:hover {
+  background-color: rgba(113, 82, 243, 0.1);
+  color: #7152f3;
+  transition: all 0.3s ease;
+}

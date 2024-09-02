@@ -1,0 +1,35 @@
+{
+  "name": "lotting",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.50.1",
+    "react-icons": "^4.12.0",
+    "react-router-dom": "^6.22.3",
+    "recoil": "^0.7.7",
+    "sweetalert2": "^11.10.5"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "nodemon": "^3.1.0",
+    "postcss": "^8",
+    "react-error-overlay": "^6.0.9",
+    "sass": "^1.69.6",
+    "tailwindcss": "^3.3.0"
+  }
+}

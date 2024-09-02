@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    // justify-content: center;
+    // align-items: center;
+  }
+
+.childcontainer{
+    margin-top: 100px;
+    margin-left:300px;
+    width: 460px;
+}
+
+.checkcontainer{
+    width: 520px;
+}
+
+.remembertext{
+    margin-right: 43%;
+}
+
+.forgottext{
+    color: #7152F3;
+}

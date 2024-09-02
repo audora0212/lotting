@@ -1,0 +1,137 @@
+.buttonstyle{
+    width: 108%;
+    background-color: #7152F3;
+    border: 0;
+    border-radius: 10px;
+    height: 56px;
+    margin-top: 3%;
+    color: #fff;
+}
+.downloadbuttonstyle{
+    width: 100px;
+    background-color: #7152F3;
+    border: 0;
+    border-radius: 10px;
+    height: 43px;
+    margin-top: 3%;
+    color: #fff;
+
+    span{
+        font-weight: 500;
+        font-size: 15px;
+        margin-right: 10px;
+    }
+}
+.searchbuttonstyle{
+    display: inline-flex;
+    width:133px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    margin-top:20px;
+    background: var(--Primary-500, #7152F3);
+}
+.checkstyle {
+    width: 18px;
+    height: 18px;
+    margin-top: 3%;
+}
+.buttonstyle_y{
+    display: flex;
+    width: 91px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+
+    box-shadow: none;
+
+    background: #7152F3;
+    color: #fff;
+}
+.buttonstyle_n{
+    display: flex;
+    width: 91px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    margin-left:880px;
+}
+.toggleButton {
+    padding: 8px 16px;
+    border: none;
+    color: var(--Dark-500, #16151C);
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    width: 133px;
+    height: 50px;
+
+    &:hover {
+        color: var(--Dark-500, #16151C);
+    }
+
+    &.active {
+        background: var(--Primary-500, #7152F3);
+        color: #fff;
+    }
+}
+.BottonFont{
+    color: var(--White-500, #FFF);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.CgButton{
+    width: 24px;
+    height: 24px;
+}
+.BottonFont2{
+    color: var(--Dark-500, #16151C);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+    margin-left:30px;
+    margin-top:13px;
+}
+
+.modifybutton{
+    display: flex;
+    width:55px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    background: #7152F3;
+    margin-right:10px;
+}
+
+.checkbutton{
+    display: flex;
+    width: 70px;
+    height: 36px;
+    border-radius: 5px;
+background: var(--Primary-500, #7152F3);
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}

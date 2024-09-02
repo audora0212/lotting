@@ -1,0 +1,102 @@
+.MainContainer {
+  width: 383px;
+  height: 100vh;
+}
+.SelectContainer {
+  margin-left: 300px;
+  margin-top: 40px;
+  width: 450px;
+  height: 554px;
+  border-radius: 20px;
+  background: var(--White-500, #fff);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* 스크롤이 나타날 때 스크롤 바의 스타일 설정 (선택 사항) */
+  scrollbar-width: thin; /* 스크롤바의 너비 설정 */
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* 스크롤바의 색상 설정 */
+}
+.Line {
+  width: 343px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--gray-gray-20, rgba(162, 161, 168, 0.2));
+}
+
+.SelectTitleBody {
+  box-sizing: border-box;
+  width: 383px;
+  height: 66px;
+  padding-top: 20px;
+  padding-left: 20px;
+}
+.SelectTitle {
+  width: 80px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+.SelectTitleFont {
+  color: var(--Dark-500, #16151c);
+  /* Header-6 Bold */
+  font-family: Lexend;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 30px; /* 150% */
+}
+
+.Search {
+  width: 343px;
+  height: 56px;
+  display: flex;
+}
+.SearchBody {
+  display: flex;
+  width: 310px;
+  height: 56px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.SearchIcon {
+  box-sizing: border-box;
+  padding-top: 16px;
+  padding-left: 5px;
+  width: 40px;
+  height: 56px;
+}
+
+.CategoryBody {
+  width: 343px;
+  height: 44px;
+  display: flex;
+}
+.CategoryBody1 {
+  box-sizing: border-box;
+  width: 114px;
+  height: 44px;
+  padding-top: 10px;
+}
+.CategoryFont {
+  color: var(--Gray-500, #a2a1a8);
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px; /* 171.429% */
+}
+.CategoryContent {
+  height: 44px;
+  width: 343px;
+  display: flex;
+  margin-top: 10px;
+}
+.ContentFont {
+  color: var(--Dark-500, #16151c);
+  font-family: Lexend;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 171.429% */
+}

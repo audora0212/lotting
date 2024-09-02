@@ -1,0 +1,107 @@
+.container {
+    float: left;
+    margin-top: 25px;
+}
+.rightcontainer {
+    width:300px;
+    float: right;
+    margin-right: 50px;
+    margin-top: 40px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.title {
+    color: #16151C;
+    font-size: 20px;
+}
+
+.subtitle {
+    color: #A2A1A8;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.name {
+    margin-top: 7px;
+    margin-bottom: 0;
+    color: #16151C;
+    font-size: 16px;
+}
+
+.role {
+    margin: 5px;
+    color: #A2A1A8;
+    font-size: 12px;
+}
+.maincontainer{
+    width: 100vw;
+    height: 100px;
+}
+.usercontainer{
+    float: left;
+    width: 170px;
+    height: 60px;
+    background-color: #a2a1a800;
+    border-radius: 8px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    padding-left:10px;
+
+}
+.image{
+    float: left;
+    border-radius: 10px;
+    margin: 5px;
+}
+.loginbody{
+    padding-top:8px;
+    width:150px;
+    height:60px;
+    justify-content: center;
+    align-items: center;
+}
+.logoutbutton{
+    display: flex;
+    margin-left:10px;
+    width:60px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    margin-right:10px;
+}
+.button{
+    display: flex;
+    width:65px;
+    height: 34px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    background: #ffffff;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    margin-right:10px;
+    margin-top:8px;
+}
+.Name{
+    padding-left:5px;
+    width:184px;
+    height:20px;
+}
+.loginfo{
+    width:184px;
+    height:20px;
+    display:flex;
+
+}
+.ButtonFont{
+    color: var(--White-500, #000000);
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}

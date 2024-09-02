@@ -1,0 +1,64 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
+  width: 10vw;
+}
+.tablecontainer {
+  margin: 30px;
+  display: flex;
+  width: 900px;
+}
+.tablecontainer span {
+  cursor: pointer; /* 기본적으로 포인터 커서 설정 */
+}
+
+.tablecontainer span:hover {
+  cursor: pointer; /* 호버 시 포인터 커서 설정 */
+}
+
+.flexContainer {
+  width: 1100px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+.rowContainer {
+  width: 900px;
+  display: flex;
+}
+.unitContainer {
+  width: 125px;
+  height: 20px;
+  margin-right: 20px;
+  margin-top: 7px;
+}
+
+.tablecontainer span {
+  font-size: 14px;
+  color: #a2a1a8;
+}
+
+.maincontainer {
+  margin: 30px;
+  display: flex;
+  gap: 20px;
+  width: 900px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #000;
+}
+
+.linkbutton {
+  width: 10px;
+}
+.CBBottonFont {
+  color: #fff;
+  /* Caption Regular */
+  font-family: Lexend;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 18px; /* 150% */
+}

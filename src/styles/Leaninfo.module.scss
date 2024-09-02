@@ -1,0 +1,17 @@
+.container {
+    display: grid;
+    width: 20vw;
+    margin: 20px 0px;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    row-gap: 20px;
+}
+
+.title {
+    font-size: 14px;
+    color: #A2A1A8;
+}
+
+.titlecontainer{
+    margin-bottom: 30px;
+}

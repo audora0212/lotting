@@ -1,0 +1,337 @@
+.Container{
+
+    width: 1080px;
+    height: 922px;
+    flex-shrink: 0;
+}
+.Mainbody{
+    margin-top:45px;
+    width: 1080px;
+    height: 922px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.SearchBody{
+    width: 1080px;
+    height: 98px;
+    flex-shrink: 0;
+    display:flex;
+}
+.SearchFont1{
+    color: var(--dark-dark-20, rgba(22, 21, 28, 0.20));
+    padding-left:16px;
+    padding-top: 13px;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.SearchFont2{
+    color: #000;
+    padding-top: 13px;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px;
+}
+.SearchNum{
+    display: flex;
+    width: 209px;
+    height:50px;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    margin-top:20px;
+    margin-left:18px;
+    display:flex;
+}
+.SearchName{
+    display: flex;
+    width: 195px;
+    height:50px;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    margin-top:20px;
+    margin-left:18px;
+    display:flex;
+}
+.SearchCha{
+    display: flex;
+    width: 199px;
+    height:50px;
+    display:flex;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    margin-top:20px;
+    margin-left:18px;
+}
+.SearchType{
+    display: flex;
+    width: 159px;
+    height:50px;
+    display:flex;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    margin-top:20px;
+    margin-left:18px;
+}
+.Botton{
+    display: inline-flex;
+    width:133px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    margin-top:20px;
+    margin-left:56px;
+    background: var(--Primary-500, #7152F3);
+}
+.BottonIcon{
+    width: 24px;
+    height: 24px;
+}
+.BottonFont{
+    color: var(--White-500, #FFF);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.MainContent{
+    width: 1080px;
+    height: 822px;
+    flex-shrink: 0;
+    display:flex;
+}
+
+.Content{
+    width: 333px;
+    height: 100vh;
+    flex-shrink: 0;
+    margin-left:20px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+
+.ContentTitleIcon_Y{
+    width: 10px;
+    height: 10px;
+    background-color: #EFBE12;
+    margin-right:8px;
+    border-radius:20px;
+    margin-top:6px;
+}
+.ContentTitleIcon_G{
+    width: 10px;
+    height: 10px;
+    background-color: #3FC28A;
+    margin-right:8px;
+    border-radius:20px;
+    margin-top:6px;
+}
+.ContentTitleIcon_R{
+    width: 10px;
+    height: 10px;
+    background-color: #F45B69;
+    margin-right:8px;
+    border-radius:20px;
+    margin-top:6px;
+}
+.ContentTitle{
+    width: 301px;
+    height: 22px;
+    flex-shrink: 0;
+    margin-bottom:16px;
+    margin-left:20px;
+    margin-top:20px;
+    display:flex;
+}
+.ContentTitleFont{
+    color: var(--Dark-500, #16151C);
+
+    /* Body-2 Bold */
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 22px; /* 157.143% */
+}
+.ContentBody{
+    width: 301px;
+    height: 170px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    margin-bottom:16px;
+    margin-left:20px;
+}
+.ContentPreBody{
+    width: 301px;
+    height: 260px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    margin-bottom:16px;
+    margin-left:20px;
+}
+.ContentFinBody{
+    width: 301px;
+    height: 215px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    margin-bottom:16px;
+    margin-left:20px;
+}
+.ContentBody_L{
+    width: 301px;
+    height: 270px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    margin-bottom:16px;
+    margin-left:20px;
+}
+.ContentBodyTitle{
+    width:301px;
+    height:44px;
+    flex-shrink: 0;
+    padding-top:16px;
+    display:flex;
+}
+.ContentBodyTitle_L{
+    width:301px;
+    height:60px;
+    flex-shrink: 0;
+    padding-top:16px;
+    display:flex;
+}
+.CBTIcon{
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    margin-left:16px;
+    margin-right:12px;
+}
+.Icon{
+    margin-top:10px;
+    margin-left:10px;
+    width:24px;
+    height:24px;
+}
+.Icon2{
+    width:24px;
+    height:24px;
+}
+.CBTCha{
+    width:174px;
+    height:24px;
+}
+.CBTChaFont{
+    color: var(--Dark-500, #16151C);
+
+    /* Body-1 Bold */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+}
+.CBTText{
+    width:174px;
+    height:48px;
+    display:flex;
+    flex-direction: column;
+}
+.CBTDate{
+    width:174px;
+    height:24px;
+}
+.CBTDateFont{
+    color: var(--Gray-500, #A2A1A8);
+
+    /* Body-2 Regular */
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 22px; /* 157.143% */
+}
+.CBBottonBody{
+    height:34px;
+    width:301px;
+    margin-top:16px;
+    padding-left:16px;
+    display: flex;
+}
+.CBBotton{
+    display: flex;
+    width:65px;
+    height: 34px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    background: var(--Primary-500, #7152F3);
+    margin-right:10px;
+}
+.CBBottonFont{
+    color:#FFF;
+
+    /* Caption Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
+}
+.CBSum{
+    height:24px;
+    width:301px;
+    margin-top:20px;
+    display:flex;
+}
+.CBMoneyImg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-left:16px;
+}
+.CBSumText{
+    color: var(--Dark-500, #16151C);
+
+    /* Body-2 Regular */
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 26px; /* 157.143% */
+    margin-left:5px;
+}
+.CBSumNum{
+    color: var(--Dark-500, #16151C);
+    text-align: right;
+    
+    /* Header-7 Bold */
+    font-family: Lexend;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px; /* 144.444% */
+    margin-left:50px;
+}

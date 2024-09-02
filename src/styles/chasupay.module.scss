@@ -1,0 +1,105 @@
+.Container{
+    width: 1131px;
+    height: 819px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+}
+.Mainbody{
+    width: 1080px;
+    height: 922px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+    margin-top:45px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.Category{
+    box-sizing: border-box;
+    width:1080px;
+    height:44px;
+    margin-top:15px;
+    padding-left:35px;
+    display:flex;
+    margin-bottom:10px;
+}
+.Categorybody{
+    margin-top:10px;
+    display: flex;
+    width: 142px;
+    height:24px;
+    gap: 10px;
+}
+.Buttonbody{
+    margin-top:5px;
+    display: flex;
+    width: 142px;
+    height:24px;
+    gap: 10px;
+}
+.ButtonFont{
+    color: var(--White-500, #FFF);
+
+    /* Caption Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
+}
+.Line{
+    margin-left :20px;
+    width: 1040px;
+    height: 1px;
+    flex-shrink: 0;
+    background: var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.CategoryFont{
+    color: var(--Gray-500, #A2A1A8);
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.BodyFont{
+    color: var(--Dark-500, #16151C);
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+}
+.Title{
+    box-sizing: border-box;
+    width: 1131px;
+    height: 88px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+    padding-left:35px;
+    padding-top:35px;
+}
+.TitleFont1{
+    color: var(--Dark-500, #16151C);
+    /* Header-6 Bold */
+    font-family: Lexend;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+}
+.TitleFont2{
+    color: var(--Gray-500, #A2A1A8);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+
+}

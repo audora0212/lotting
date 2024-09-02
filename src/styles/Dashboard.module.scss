@@ -1,0 +1,544 @@
+.Container{
+    width: 1079px;
+    height: 1424px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+.MainTitle{
+    width: 1079px;
+    height: 882px;
+    flex-shrink: 0;
+    display:flex;
+    margin-bottom:20px;
+}
+
+.Notice{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 1080px;
+    height: 522px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.Date{
+    width: 414px;
+    height: 882px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.ContractBody{
+    width: 645px;
+    height: 882px;
+    flex-shrink: 0;
+    margin-right:20px;
+}
+.Contract{
+    width: 646px;
+    height: 154px;
+    flex-shrink: 0;
+    display:flex;
+    margin-bottom: 20px;
+}
+.ContractSum{
+    width: 313px;
+    height: 154px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    margin-right:20px;
+}
+.ContractValue{
+    width: 312px;
+    height: 70px;
+    flex-shrink: 0;
+    display:flex;
+}
+.ContractValue2{
+    width:313px;
+    height:50px;
+    flex-direction:0;
+    display:flex;
+    flex-direction: columns;
+}
+.ContractVal{
+    width: 313px;
+    height: 50px;
+    flex-shrink: 0;
+}
+.ContractVal1{
+    width: 233px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.ContractVal2{
+    width: 70px;
+    height: 50px;
+    flex-shrink: 0;
+}
+.Percentage_G{
+    display: inline-flex;
+    height: 26px;
+    width:54px;
+    gap: 5px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    background: rgba(48, 190, 130, 0.10);
+    margin-top:7px;
+}
+.ContractIcons{
+    display: flex;
+    width: 10px;
+    height: 10px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    background: rgba(113, 82, 243, 0.05);
+    margin-top:16px;
+    margin-left:16px;
+    margin-bottom: 10px;
+    margin-right:10px;
+}
+.UpImg{
+    width:12px;
+    height:12px;
+    flex-shrink: 0;
+    margin-left:5px;
+}
+.UpText{
+    color: var(--Color-Option-Color-Option-1, #30BE82);
+    /* Label Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 145.455% */
+}
+.CalendarImg{
+    width:30px;
+    height:30px;
+    margin-top:9px;
+    margin-left:10px
+}
+.ContractImg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+.ContractName{
+    color:#16151C;
+    /* Body-2 Regular */
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 22px; /* 157.143% */
+    margin-top:27px;
+}
+.Client{
+    width: 646px;
+    height: 534px;
+    flex-shrink: 0;
+}
+
+.Value{
+    color: var(--Dark-500, #16151C);
+    /* Header-4 Bold */
+    font-family: Lexend;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 40px; /* 133.333% */
+    margin-left:16px;
+}
+.Bottominfo{
+    width: 313px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 0px 0px 10px 10px;
+    border-top: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.BottomDate{
+    color:#A2A1A8;
+    /* Caption Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
+    margin-left:16px;
+    margin-top:7px;
+}
+
+// 위에는 4개 덩어리 scss
+
+.ClientBody{
+    width: 563.874px;
+    height: 534px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    display:flex;
+    flex-direction: column;
+}
+.ClientContents{
+    width: 547px;
+    height: 494px;
+    flex-shrink: 0;
+    padding-left:16px;
+}
+.ClientTitle{
+    width: 547px;
+    height: 59px;
+    flex-shrink: 0;
+    display:flex;
+}
+.ClientTitle1{
+    width: 461px;
+    height: 59px;
+    flex-shrink: 0;
+}
+.ClientTitle2{
+    width: 86px;
+    height: 59px;
+    flex-shrink: 0;
+    margin-right:14px;
+    margin-top:19px;
+}
+.InfoBotton{
+    width:72px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.Bottonfont{
+    color:#16151C;
+    padding-top:9px;
+    padding-left:8px;
+    
+    /* Body-2 Regular */
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 22px; /* 157.143% */
+}
+.ClientCategory{
+    width: 547px;
+    height: 38px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+}
+.ClientValue{
+    width: 547px;
+    height: 54px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+}
+.Valuefont{
+    color:#16151C;
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+    padding-top:10px;
+}
+.Categoryfont{
+    color:#A2A1A8;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+}
+.Titlefont{
+    padding-top:24px;
+    color:#16151C;
+
+    /* Header-6 Bold */
+    font-family: Lexend;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+}
+.Number{
+    display: flex;
+    width: 132px;
+    padding: 10px 10px 10px 0px;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top:10px;
+}
+.Name{
+    display: flex;
+    width: 142px;
+    padding: 10px 10px 10px 0px;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top:10px;
+}
+.Cha{
+    display: flex;
+    width: 142px;
+    padding: 10px 10px 10px 0px;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top:10px;
+}
+.Dong{
+    display: flex;
+    width: 102px;
+    padding: 10px 10px 10px 0px;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top:10px;
+}
+
+// 위에는 미납자 scss
+
+.DateTitle{
+    width: 414px;
+    height: 73px;
+    flex-shrink: 0;
+    display: flex;
+}
+.DateTitle1{
+    width:344px;
+    height:73px;
+    flex-shrink:0;
+}
+.DateTitleName{
+    padding-left:20px;
+    padding-top:30px;
+    color:#16151C;
+
+    /* Header-6 Bold */
+    font-family: Lexend;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+}
+.DateTitle2{
+    width: 70px;
+    height: 73px;
+    flex-shrink: 0;
+    margin-top:20px;
+    display:flex;
+}
+.DateIcon{
+    display: flex;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background:rgba(113, 82, 243, 0.10);
+}
+.Calendar{
+    width: 414px;
+    height: 349px;
+    flex-shrink: 0;
+}
+.Line{
+    width: 374px;
+    height: 1px;
+    background: rgba(162, 161, 168, 0.10);
+}
+.Today{
+    width: 414px;
+    height: 100vh;
+    flex-shrink: 0;
+}
+.TodayTitle{
+    width: 414px;
+    height: 46px;
+    flex-shrink: 0;
+    display:flex;
+}
+.TodayTitle1{
+    width: 379px;
+    height: 46px;
+    flex-shrink: 0;
+}
+.TodayTitleName{
+    padding-top:20px;
+    padding-left:20px;
+    color:#16151C;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+}
+.TodayTitle2{
+    width: 35px;
+    height: 46px;
+    flex-shrink: 0;
+}
+
+
+// 아래부터 공지사항
+
+.NoticeTitle{
+    width: 1080px;
+    height: 80px;
+    flex-shrink: 0;
+    display:flex;
+}
+.NoticeTitle1{
+    width: 998px;
+    height: 80px;
+    flex-shrink: 0;
+}
+.NoticeName{
+    padding-top:25px;
+    padding-left:20px;
+    color:#16151C;
+    /* Header-6 Bold */
+    font-family: Lexend;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+}
+.NoticeTitle2{
+    margin-top:20px;
+    width: 92px;
+    height: 80px;
+    flex-shrink: 0;
+}
+.NoticeCategory{
+    width:1040px;
+    height:44px;
+    padding-left:20px;
+    display:flex;
+    border-bottom: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+}
+.NoticeCategory1{
+    width:327px;
+    height:44px;
+}
+.NoticeCategory2{
+    width:257px;
+    height:44px;
+}
+.NoticeCategory3{
+    width:161px;
+    height:44px;
+}
+.NoticeCategory4{
+    width:191px;
+    height:44px;
+}
+.NoticeCategory5{
+    width:100px;
+    height:44px;
+}
+.NoticeCategoryFont{
+    padding-top:10px;
+    color:#A2A1A8;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.NoticeContent{
+    padding-left:20px;
+    display: flex;
+    width: 1040px;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+}
+.ContentFont{
+    padding-top:10px;
+    color: var(--Dark-500, #16151C);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.ContentState_G{
+    display: flex;
+    width: 66px;
+    height:24px;
+    padding: 3px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: rgba(63, 194, 138, 0.10);
+}
+.G_Font{
+    color: #3FC28A;
+    /* Caption Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
+}
+.ContentState_B{
+    display: flex;
+    width: 66px;
+    height:24px;
+    padding: 3px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: rgba(244, 91, 105, 0.10);
+}
+.B_Font{
+    color: #F45B69;
+
+    /* Caption Regular */
+    font-family: Lexend;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 18px; /* 150% */
+}
+.NoticeBotton{
+    width:70px;
+    display: flex;
+    height: 40px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+}
+.NoticeBottonFont{
+    color: var(--Dark-500, #16151C);
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    padding-right:10px;
+}

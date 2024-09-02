@@ -1,0 +1,42 @@
+.listconatiner{
+    color: #000;
+    height: 50px;
+}
+.select{
+    float: left;
+    
+    width: 100px;
+
+    color: #7152F3;
+    /* Body-1 Bold */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+
+    border-bottom: 4px solid #7152F3;
+    border-radius: 4px;
+
+}
+.nonselect{
+    float: left;
+
+    width: 100px;
+
+    color: #16151C;
+    /* Body-1 Bold */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+    
+
+}
+
+.listconatiner span {
+    
+    text-align: center;
+
+}

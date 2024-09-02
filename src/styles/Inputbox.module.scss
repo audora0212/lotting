@@ -1,0 +1,175 @@
+.areacontainer{
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 200px;   
+    width: 180%;
+    padding: 10px 20px 10px 16px;
+    float: left;
+}
+.SearchFont{
+    margin-top:13px;
+    margin-left:16px;
+    color: dark;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.spancontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 30px;   
+    width: 1fr;
+
+    padding: 10px 20px 10px 16px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 13px;
+}
+.searchclient{
+    display: flex;
+    width: 310px;
+    height:56px;
+    box-sizing: border-box;
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    gap: 10px;
+}
+.inputcontainer_L{
+    display: flex;
+    width:800px;
+    height:30px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+}
+.inputcontainer_M{
+    display: flex;
+    width: 350px;
+    height:30px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+    margin-right:10px;
+}
+
+
+.inputcontainer {
+    display: flex;
+    width: 25vw;
+    height:30px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+    margin-right:10px;
+}
+.Dropinputcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 10vw;
+    padding: 10px 20px 10px 16px;
+    margin-right: 10px;
+    float: left;
+}
+.postcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 20vw;
+    padding: 10px 20px 10px 16px;
+    margin-right: 10px;
+    float: left;
+}
+
+.logininputcontainer {
+    border-radius: 10px;
+    border: 1px solid #7152F3;
+    display: flex;
+    height: 30px;   
+    width: 100%;
+    margin-top: 3%;
+    padding: 10px 20px 10px 16px;
+    float: left;
+}
+
+
+.Longinputcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 30px;   
+    width: 100%;
+    padding: 10px 20px 10px 16px;
+    margin-right: 100px;
+    float: left;
+    grid-column: span 2;
+}
+
+
+
+.Fileinputcontainer{
+    grid-row: span 2;
+    width: 1fr;
+    height: 133px;
+    border: 1px dashed  #7152F3;
+    border-radius: 10px;
+}   
+
+.filetext{
+    text-align: center;
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px; /* 157.143% */
+    color: #000;
+}
+
+.texthighlight{
+    color: #7152F3;
+}
+
+.successtext{
+    color: #7152F3;
+    font-weight: bold;
+    text-align: center;
+    padding-right: 10px;
+}
+
+
+.filetypetext{
+    font-family: Lexend;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 16px; /* 145.455% */
+    color: #A2A1A8;
+    text-align: center;
+
+}
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox {
+    margin-right: 8px;
+  }
+  
+  .checkboxLabel {
+    font-size: 1em;
+    color: #333;
+  }

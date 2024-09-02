@@ -1,0 +1,67 @@
+.content_container{
+    display: grid;
+	grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    width: 70vw;
+    height: auto;
+    flex-shrink: 0;
+    margin-left:20px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.mainbody{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    width: 70vw;
+    height: auto;
+    flex-shrink: 0;
+    margin-left:20px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.content_body{
+    width:70vw;
+    height: auto;
+    display:flex;
+}
+.content_body2{
+    display: block;
+    width: 35vw;
+    height: auto;
+    display: grid;
+	grid-template-columns: 2fr 4fr;
+}
+.content_body3{
+    width: 23vw;
+    height: auto;
+    display: grid;
+}
+.InputField{
+    width:25vw;
+    height:60px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    flex-direction: row;
+}
+.InputTextarea{
+    width: 30vw;
+}
+.InputFont{
+    font-size:14px;
+    padding-left:10px;
+    padding-top: 15px;
+    padding-bottom:10px;
+    color:#A1A2A8;
+}
+.Font {
+    margin-top: 5px;
+    color: dark;
+    font-family: Lexend;
+    font-size: 16px;
+    font-weight: 550;
+    line-height: 24px;
+}
+

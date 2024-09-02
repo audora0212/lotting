@@ -1,0 +1,154 @@
+.Container{
+    width: 1131px;
+    height: 819px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+}
+.Title{
+    box-sizing: border-box;
+    width: 1131px;
+    height: 88px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+    padding-left:46px;
+    padding-top:35px;
+}
+.TitleFont1{
+    color: var(--Dark-500, #16151C);
+    /* Header-6 Bold */
+    font-family: Lexend;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px; /* 150% */
+}
+.TitleFont2{
+    color: var(--Gray-500, #A2A1A8);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+
+}
+.MainBody{
+    box-sizing: border-box;
+    width: 1131px;
+    height: 731px;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction: column;
+    padding-left:40px;
+}
+.MainTop{
+    box-sizing: border-box;
+    width: 1131px;
+    height: 21px;
+    flex-shrink: 0;
+    padding-left:894px;
+}
+.MainTitleFont{
+    color: var(--Gray-500, #A2A1A8);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.MainTitle1{
+    width: 1100px;
+    height: 58px;
+    flex-shrink: 0;
+    display:flex;
+    border-bottom: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.MainTitle1_head{
+    display: flex;
+    width: 100px;
+    height:58px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.MainTitle1_body{
+    display: flex;
+    width: 80px;
+    height:58px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.MainTitle2{
+    padding-top:10px;
+    margin-bottom: 3px;
+    box-sizing: border-box;
+    height: 65px;
+    width: 1100px;
+    flex-shrink: 0;
+    display:flex;
+    border-bottom: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.MainTitle2_head{
+    display: flex;
+    width: 50px;
+    height:65px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.MainTitle2_body{
+    display: flex;
+    width: 80px;
+    height:65px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.ExcelContentsBody{
+    margin-bottom: 10px;
+    width: 1100px;
+    height: 44px;
+    flex-shrink: 0;
+    display:flex;
+    border-bottom: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    background: #D6C6C6;
+}
+.ExcelContent_Head{
+    box-sizing: border-box;
+    padding-top:10px;
+    width:50px;
+    height:44px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.ExcelContent_Body{
+    box-sizing: border-box;
+    padding-top:10px;
+    width:80px;
+    height:44px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.ExcelContentFont{
+    color: var(--Dark-500, #16151C);
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+}
+.line{
+    width:1131px;
+    height: 1px;
+    flex-shrink: 0;
+    background: var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}

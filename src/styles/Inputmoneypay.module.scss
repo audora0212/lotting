@@ -1,0 +1,249 @@
+.Container{
+    width: 1080px;
+    height: 922px;
+    flex-shrink: 0;
+}
+.Mainbody{
+    margin-top:45px;
+    width: 1080px;
+    height: 922px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.MainTitle{
+    width: 1080px;
+    height: 105px;
+    flex-shrink: 0;
+    display:flex;
+}
+.MainTitle1{
+    width: 884px;
+    height: 105px;
+    flex-shrink: 0;
+    display:flex;
+}
+.MainTitle2{
+    width: 196px;
+    height: 105px;
+    flex-shrink: 0;
+}
+.SearchClientNum{
+    margin-top:20px;
+    margin-left:20px;
+    display: flex;
+    width: 330px;
+    height:50px;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-10, rgba(162, 161, 168, 0.10));
+    display:flex;
+}
+.SearchFont{
+    margin-top:13px;
+    margin-left:16px;
+    color: dark;
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.SearchFont1{
+    margin-top:13px;
+    margin-left:16px;
+    color: var(--dark-dark-20, rgba(22, 21, 28, 0.20));
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.SearchFont2{
+    margin-top:13px;
+    color: #000;
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px;
+}
+.BackgroundBotton{
+    width: 266px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--gray-gray-5, rgba(162, 161, 168, 0.05));
+    display:flex;
+}
+.InnerBotton{
+    display: inline-flex;
+    width:133px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--Primary-500, #7152F3);
+    margin-right:19px;
+}
+.Botton_Y{
+    display: flex;
+    width: 91px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    background: var(--Primary-500, #7152F3);
+    margin-left:20px;
+}
+.Botton_N{
+    display: flex;
+    width: 91px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    margin-left:880px;
+}
+.Botton{
+    display: inline-flex;
+    width:133px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    margin-top:20px;
+    background: var(--Primary-500, #7152F3);
+}
+
+.BottonIcon{
+    width: 24px;
+    height: 24px;
+}
+.BottonFont{
+    color: var(--White-500, #FFF);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.BottonFont2{
+    color: var(--White-500, #000000);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+}
+.BackgroundBottonFont{
+    color: var(--Dark-500, #16151C);
+
+    /* Body-1 Regular */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px; /* 150% */
+    margin-left:30px;
+    margin-top:13px;
+}
+.InputBody{
+    width: 1080px;
+    height: 741px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.InputBodyTitle{
+    width: 1080px;
+    height: 53px;
+    flex-shrink: 0;
+    display:flex;
+}
+.IBTIcon{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    margin-left:20px;
+    margin-top:20px;
+    margin-right:10px;
+}
+.Icon{
+    width:24px;
+    height:24px;
+}
+.IBTText{
+    color: var(--Primary-500, #7152F3);
+    margin-top:20px;
+    /* Body-1 Bold */
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+}
+.Line{
+    margin-left :20px;
+    width: 1040px;
+    height: 1px;
+    flex-shrink: 0;
+    background: var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.IBBottonLayer{
+    margin-top:30px;
+    margin-left:20px;
+    display:flex;
+    width:1040px;
+    height:56px;
+}
+.IBLayer{
+    display: grid;
+    grid-template-columns: 3fr 4fr 3fr 4fr;
+    margin-top:20px;
+    margin-left:20px;
+    width:1040px;
+    height:56px;
+    gap: 15px;
+}
+.SIBLayer{
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr;
+    margin-top:20px;
+    margin-left:20px;
+    width:1040px;
+    height:56px;
+}
+.IBInputBox_L{
+    display: flex;
+    width:1040px;
+    height:54px;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+}
+.IBInputBox_S{
+    display: flex;
+    width:510px;
+    height:54px;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    margin-right:20px;
+}
