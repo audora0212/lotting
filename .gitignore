@@ -2,9 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=nextjs,react
 
 ### Junseo_OH Code server Proxy ###
-next.config.js
-.env
-/src/utils/api.js
+
 
 ### NextJS ###
 # dependencies
