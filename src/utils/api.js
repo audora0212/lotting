@@ -1,6 +1,6 @@
 import axios from "axios";
 //const path = "http://3.39.167.172:8000"
-const path = "http://localhost:8000";
+const path = "http://13.209.10.143:8000";
 //const path = "http://121.136.47.206:8080/proxy/8000";
 // JUN SEO OH 개발 환경에서 사용하는 path 입니다. git 시 필수로 주석처리.
 

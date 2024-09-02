@@ -36,6 +36,7 @@ export default function Login() {
     try {
       const response = await fetchLogin(userform.id, userform.pw);
       const token = response.data.token;
+      console.log("asd");
       login(userform.id, token);
       Swal.fire({
         title: "로그인 성공",
