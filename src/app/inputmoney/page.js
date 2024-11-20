@@ -87,13 +87,13 @@ function Inputmoneysearch() {
           <div className={styles.SearchBody}>
             <Searchbox
               type="text"
-              placeholder="회원성함"
-              onChange={onNameChange}
+              placeholder="관리번호"
+              onChange={onNumberChange}
             />
             <Searchbox
               type="text"
-              placeholder="관리번호"
-              onChange={onNumberChange}
+              placeholder="회원성함"
+              onChange={onNameChange}
             />
           </div>
         </div>

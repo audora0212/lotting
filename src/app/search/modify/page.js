@@ -222,12 +222,13 @@ function Modify() {
     <>
       <h1></h1>
       <div className={styles.flexContainer}>
-        <Inputbox type="text" placeholder="회원 성함" onChange={onNameChange} />
-        <Inputbox
+      <Inputbox
           type="text"
           placeholder="관리번호"
           onChange={onNumberChange}
         />
+        <Inputbox type="text" placeholder="회원 성함" onChange={onNameChange} />
+
         <DropInputbox list={typelist} />
         <DropInputbox list={grouplist} />
         <DropInputbox list={turnlist} />
