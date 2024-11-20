@@ -10,6 +10,7 @@ import { searchnameState, searchnumberState } from "@/utils/atom";
 import { namesearchSelector } from "@/utils/selector";
 import { deleteUser } from "@/utils/api";
 import categoryMapping from "@/utils/categoryMapping"; // categoryMapping 불러오기
+import ConfirmationModal from "@/components/ConfirmationModal"; // Import the modal
 
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const setNameState = useSetRecoilState(searchnameState);
@@ -18,6 +19,9 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     key: null,
     direction: "ascending",
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   let searchname = name.length > 1 ? name : "";
   let searchnumber = number.length > 1 ? number : "";
@@ -93,9 +97,28 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     }
   };
 
+  const openConfirmation = (id) => {
+    setSelectedUserId(id);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedUserId !== null) {
+      handleDelete(selectedUserId);
+      setSelectedUserId(null);
+      setIsModalOpen(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setSelectedUserId(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <div>
       <div className={styles.tablecontainer}>
+        {/* ... (Your existing table headers) */}
         <div className={styles.unitContainer}>
           <span onClick={() => handleSort("id")}>관리번호</span>
         </div>
@@ -156,13 +179,20 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   </div>
                 </Link>
                 <div className={styles.unitContainer}>
-                  <ModifyButton onClick={() => handleDelete(k.id)}>
+                  <ModifyButton onClick={() => openConfirmation(k.id)}>
                     <div className={styles.CBBottonFont}>삭제</div>
                   </ModifyButton>
                 </div>
               </div>
             );
           })}
+      {isModalOpen && (
+        <ConfirmationModal
+          message="삭제하시겠습니까?"
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
     </div>
   );
 };

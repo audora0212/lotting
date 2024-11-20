@@ -44,7 +44,7 @@ const Dashboard = () =>{
                 </div>
                 <div className={styles.Bottominfo}>
                   <div className={styles.BottomDate}>
-                    업데이트 : 2023년 12월 28일
+                    업데이트 : 2024년 11월 20일
                   </div>
                 </div>
               </div> 
@@ -76,7 +76,7 @@ const Dashboard = () =>{
                 </div>
                 <div className={styles.Bottominfo}>
                   <div className={styles.BottomDate}>
-                    업데이트 : 2023년 12월 28일
+                    업데이트 : 2024년 11월 20일
                   </div>
                 </div>
               </div> 
@@ -100,7 +100,7 @@ const Dashboard = () =>{
                 </div>
                 <div className={styles.Bottominfo}>
                   <div className={styles.BottomDate}>
-                    업데이트 : 2023년 12월 28일
+                    업데이트 : 2024년 11월 20일
                   </div>
                 </div>
               </div> 
@@ -122,7 +122,7 @@ const Dashboard = () =>{
                 </div>
                 <div className={styles.Bottominfo}>
                   <div className={styles.BottomDate}>
-                    업데이트 : 2023년 12월 28일
+                    업데이트 : 2024년 11월 20일
                   </div>
                 </div>
               </div> 
@@ -402,6 +402,25 @@ const Dashboard = () =>{
             </div>
           </div>
 
+          <div className={styles.NoticeContent}>
+            <div className={styles.NoticeCategory1}>
+              <div className={styles.NoticeContentFont}>수정 사항 반영</div>
+            </div>
+            <div className={styles.NoticeCategory2}>
+              <div className={styles.NoticeContentFont}>최영찬</div>
+            </div>
+            <div className={styles.NoticeCategory3}>
+              <div className={styles.NoticeContentFont}>일반</div>
+            </div>
+            <div className={styles.NoticeCategory4}>
+              <div className={styles.NoticeContentFont}>24-11-20 09:27 AM</div>
+            </div>
+            <div className={styles.NoticeCategory5}>
+              <div className={styles.ContentState_G}>
+                <div className={styles.G_Font}>해결됨</div>
+              </div>
+            </div>
+          </div>
           <div className={styles.NoticeContent}>
             <div className={styles.NoticeCategory1}>
               <div className={styles.NoticeContentFont}>사이트 개설 안내</div>

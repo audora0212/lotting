@@ -13,7 +13,7 @@ const Header = () => {
   const pathname = usePathname();
   const splitpath = pathname.split("/");
   const headertitle = {
-    dashboard: "조합원관리시스템이 정상 작동중입니다 👋🏻",
+    dashboard: "회원관리시스템이 정상 작동중입니다 👋🏻",
     search: "회원 정보 검색",
     create: "회원 정보 입력",
     createwithdraw: "해약 회원 정보 입력",
