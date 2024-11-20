@@ -99,7 +99,7 @@ function Inputmoneysearch() {
         </div>
         <div className={styles.CategoryBody}>
           <div className={styles.CategoryBody1}>
-            <div className={styles.CategoryFont}>회원번호</div>
+            <div className={styles.CategoryFont}>관리번호</div>
           </div>
           <div className={styles.CategoryBody1}>
             <div className={styles.CategoryFont}>성명</div>

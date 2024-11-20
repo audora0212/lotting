@@ -1,26 +1,33 @@
 "use client";
 import Mininav from "@/components/Mininav";
 import styles from "@/styles/Userinfo.module.scss";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation"; // useParams 훅 추가
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { userinfoSelector } from "@/utils/selector";
-import { useState } from "react";
+import { useEffect } from "react"; // useEffect로 변경
 import { useridState } from "@/utils/atom";
 import { DownloadButton, Button } from "@/components/Button";
 import Link from "next/link";
 import { Inputbox, InputAreabox } from "@/components/Inputbox";
 import withAuth from "@/utils/hoc/withAuth";
+import { usePathname } from "next/navigation";
 
 function Search() {
+  const params = useParams();
+  const userid = params.id;
+  const setIdState = useSetRecoilState(useridState);
+
+  useEffect(() => {
+    if (userid) {
+      setIdState(userid);
+    } else {
+      console.error("유효하지 않은 사용자 ID입니다.");
+    }
+  }, [userid, setIdState]);
+
+  const userselectordata = useRecoilValueLoadable(userinfoSelector);
   const pathname = usePathname();
   const splitpath = pathname.split("/"); //splitpath[3]
-  const userid = splitpath[3];
-  const setIdState = useSetRecoilState(useridState);
-  useState(() => {
-    setIdState(userid);
-  });
-  const userselectordata = useRecoilValueLoadable(userinfoSelector);
-
   const sortMapping = {
     1: "정계약",
     c: "청약",
