@@ -62,7 +62,6 @@ export const namesearchSelector = selector({
 
       if (usernumber) {
         dataByNumber = await fetchNumberSearch(usernumber); // `usernumber` 전달
-        // 서버에서 부분 매칭을 처리하므로 클라이언트 측 필터링 불필요
       }
 
       if (username) {
@@ -84,7 +83,9 @@ export const namesearchSelector = selector({
         return dataByName;
       }
 
-      return [];
+      // `username`과 `usernumber`가 모두 비어 있을 때 모든 데이터를 반환
+      const allData = await fetchNumberSearch(''); // 빈 문자열을 전달하여 모든 데이터를 가져옴
+      return allData;
     } catch (error) {
       console.error("namesearchSelector 오류:", error);
       throw error;
