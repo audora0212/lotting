@@ -125,6 +125,7 @@ export const searchPrechasu = (userid) => {
     });
 };
 
+
 export const fetchNameSearch = (username) => {
   return axios
     .get(path + "/api/searchname/" + username)
@@ -137,9 +138,10 @@ export const fetchNameSearch = (username) => {
     });
 };
 
+
 export const fetchNumberSearch = (usernumber) => {
   return axios
-    .get(path + "/api/searchnumber/" + usernumber)
+    .get(`${path}/api/searchnumber/${usernumber}`)
     .then((result) => {
       return result.data;
     })
@@ -148,6 +150,7 @@ export const fetchNumberSearch = (usernumber) => {
       throw error;
     });
 };
+
 
 export const deleteUser = (id) => {
   return axios

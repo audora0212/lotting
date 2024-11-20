@@ -1,6 +1,6 @@
 import { selector } from "recoil";
-import { fetchNameSearch, fetchNumberSearch,fetchT,fetchUserinfo, fetchLoanInit,fetchChasuData } from "./api";
-import { searchnameState,searchnumberState, useridState, searchtypeState, chasuState } from "./atom";
+import { fetchNameSearch, fetchNumberSearch, fetchT, fetchUserinfo, fetchLoanInit, fetchChasuData } from "./api";
+import { searchnameState, searchnumberState, useridState, searchtypeState, chasuState } from "./atom";
 
 export const userinfoSelector = selector({
     key: 'userinfoSelector',
@@ -11,7 +11,7 @@ export const userinfoSelector = selector({
         return data;
       } catch (error) {
         console.error('Error fetching userinfo:', error);
-        throw error; // 에러 처리를 위해 다시 throw
+        throw error; 
       }
     },
 });
@@ -48,22 +48,46 @@ export const userchasuSelector = selector({
 })
 
 
+// src/utils/selector.js
+
 export const namesearchSelector = selector({
   key: 'namesearchSelector',
   get: async ({ get }) => {
     const username = get(searchnameState);
     const usernumber = get(searchnumberState);
-    
-    const dataByName = await fetchNameSearch(username);
-    const dataByNumber = await fetchNumberSearch(usernumber);
 
-    // 이름과 관리번호 둘 다 있는 경우, 합친 결과를 반환
-    if (username && usernumber) {
-      return [...dataByName, ...dataByNumber];
+    try {
+      let dataByName = [];
+      let dataByNumber = [];
+
+      if (usernumber) {
+        dataByNumber = await fetchNumberSearch(usernumber); // `usernumber` 전달
+        // 서버에서 부분 매칭을 처리하므로 클라이언트 측 필터링 불필요
+      }
+
+      if (username) {
+        dataByName = await fetchNameSearch(username);
+      }
+
+      if (username && usernumber) {
+        // 두 결과의 교집합 반환
+        const numberIds = new Set(dataByNumber.map(user => user.id));
+        const filteredByName = dataByName.filter(user => numberIds.has(user.id));
+        return filteredByName;
+      }
+
+      if (usernumber) {
+        return dataByNumber;
+      }
+
+      if (username) {
+        return dataByName;
+      }
+
+      return [];
+    } catch (error) {
+      console.error("namesearchSelector 오류:", error);
+      throw error;
     }
-
-    // 둘 중 하나만 있는 경우, 해당 결과만 반환
-    return username ? dataByName : dataByNumber;
   }
 });
-
