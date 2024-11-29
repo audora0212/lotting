@@ -1,20 +1,22 @@
+/* 기존 스타일 수정 및 드롭다운 메뉴 스타일 추가 */
+
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 20px;
   width: 10vw;
 }
+
 .tablecontainer {
   margin: 30px;
   display: flex;
   width: 900px;
 }
-.tablecontainer span {
-  cursor: pointer; /* 기본적으로 포인터 커서 설정 */
-}
 
-.tablecontainer span:hover {
-  cursor: pointer; /* 호버 시 포인터 커서 설정 */
+.tablecontainer span {
+  cursor: pointer;
+  font-size: 14px;
+  color: #a2a1a8;
 }
 
 .flexContainer {
@@ -28,16 +30,13 @@
   width: 900px;
   display: flex;
 }
+
 .unitContainer {
   width: 125px;
   height: 20px;
   margin-right: 20px;
   margin-top: 7px;
-}
-
-.tablecontainer span {
-  font-size: 14px;
-  color: #a2a1a8;
+  position: relative; /* 드롭다운 메뉴의 위치를 상대적으로 지정하기 위해 추가 */
 }
 
 .maincontainer {
@@ -53,12 +52,56 @@
 .linkbutton {
   width: 10px;
 }
+
 .CBBottonFont {
   color: #fff;
-  /* Caption Regular */
   font-family: Lexend;
   font-size: 12px;
   font-style: normal;
   font-weight: 300;
   line-height: 18px; /* 150% */
 }
+
+/* 드롭다운 메뉴 스타일 추가 */
+.dropdown {
+  position: absolute;
+  top: 100%; /* 부모 요소 바로 아래에 위치하도록 설정 */
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 150px; /* 필요에 따라 너비 조정 가능 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+  padding: 10px; /* 내부 여백 추가 */
+}
+
+.dropdown div {
+  padding: 5px 0;
+}
+
+.dropdown label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.dropdown input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+/* 드롭다운 메뉴 항목 호버 시 배경색 변경 */
+.dropdown label:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* 테이블 헤더 호버 시 스타일 */
+.tablecontainer span:hover {
+  color: #000;
+  cursor: pointer;
+}
+
+/* 기타 필요한 스타일 추가 */

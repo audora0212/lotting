@@ -9,9 +9,9 @@ import styles from "@/styles/Search.module.scss";
 import { searchnameState, searchnumberState } from "@/utils/atom";
 import { namesearchSelector } from "@/utils/selector";
 import { deleteUser } from "@/utils/api";
-import categoryMapping from "@/utils/categoryMapping"; // categoryMapping 불러오기
-import ConfirmationModal from "@/components/ConfirmationModal"; // Import the modal
-import Swal from "sweetalert2"; // SweetAlert2 import
+import categoryMapping from "@/utils/categoryMapping";
+import ConfirmationModal from "@/components/ConfirmationModal";
+import Swal from "sweetalert2";
 
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const setNameState = useSetRecoilState(searchnameState);
@@ -19,6 +19,24 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "ascending",
+  });
+
+  // 필터링 상태를 관리하는 state 추가
+  const [filters, setFilters] = useState({
+    type: [],
+    group: [],
+    turn: [],
+    submitturn: [],
+    sort: [],
+  });
+
+  // 드롭다운 메뉴의 열림 상태를 관리하는 state 추가
+  const [dropdownOpen, setDropdownOpen] = useState({
+    type: false,
+    group: false,
+    turn: false,
+    submitturn: false,
+    sort: false,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +64,58 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     console.log("Received search data:", searchdata.contents);
   }
 
+  // 각 컬럼별로 유니크한 값을 추출
+  const uniqueValues = {
+    type: Array.from(
+      new Set(
+        searchdata.contents.map((item) => item.data?.type).filter(Boolean)
+      )
+    ),
+    group: Array.from(
+      new Set(
+        searchdata.contents.map((item) => item.data?.group).filter(Boolean)
+      )
+    ),
+    turn: Array.from(
+      new Set(
+        searchdata.contents.map((item) => item.data?.turn).filter(Boolean)
+      )
+    ),
+    submitturn: Array.from(
+      new Set(
+        searchdata.contents.map((item) => item.data?.submitturn).filter(Boolean)
+      )
+    ),
+    sort: Array.from(
+      new Set(
+        searchdata.contents.map((item) => item.userinfo?.sort).filter(Boolean)
+      )
+    ),
+  };
+
+  const toggleDropdown = (key) => {
+    setDropdownOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prevFilters) => {
+      const values = prevFilters[key];
+      if (values.includes(value)) {
+        // 이미 선택된 값이면 제거
+        return {
+          ...prevFilters,
+          [key]: values.filter((v) => v !== value),
+        };
+      } else {
+        // 선택되지 않은 값이면 추가
+        return {
+          ...prevFilters,
+          [key]: [...values, value],
+        };
+      }
+    });
+  };
+
   const handleSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -54,13 +124,24 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     setSortConfig({ key, direction });
   };
 
-  const sortedData = () => {
-    let sortableData = [...searchdata.contents].filter((k) =>
+  const filteredData = () => {
+    let data = [...searchdata.contents].filter((k) =>
       categoryFilter.includes(k.userinfo?.sort)
     );
 
+    // 필터 적용
+    Object.keys(filters).forEach((key) => {
+      if (filters[key].length > 0) {
+        data = data.filter((item) => {
+          const itemValue = item.data?.[key] || item.userinfo?.[key];
+          return filters[key].includes(itemValue);
+        });
+      }
+    });
+
+    // 정렬 적용
     if (sortConfig.key !== null) {
-      sortableData.sort((a, b) => {
+      data.sort((a, b) => {
         let aValue, bValue;
 
         if (sortConfig.key === "id") {
@@ -81,28 +162,25 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
       });
     }
 
-    console.log("Sorted data:", sortableData);
+    console.log("Filtered and Sorted data:", data);
 
-    return sortableData;
+    return data;
   };
 
   const handleDelete = async (id) => {
     console.log("Deleting user with id:", id);
     try {
       await deleteUser(id);
-      // SweetAlert을 사용하여 성공 메시지 표시
       Swal.fire({
         icon: "success",
         title: "회원 삭제",
         text: "회원이 성공적으로 삭제되었습니다.",
         confirmButtonText: "확인",
       }).then(() => {
-        // 페이지 새로고침
         window.location.reload();
       });
     } catch (error) {
       console.error("Error deleting user:", error);
-      // SweetAlert을 사용하여 오류 메시지 표시
       Swal.fire({
         icon: "error",
         title: "삭제 실패",
@@ -140,27 +218,131 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         <div className={styles.unitContainer}>
           <span onClick={() => handleSort("name")}>성명</span>
         </div>
+
+        {/* 타입 컬럼 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("type")}>타입</span>
+          <div onClick={() => toggleDropdown("type")}>
+            타입
+            {/* 드롭다운 메뉴 */}
+            {dropdownOpen.type && (
+              <div className={styles.dropdown}>
+                {uniqueValues.type.map((value) => (
+                  <div key={value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.type.includes(value)}
+                        onChange={() => handleFilterChange("type", value)}
+                      />
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* 군 컬럼 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("group")}>군</span>
+          <div onClick={() => toggleDropdown("group")}>
+            군
+            {dropdownOpen.group && (
+              <div className={styles.dropdown}>
+                {uniqueValues.group.map((value) => (
+                  <div key={value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.group.includes(value)}
+                        onChange={() => handleFilterChange("group", value)}
+                      />
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* 순번 컬럼 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("turn")}>순번</span>
+          <div onClick={() => toggleDropdown("turn")}>
+            순번
+            {dropdownOpen.turn && (
+              <div className={styles.dropdown}>
+                {uniqueValues.turn.map((value) => (
+                  <div key={value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.turn.includes(value)}
+                        onChange={() => handleFilterChange("turn", value)}
+                      />
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* 가입 차순 컬럼 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("submitturn")}>가입 차순</span>
+          <div onClick={() => toggleDropdown("submitturn")}>
+            가입 차순
+            {dropdownOpen.submitturn && (
+              <div className={styles.dropdown}>
+                {uniqueValues.submitturn.map((value) => (
+                  <div key={value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.submitturn.includes(value)}
+                        onChange={() => handleFilterChange("submitturn", value)}
+                      />
+                      {value}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* 가입 날짜 컬럼 */}
         <div className={styles.unitContainer}>
           <span onClick={() => handleSort("submitdate")}>가입 날짜</span>
         </div>
+
+        {/* 분류 컬럼 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("sort")}>분류</span>
+          <div onClick={() => toggleDropdown("sort")}>
+            분류
+            {dropdownOpen.sort && (
+              <div className={styles.dropdown}>
+                {uniqueValues.sort.map((value) => (
+                  <div key={value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.sort.includes(value)}
+                        onChange={() => handleFilterChange("sort", value)}
+                      />
+                      {categoryMapping[value] || "N/A"}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
       {searchdata.state === "hasValue" &&
-        sortedData()
+        filteredData()
           .filter((k) => k.userinfo && k.data)
           .map((k) => {
             return (
