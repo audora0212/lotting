@@ -13,6 +13,9 @@ import categoryMapping from "@/utils/categoryMapping";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Swal from "sweetalert2";
 
+// react-icons에서 아이콘 임포트
+import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
+
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const setNameState = useSetRecoilState(searchnameState);
   const setNumberState = useSetRecoilState(searchnumberState);
@@ -144,6 +147,18 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     setSortConfig({ key, direction });
   };
 
+  // 아이콘을 반환하는 함수
+  const getSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === "ascending" ? (
+        <AiOutlineArrowUp size={12} />
+      ) : (
+        <AiOutlineArrowDown size={12} />
+      );
+    }
+    return <AiOutlineArrowDown size={12} />;
+  };
+
   const filteredData = () => {
     let data = [...searchdata.contents].filter((k) =>
       categoryFilter.includes(k.userinfo?.sort)
@@ -232,202 +247,247 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     <div>
       <div className={styles.tablecontainer}>
         {/* 테이블 헤더 */}
+        {/* 관리번호 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("id")}>관리번호</span>
+          <span>
+            관리번호
+            <span className={styles.sortIcon} onClick={() => handleSort("id")}>
+              {getSortIcon("id")}
+            </span>
+          </span>
         </div>
+        {/* 성명 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("name")}>성명</span>
+          <span>
+            성명
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("name")}
+            >
+              {getSortIcon("name")}
+            </span>
+          </span>
         </div>
-
-        {/* 타입 컬럼 */}
+        {/* 타입 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => toggleDropdown("type")}>
-            타입
-            {/* 드롭다운 메뉴 */}
-            {dropdownOpen.type && (
-              <div
-                className={styles.dropdown}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div>
+          <span>
+            <span onClick={() => toggleDropdown("type")}>타입</span>
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("type")}
+            >
+              {getSortIcon("type")}
+            </span>
+          </span>
+          {/* 드롭다운 메뉴 */}
+          {dropdownOpen.type && (
+            <div
+              className={styles.dropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filters.type.length === uniqueValues.type.length}
+                    onChange={() => handleFilterAllChange("type")}
+                  />
+                  전체
+                </label>
+              </div>
+              {uniqueValues.type.map((value) => (
+                <div key={value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.type.length === uniqueValues.type.length}
-                      onChange={() => handleFilterAllChange("type")}
+                      checked={filters.type.includes(value)}
+                      onChange={() => handleFilterChange("type", value)}
                     />
-                    전체
+                    {value}
                   </label>
                 </div>
-                {uniqueValues.type.map((value) => (
-                  <div key={value}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={filters.type.includes(value)}
-                        onChange={() => handleFilterChange("type", value)}
-                      />
-                      {value}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </span>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* 군 컬럼 */}
+        {/* 군 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => toggleDropdown("group")}>
-            군
-            {dropdownOpen.group && (
-              <div
-                className={styles.dropdown}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div>
+          <span>
+            <span onClick={() => toggleDropdown("group")}>군</span>
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("group")}
+            >
+              {getSortIcon("group")}
+            </span>
+          </span>
+          {dropdownOpen.group && (
+            <div
+              className={styles.dropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filters.group.length === uniqueValues.group.length}
+                    onChange={() => handleFilterAllChange("group")}
+                  />
+                  전체
+                </label>
+              </div>
+              {uniqueValues.group.map((value) => (
+                <div key={value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={
-                        filters.group.length === uniqueValues.group.length
-                      }
-                      onChange={() => handleFilterAllChange("group")}
+                      checked={filters.group.includes(value)}
+                      onChange={() => handleFilterChange("group", value)}
                     />
-                    전체
+                    {value}
                   </label>
                 </div>
-                {uniqueValues.group.map((value) => (
-                  <div key={value}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={filters.group.includes(value)}
-                        onChange={() => handleFilterChange("group", value)}
-                      />
-                      {value}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </span>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* 순번 컬럼 */}
+        {/* 순번 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => toggleDropdown("turn")}>
-            순번
-            {dropdownOpen.turn && (
-              <div
-                className={styles.dropdown}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div>
+          <span>
+            <span onClick={() => toggleDropdown("turn")}>순번</span>
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("turn")}
+            >
+              {getSortIcon("turn")}
+            </span>
+          </span>
+          {dropdownOpen.turn && (
+            <div
+              className={styles.dropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filters.turn.length === uniqueValues.turn.length}
+                    onChange={() => handleFilterAllChange("turn")}
+                  />
+                  전체
+                </label>
+              </div>
+              {uniqueValues.turn.map((value) => (
+                <div key={value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.turn.length === uniqueValues.turn.length}
-                      onChange={() => handleFilterAllChange("turn")}
+                      checked={filters.turn.includes(value)}
+                      onChange={() => handleFilterChange("turn", value)}
                     />
-                    전체
+                    {value}
                   </label>
                 </div>
-                {uniqueValues.turn.map((value) => (
-                  <div key={value}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={filters.turn.includes(value)}
-                        onChange={() => handleFilterChange("turn", value)}
-                      />
-                      {value}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </span>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* 가입 차순 컬럼 */}
+        {/* 가입 차순 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => toggleDropdown("submitturn")}>
-            가입 차순
-            {dropdownOpen.submitturn && (
-              <div
-                className={styles.dropdown}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div>
+          <span>
+            <span onClick={() => toggleDropdown("submitturn")}>가입 차순</span>
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("submitturn")}
+            >
+              {getSortIcon("submitturn")}
+            </span>
+          </span>
+          {dropdownOpen.submitturn && (
+            <div
+              className={styles.dropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={
+                      filters.submitturn.length ===
+                      uniqueValues.submitturn.length
+                    }
+                    onChange={() => handleFilterAllChange("submitturn")}
+                  />
+                  전체
+                </label>
+              </div>
+              {uniqueValues.submitturn.map((value) => (
+                <div key={value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={
-                        filters.submitturn.length ===
-                        uniqueValues.submitturn.length
-                      }
-                      onChange={() => handleFilterAllChange("submitturn")}
+                      checked={filters.submitturn.includes(value)}
+                      onChange={() => handleFilterChange("submitturn", value)}
                     />
-                    전체
+                    {value}
                   </label>
                 </div>
-                {uniqueValues.submitturn.map((value) => (
-                  <div key={value}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={filters.submitturn.includes(value)}
-                        onChange={() => handleFilterChange("submitturn", value)}
-                      />
-                      {value}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
+          )}
+        </div>
+        {/* 가입 날짜 */}
+        <div className={styles.unitContainer}>
+          <span>
+            가입 날짜
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("submitdate")}
+            >
+              {getSortIcon("submitdate")}
+            </span>
           </span>
         </div>
-
-        {/* 가입 날짜 컬럼 */}
+        {/* 분류 */}
         <div className={styles.unitContainer}>
-          <span onClick={() => handleSort("submitdate")}>가입 날짜</span>
-        </div>
-
-        {/* 분류 컬럼 */}
-        <div className={styles.unitContainer}>
-          <span onClick={() => toggleDropdown("sort")}>
-            분류
-            {dropdownOpen.sort && (
-              <div
-                className={styles.dropdown}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div>
+          <span>
+            <span onClick={() => toggleDropdown("sort")}>분류</span>
+            <span
+              className={styles.sortIcon}
+              onClick={() => handleSort("sort")}
+            >
+              {getSortIcon("sort")}
+            </span>
+          </span>
+          {dropdownOpen.sort && (
+            <div
+              className={styles.dropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filters.sort.length === uniqueValues.sort.length}
+                    onChange={() => handleFilterAllChange("sort")}
+                  />
+                  전체
+                </label>
+              </div>
+              {uniqueValues.sort.map((value) => (
+                <div key={value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.sort.length === uniqueValues.sort.length}
-                      onChange={() => handleFilterAllChange("sort")}
+                      checked={filters.sort.includes(value)}
+                      onChange={() => handleFilterChange("sort", value)}
                     />
-                    전체
+                    {categoryMapping[value] || "N/A"}
                   </label>
                 </div>
-                {uniqueValues.sort.map((value) => (
-                  <div key={value}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={filters.sort.includes(value)}
-                        onChange={() => handleFilterChange("sort", value)}
-                      />
-                      {categoryMapping[value] || "N/A"}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
