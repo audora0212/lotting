@@ -102,15 +102,35 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
       const values = prevFilters[key];
       if (values.includes(value)) {
         // 이미 선택된 값이면 제거
+        const newValues = values.filter((v) => v !== value);
         return {
           ...prevFilters,
-          [key]: values.filter((v) => v !== value),
+          [key]: newValues,
         };
       } else {
         // 선택되지 않은 값이면 추가
+        const newValues = [...values, value];
         return {
           ...prevFilters,
-          [key]: [...values, value],
+          [key]: newValues,
+        };
+      }
+    });
+  };
+
+  const handleFilterAllChange = (key) => {
+    setFilters((prevFilters) => {
+      if (prevFilters[key].length === uniqueValues[key].length) {
+        // 모든 옵션이 선택된 상태면 모두 해제
+        return {
+          ...prevFilters,
+          [key]: [],
+        };
+      } else {
+        // 하나라도 선택되지 않은 옵션이 있으면 모두 선택
+        return {
+          ...prevFilters,
+          [key]: [...uniqueValues[key]],
         };
       }
     });
@@ -221,11 +241,24 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
 
         {/* 타입 컬럼 */}
         <div className={styles.unitContainer}>
-          <div onClick={() => toggleDropdown("type")}>
+          <span onClick={() => toggleDropdown("type")}>
             타입
             {/* 드롭다운 메뉴 */}
             {dropdownOpen.type && (
-              <div className={styles.dropdown}>
+              <div
+                className={styles.dropdown}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={filters.type.length === uniqueValues.type.length}
+                      onChange={() => handleFilterAllChange("type")}
+                    />
+                    전체
+                  </label>
+                </div>
                 {uniqueValues.type.map((value) => (
                   <div key={value}>
                     <label>
@@ -240,15 +273,30 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 ))}
               </div>
             )}
-          </div>
+          </span>
         </div>
 
         {/* 군 컬럼 */}
         <div className={styles.unitContainer}>
-          <div onClick={() => toggleDropdown("group")}>
+          <span onClick={() => toggleDropdown("group")}>
             군
             {dropdownOpen.group && (
-              <div className={styles.dropdown}>
+              <div
+                className={styles.dropdown}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={
+                        filters.group.length === uniqueValues.group.length
+                      }
+                      onChange={() => handleFilterAllChange("group")}
+                    />
+                    전체
+                  </label>
+                </div>
                 {uniqueValues.group.map((value) => (
                   <div key={value}>
                     <label>
@@ -263,15 +311,28 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 ))}
               </div>
             )}
-          </div>
+          </span>
         </div>
 
         {/* 순번 컬럼 */}
         <div className={styles.unitContainer}>
-          <div onClick={() => toggleDropdown("turn")}>
+          <span onClick={() => toggleDropdown("turn")}>
             순번
             {dropdownOpen.turn && (
-              <div className={styles.dropdown}>
+              <div
+                className={styles.dropdown}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={filters.turn.length === uniqueValues.turn.length}
+                      onChange={() => handleFilterAllChange("turn")}
+                    />
+                    전체
+                  </label>
+                </div>
                 {uniqueValues.turn.map((value) => (
                   <div key={value}>
                     <label>
@@ -286,15 +347,31 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 ))}
               </div>
             )}
-          </div>
+          </span>
         </div>
 
         {/* 가입 차순 컬럼 */}
         <div className={styles.unitContainer}>
-          <div onClick={() => toggleDropdown("submitturn")}>
+          <span onClick={() => toggleDropdown("submitturn")}>
             가입 차순
             {dropdownOpen.submitturn && (
-              <div className={styles.dropdown}>
+              <div
+                className={styles.dropdown}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={
+                        filters.submitturn.length ===
+                        uniqueValues.submitturn.length
+                      }
+                      onChange={() => handleFilterAllChange("submitturn")}
+                    />
+                    전체
+                  </label>
+                </div>
                 {uniqueValues.submitturn.map((value) => (
                   <div key={value}>
                     <label>
@@ -309,7 +386,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 ))}
               </div>
             )}
-          </div>
+          </span>
         </div>
 
         {/* 가입 날짜 컬럼 */}
@@ -319,10 +396,23 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
 
         {/* 분류 컬럼 */}
         <div className={styles.unitContainer}>
-          <div onClick={() => toggleDropdown("sort")}>
+          <span onClick={() => toggleDropdown("sort")}>
             분류
             {dropdownOpen.sort && (
-              <div className={styles.dropdown}>
+              <div
+                className={styles.dropdown}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={filters.sort.length === uniqueValues.sort.length}
+                      onChange={() => handleFilterAllChange("sort")}
+                    />
+                    전체
+                  </label>
+                </div>
                 {uniqueValues.sort.map((value) => (
                   <div key={value}>
                     <label>
@@ -337,7 +427,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 ))}
               </div>
             )}
-          </div>
+          </span>
         </div>
       </div>
 

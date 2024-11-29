@@ -18,7 +18,11 @@
   font-size: 14px;
   color: #a2a1a8;
 }
-
+.tablecontainer span:hover {
+  cursor: pointer;
+  font-size: 14px;
+  color: #000000;
+}
 .flexContainer {
   width: 1100px;
   display: flex;
@@ -33,6 +37,8 @@
 
 .unitContainer {
   width: 125px;
+  font-size: 14px;
+  color: #000;
   height: 20px;
   margin-right: 20px;
   margin-top: 7px;
@@ -97,11 +103,3 @@
   background-color: #f5f5f5;
   cursor: pointer;
 }
-
-/* 테이블 헤더 호버 시 스타일 */
-.tablecontainer span:hover {
-  color: #000;
-  cursor: pointer;
-}
-
-/* 기타 필요한 스타일 추가 */
