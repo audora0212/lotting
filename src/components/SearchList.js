@@ -16,6 +16,15 @@ import Swal from "sweetalert2";
 // react-icons에서 아이콘 임포트
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
+// droplistdata에서 리스트들을 임포트
+import {
+  typelist,
+  grouplist,
+  turnlist,
+  typeidlist,
+  sortlist,
+} from "@/components/droplistdata";
+
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const setNameState = useSetRecoilState(searchnameState);
   const setNumberState = useSetRecoilState(searchnumberState);
@@ -24,7 +33,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     direction: "ascending",
   });
 
-  // 필터링 상태를 관리하는 state 추가
+  // 필터링 상태를 관리하는 state
   const [filters, setFilters] = useState({
     type: [],
     group: [],
@@ -33,7 +42,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     sort: [],
   });
 
-  // 드롭다운 메뉴의 열림 상태를 관리하는 state 추가
+  // 드롭다운 메뉴의 열림 상태를 관리하는 state
   const [dropdownOpen, setDropdownOpen] = useState({
     type: false,
     group: false,
@@ -63,37 +72,13 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   }
 
-  if (searchdata.state === "hasValue") {
-    console.log("Received search data:", searchdata.contents);
-  }
-
-  // 각 컬럼별로 유니크한 값을 추출
+  // droplistdata의 리스트들을 사용하여 uniqueValues 생성
   const uniqueValues = {
-    type: Array.from(
-      new Set(
-        searchdata.contents.map((item) => item.data?.type).filter(Boolean)
-      )
-    ),
-    group: Array.from(
-      new Set(
-        searchdata.contents.map((item) => item.data?.group).filter(Boolean)
-      )
-    ),
-    turn: Array.from(
-      new Set(
-        searchdata.contents.map((item) => item.data?.turn).filter(Boolean)
-      )
-    ),
-    submitturn: Array.from(
-      new Set(
-        searchdata.contents.map((item) => item.data?.submitturn).filter(Boolean)
-      )
-    ),
-    sort: Array.from(
-      new Set(
-        searchdata.contents.map((item) => item.userinfo?.sort).filter(Boolean)
-      )
-    ),
+    type: typelist,
+    group: grouplist,
+    turn: turnlist,
+    submitturn: typeidlist,
+    sort: sortlist,
   };
 
   const toggleDropdown = (key) => {
@@ -133,7 +118,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         // 하나라도 선택되지 않은 옵션이 있으면 모두 선택
         return {
           ...prevFilters,
-          [key]: [...uniqueValues[key]],
+          [key]: uniqueValues[key].map((option) => option.value),
         };
       }
     });
@@ -151,12 +136,26 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const getSortIcon = (key) => {
     if (sortConfig.key === key) {
       return sortConfig.direction === "ascending" ? (
-        <AiOutlineArrowUp size={12} />
+        <AiOutlineArrowUp size={12} color="#7152F3" />
       ) : (
-        <AiOutlineArrowDown size={12} />
+        <AiOutlineArrowDown size={12} color="#7152F3" />
       );
     }
     return <AiOutlineArrowDown size={12} />;
+  };
+
+  const handleReset = () => {
+    setFilters({
+      type: [],
+      group: [],
+      turn: [],
+      submitturn: [],
+      sort: [],
+    });
+    setSortConfig({
+      key: null,
+      direction: "ascending",
+    });
   };
 
   const filteredData = () => {
@@ -197,13 +196,10 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
       });
     }
 
-    console.log("Filtered and Sorted data:", data);
-
     return data;
   };
 
   const handleDelete = async (id) => {
-    console.log("Deleting user with id:", id);
     try {
       await deleteUser(id);
       Swal.fire({
@@ -295,15 +291,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   전체
                 </label>
               </div>
-              {uniqueValues.type.map((value) => (
-                <div key={value}>
+              {uniqueValues.type.map((option) => (
+                <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.type.includes(value)}
-                      onChange={() => handleFilterChange("type", value)}
+                      checked={filters.type.includes(option.value)}
+                      onChange={() => handleFilterChange("type", option.value)}
                     />
-                    {value}
+                    {option.item}
                   </label>
                 </div>
               ))}
@@ -336,15 +332,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   전체
                 </label>
               </div>
-              {uniqueValues.group.map((value) => (
-                <div key={value}>
+              {uniqueValues.group.map((option) => (
+                <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.group.includes(value)}
-                      onChange={() => handleFilterChange("group", value)}
+                      checked={filters.group.includes(option.value)}
+                      onChange={() => handleFilterChange("group", option.value)}
                     />
-                    {value}
+                    {option.item}
                   </label>
                 </div>
               ))}
@@ -377,15 +373,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   전체
                 </label>
               </div>
-              {uniqueValues.turn.map((value) => (
-                <div key={value}>
+              {uniqueValues.turn.map((option) => (
+                <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.turn.includes(value)}
-                      onChange={() => handleFilterChange("turn", value)}
+                      checked={filters.turn.includes(option.value)}
+                      onChange={() => handleFilterChange("turn", option.value)}
                     />
-                    {value}
+                    {option.item}
                   </label>
                 </div>
               ))}
@@ -421,15 +417,17 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   전체
                 </label>
               </div>
-              {uniqueValues.submitturn.map((value) => (
-                <div key={value}>
+              {uniqueValues.submitturn.map((option) => (
+                <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.submitturn.includes(value)}
-                      onChange={() => handleFilterChange("submitturn", value)}
+                      checked={filters.submitturn.includes(option.value)}
+                      onChange={() =>
+                        handleFilterChange("submitturn", option.value)
+                      }
                     />
-                    {value}
+                    {option.item}
                   </label>
                 </div>
               ))}
@@ -450,7 +448,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         </div>
         {/* 분류 */}
         <div className={styles.unitContainer}>
-          <span>
+          <div className={styles.headerWithReset}>
             <span onClick={() => toggleDropdown("sort")}>분류</span>
             <span
               className={styles.sortIcon}
@@ -458,7 +456,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
             >
               {getSortIcon("sort")}
             </span>
-          </span>
+          </div>
           {dropdownOpen.sort && (
             <div
               className={styles.dropdown}
@@ -474,15 +472,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   전체
                 </label>
               </div>
-              {uniqueValues.sort.map((value) => (
-                <div key={value}>
+              {uniqueValues.sort.map((option) => (
+                <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.sort.includes(value)}
-                      onChange={() => handleFilterChange("sort", value)}
+                      checked={filters.sort.includes(option.value)}
+                      onChange={() => handleFilterChange("sort", option.value)}
                     />
-                    {categoryMapping[value] || "N/A"}
+                    {option.item}
                   </label>
                 </div>
               ))}

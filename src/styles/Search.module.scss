@@ -29,7 +29,9 @@
   flex-wrap: nowrap;
   gap: 10px;
 }
-
+.reset {
+  background-color: #d4d4d6;
+}
 .rowContainer {
   width: 900px;
   display: flex;
@@ -110,5 +112,5 @@
   font-size: 12px;
   display: inline-flex;
   align-items: center;
-  color: #802b2b; /* 아이콘 색상 설정 */
+  color: #000000; /* 아이콘 색상 설정 */
 }

@@ -1,3 +1,5 @@
+// /components/droplistdata.js
+
 export const sortlist = [
   {
     value: "1",
