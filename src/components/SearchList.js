@@ -22,7 +22,7 @@ import {
   grouplist,
   turnlist,
   typeidlist,
-  sortlist,
+  classificationlist,
 } from "@/components/droplistdata";
 
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
@@ -78,7 +78,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     group: grouplist,
     turn: turnlist,
     submitturn: typeidlist,
-    sort: sortlist,
+    sort: classificationlist,
   };
 
   const toggleDropdown = (key) => {
