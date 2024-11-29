@@ -1,4 +1,3 @@
-// pages/search/page.js
 "use client";
 
 import { useState } from "react";
@@ -28,19 +27,7 @@ function Search() {
         <SearchList
           name={name}
           number={number}
-          categoryFilter={[
-            "1",
-            "c",
-            "j",
-            "p",
-            "p1",
-            "t",
-            "t1",
-            "g",
-            "r",
-            "x",
-            "x1",
-          ]}
+          categoryFilter={["1", "c", "j", "p", "p1", "t", "t1", "g"]}
           linkBase="/search/"
         />
       )}

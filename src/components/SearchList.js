@@ -11,6 +11,7 @@ import { namesearchSelector } from "@/utils/selector";
 import { deleteUser } from "@/utils/api";
 import categoryMapping from "@/utils/categoryMapping"; // categoryMapping 불러오기
 import ConfirmationModal from "@/components/ConfirmationModal"; // Import the modal
+import Swal from "sweetalert2"; // SweetAlert2 import
 
 const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const setNameState = useSetRecoilState(searchnameState);
@@ -38,7 +39,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   }
 
   if (searchdata.state === "hasError") {
-    return <div>Error loading data</div>;
+    return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   }
 
   if (searchdata.state === "hasValue") {
@@ -89,11 +90,25 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     console.log("Deleting user with id:", id);
     try {
       await deleteUser(id);
-      alert("사용자가 성공적으로 삭제되었습니다.");
-      // 삭제 후 데이터를 다시 로드하거나 상태를 업데이트하는 로직 추가 가능
+      // SweetAlert을 사용하여 성공 메시지 표시
+      Swal.fire({
+        icon: "success",
+        title: "회원 삭제",
+        text: "회원이 성공적으로 삭제되었습니다.",
+        confirmButtonText: "확인",
+      }).then(() => {
+        // 페이지 새로고침
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("사용자 삭제 중 오류가 발생했습니다.");
+      // SweetAlert을 사용하여 오류 메시지 표시
+      Swal.fire({
+        icon: "error",
+        title: "삭제 실패",
+        text: "사용자 삭제 중 오류가 발생했습니다.",
+        confirmButtonText: "확인",
+      });
     }
   };
 
@@ -118,7 +133,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   return (
     <div>
       <div className={styles.tablecontainer}>
-        {/* ... (Your existing table headers) */}
+        {/* 테이블 헤더 */}
         <div className={styles.unitContainer}>
           <span onClick={() => handleSort("id")}>관리번호</span>
         </div>
