@@ -1,10 +1,4 @@
 import styles from "../../styles/Dashboard.module.scss";
-import dash1 from "../../img/dash1.png";
-import dash2 from "../../img/dash2.png";
-import dash3 from "../../img/dash3.png";
-import dash4 from "../../img/dash4.png";
-import up from "../../img/up.png";
-import calendar from "../../img/calendar.png";
 import { BsBagDash } from "react-icons/bs";
 import { BiGroup } from "react-icons/bi";
 import { BsDatabase } from "react-icons/bs";

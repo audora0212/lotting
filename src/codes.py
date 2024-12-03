@@ -59,8 +59,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--src",
         type=str,
-        default="src",
-        help="탐색할 src 디렉토리 경로 (기본값: src)"
+        default="utils",
+        help="탐색할 utils 디렉토리 경로 (기본값: utils)"
     )
     parser.add_argument(
         "--output",
