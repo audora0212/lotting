@@ -144,6 +144,10 @@ export const sintacklist = [
 export const typeidlist = [
   //가입 차순
   {
+    value: "1차",
+    item: "1차",
+  },
+  {
     value: "1-1차",
     item: "1-1차",
   },

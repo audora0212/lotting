@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { fetchNameSearch, fetchNumberSearch, fetchT, fetchUserinfo, fetchLoanInit, fetchChasuData } from "./api";
+import { fetchNameSearch, fetchNumberSearch, fetchT, fetchUserinfo, fetchLoanInit, fetchChasuData, fetchCustomers } from "./api";
 import { searchnameState, searchnumberState, useridState, searchtypeState, chasuState } from "./atom";
 
 export const userinfoSelector = selector({
@@ -48,8 +48,6 @@ export const userchasuSelector = selector({
 })
 
 
-// src/utils/selector.js
-
 export const namesearchSelector = selector({
   key: 'namesearchSelector',
   get: async ({ get }) => {
@@ -57,38 +55,15 @@ export const namesearchSelector = selector({
     const usernumber = get(searchnumberState);
 
     try {
-      let dataByName = [];
-      let dataByNumber = [];
+      const params = {};
+      if (username) params.name = username;
+      if (usernumber) params.number = usernumber;
 
-      if (usernumber) {
-        dataByNumber = await fetchNumberSearch(usernumber); // `usernumber` 전달
-      }
-
-      if (username) {
-        dataByName = await fetchNameSearch(username);
-      }
-
-      if (username && usernumber) {
-        // 두 결과의 교집합 반환
-        const numberIds = new Set(dataByNumber.map(user => user.id));
-        const filteredByName = dataByName.filter(user => numberIds.has(user.id));
-        return filteredByName;
-      }
-
-      if (usernumber) {
-        return dataByNumber;
-      }
-
-      if (username) {
-        return dataByName;
-      }
-
-      // `username`과 `usernumber`가 모두 비어 있을 때 모든 데이터를 반환
-      const allData = await fetchNumberSearch(''); // 빈 문자열을 전달하여 모든 데이터를 가져옴
-      return allData;
+      const data = await fetchCustomers(params);
+      return data;
     } catch (error) {
-      console.error("namesearchSelector 오류:", error);
+      console.error('namesearchSelector 오류:', error);
       throw error;
     }
-  }
+  },
 });

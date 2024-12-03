@@ -1,12 +1,12 @@
 import axios from "axios";
-const path = "http://localhost:8080";
-// JUN SEO OH 개발 환경에서 사용하는 path 입니다. git 시 필수로 주석처리.\
+const path = "http://localhost:8080";//Immigrant
 
-export const newIdGenerate = () => {
+
+export const newIdGenerate = () => { 
   return axios
-    .get(path + "/api/generateid")
+    .get(path + "/customers/nextId")
     .then((result) => {
-      return result.data.nextid;
+      return result.data; // 백엔드에서 Integer를 반환하므로 result.data가 관리번호.
     })
     .catch((error) => {
       console.error(error);
@@ -14,17 +14,43 @@ export const newIdGenerate = () => {
     });
 };
 
-export const createFile = (files) => {
-  console.log("업로드 파일 : ", files);
+export const createFile = (files) => { 
   const formData = new FormData();
-  files.forEach((data) => {
-    formData.append("file", data);
+  files.forEach((file) => {
+    formData.append("files", file);
   });
 
-  return axios.post(path + "/api/upload", formData, {
+  return axios.post(path + "/files/upload", formData, {
     headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
   });
 };
+
+export const createUser = (data) => { // 고객 만들기 Customer
+  return axios.post(path + "/customers", data);
+};
+
+
+export const fetchCustomers = (params) => {
+  // params는 { name: '...', number: '...'} 형태
+  return axios.get(`${path}/customers/search`, { params })
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Error fetching customers:', error);
+      throw error;
+    });
+};
+
+
+export const deleteCustomer = (id) => {
+  return axios.delete(`${path}/customers/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Error deleting customer:', error);
+      throw error;
+    });
+};
+
+//=====================================================================================
 
 export const downloadFile = async (id, filename) => {
   try {
@@ -54,9 +80,7 @@ export const downloadFile = async (id, filename) => {
   }
 };
 
-export const createUser = (data) => { // 고객 만들기 Customer
-  return axios.post(path + "/api/createuser", data);
-};
+
 
 export const updateUserinfo = (userid, data) => { // 고객 업데이트 Customer
   if (data.fileinfo && data.fileinfo._id) {
@@ -89,17 +113,7 @@ export const fetchSignup = (username, email, password, roles) => { // 매니저 
   });
 };
 
-export const fetchUserinfo = (userid) => { // 고객정보 불러오기 customer
-  return axios
-    .get(path + "/api/userinfo/" + userid)
-    .then((result) => {
-      return result.data[0];
-    })
-    .catch((error) => {
-      console.error(error);
-      throw error;
-    });
-};
+
 
 export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phase 불러오기
   return axios

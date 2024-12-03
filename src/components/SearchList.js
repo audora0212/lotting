@@ -1,4 +1,5 @@
 // src/components/SearchList.js
+
 "use client";
 
 import Link from "next/link";
@@ -8,7 +9,7 @@ import { ModifyButton } from "@/components/Button";
 import styles from "@/styles/Search.module.scss";
 import { searchnameState, searchnumberState } from "@/utils/atom";
 import { namesearchSelector } from "@/utils/selector";
-import { deleteUser } from "@/utils/api";
+import { deleteCustomer } from "@/utils/api";
 import categoryMapping from "@/utils/categoryMapping";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Swal from "sweetalert2";
@@ -36,23 +37,23 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   // 필터링 상태를 관리하는 state
   const [filters, setFilters] = useState({
     type: [],
-    group: [],
+    groupname: [],
     turn: [],
-    submitturn: [],
-    sort: [],
+    batch: [],
+    customertype: [],
   });
 
   // 드롭다운 메뉴의 열림 상태를 관리하는 state
   const [dropdownOpen, setDropdownOpen] = useState({
     type: false,
-    group: false,
+    groupname: false,
     turn: false,
-    submitturn: false,
-    sort: false,
+    batch: false,
+    customertype: false,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
   let searchname = name.length > 1 ? name : "";
   let searchnumber = number.length > 1 ? number : "";
@@ -75,10 +76,10 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   // droplistdata의 리스트들을 사용하여 uniqueValues 생성
   const uniqueValues = {
     type: typelist,
-    group: grouplist,
+    groupname: grouplist,
     turn: turnlist,
-    submitturn: typeidlist,
-    sort: classificationlist,
+    batch: typeidlist,
+    customertype: classificationlist,
   };
 
   const toggleDropdown = (key) => {
@@ -147,10 +148,10 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   const handleReset = () => {
     setFilters({
       type: [],
-      group: [],
+      groupname: [],
       turn: [],
-      submitturn: [],
-      sort: [],
+      batch: [],
+      customertype: [],
     });
     setSortConfig({
       key: null,
@@ -159,15 +160,13 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   };
 
   const filteredData = () => {
-    let data = [...searchdata.contents].filter((k) =>
-      categoryFilter.includes(k.userinfo?.sort)
-    );
+    let data = [...searchdata.contents];
 
     // 필터 적용
     Object.keys(filters).forEach((key) => {
       if (filters[key].length > 0) {
         data = data.filter((item) => {
-          const itemValue = item.data?.[key] || item.userinfo?.[key];
+          const itemValue = item[key];
           return filters[key].includes(itemValue);
         });
       }
@@ -176,14 +175,12 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     // 정렬 적용
     if (sortConfig.key !== null) {
       data.sort((a, b) => {
-        let aValue, bValue;
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
 
         if (sortConfig.key === "id") {
-          aValue = parseInt(a[sortConfig.key], 10);
-          bValue = parseInt(b[sortConfig.key], 10);
-        } else {
-          aValue = a.data[sortConfig.key] || a.userinfo[sortConfig.key];
-          bValue = b.data[sortConfig.key] || b.userinfo[sortConfig.key];
+          aValue = parseInt(aValue, 10);
+          bValue = parseInt(bValue, 10);
         }
 
         if (aValue < bValue) {
@@ -201,7 +198,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteUser(id);
+      await deleteCustomer(id);
       Swal.fire({
         icon: "success",
         title: "회원 삭제",
@@ -211,7 +208,7 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         window.location.reload();
       });
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error("Error deleting customer:", error);
       Swal.fire({
         icon: "error",
         title: "삭제 실패",
@@ -222,20 +219,20 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   };
 
   const openConfirmation = (id) => {
-    setSelectedUserId(id);
+    setSelectedCustomerId(id);
     setIsModalOpen(true);
   };
 
   const confirmDelete = () => {
-    if (selectedUserId !== null) {
-      handleDelete(selectedUserId);
-      setSelectedUserId(null);
+    if (selectedCustomerId !== null) {
+      handleDelete(selectedCustomerId);
+      setSelectedCustomerId(null);
       setIsModalOpen(false);
     }
   };
 
   const cancelDelete = () => {
-    setSelectedUserId(null);
+    setSelectedCustomerId(null);
     setIsModalOpen(false);
   };
 
@@ -258,9 +255,9 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
             성명
             <span
               className={styles.sortIcon}
-              onClick={() => handleSort("name")}
+              onClick={() => handleSort("customerData.name")}
             >
-              {getSortIcon("name")}
+              {getSortIcon("customerData.name")}
             </span>
           </span>
         </div>
@@ -309,15 +306,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         {/* 군 */}
         <div className={styles.unitContainer}>
           <span>
-            <span onClick={() => toggleDropdown("group")}>군</span>
+            <span onClick={() => toggleDropdown("groupname")}>군</span>
             <span
               className={styles.sortIcon}
-              onClick={() => handleSort("group")}
+              onClick={() => handleSort("groupname")}
             >
-              {getSortIcon("group")}
+              {getSortIcon("groupname")}
             </span>
           </span>
-          {dropdownOpen.group && (
+          {dropdownOpen.groupname && (
             <div
               className={styles.dropdown}
               onClick={(e) => e.stopPropagation()}
@@ -326,19 +323,23 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={filters.group.length === uniqueValues.group.length}
-                    onChange={() => handleFilterAllChange("group")}
+                    checked={
+                      filters.groupname.length === uniqueValues.groupname.length
+                    }
+                    onChange={() => handleFilterAllChange("groupname")}
                   />
                   전체
                 </label>
               </div>
-              {uniqueValues.group.map((option) => (
+              {uniqueValues.groupname.map((option) => (
                 <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.group.includes(option.value)}
-                      onChange={() => handleFilterChange("group", option.value)}
+                      checked={filters.groupname.includes(option.value)}
+                      onChange={() =>
+                        handleFilterChange("groupname", option.value)
+                      }
                     />
                     {option.item}
                   </label>
@@ -391,15 +392,15 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
         {/* 가입 차순 */}
         <div className={styles.unitContainer}>
           <span>
-            <span onClick={() => toggleDropdown("submitturn")}>가입 차순</span>
+            <span onClick={() => toggleDropdown("batch")}>가입 차순</span>
             <span
               className={styles.sortIcon}
-              onClick={() => handleSort("submitturn")}
+              onClick={() => handleSort("batch")}
             >
-              {getSortIcon("submitturn")}
+              {getSortIcon("batch")}
             </span>
           </span>
-          {dropdownOpen.submitturn && (
+          {dropdownOpen.batch && (
             <div
               className={styles.dropdown}
               onClick={(e) => e.stopPropagation()}
@@ -408,24 +409,19 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={
-                      filters.submitturn.length ===
-                      uniqueValues.submitturn.length
-                    }
-                    onChange={() => handleFilterAllChange("submitturn")}
+                    checked={filters.batch.length === uniqueValues.batch.length}
+                    onChange={() => handleFilterAllChange("batch")}
                   />
                   전체
                 </label>
               </div>
-              {uniqueValues.submitturn.map((option) => (
+              {uniqueValues.batch.map((option) => (
                 <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.submitturn.includes(option.value)}
-                      onChange={() =>
-                        handleFilterChange("submitturn", option.value)
-                      }
+                      checked={filters.batch.includes(option.value)}
+                      onChange={() => handleFilterChange("batch", option.value)}
                     />
                     {option.item}
                   </label>
@@ -440,24 +436,24 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
             가입 날짜
             <span
               className={styles.sortIcon}
-              onClick={() => handleSort("submitdate")}
+              onClick={() => handleSort("registerdate")}
             >
-              {getSortIcon("submitdate")}
+              {getSortIcon("registerdate")}
             </span>
           </span>
         </div>
         {/* 분류 */}
         <div className={styles.unitContainer}>
           <div className={styles.headerWithReset}>
-            <span onClick={() => toggleDropdown("sort")}>분류</span>
+            <span onClick={() => toggleDropdown("customertype")}>분류</span>
             <span
               className={styles.sortIcon}
-              onClick={() => handleSort("sort")}
+              onClick={() => handleSort("customertype")}
             >
-              {getSortIcon("sort")}
+              {getSortIcon("customertype")}
             </span>
           </div>
-          {dropdownOpen.sort && (
+          {dropdownOpen.customertype && (
             <div
               className={styles.dropdown}
               onClick={(e) => e.stopPropagation()}
@@ -466,19 +462,23 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={filters.sort.length === uniqueValues.sort.length}
-                    onChange={() => handleFilterAllChange("sort")}
+                    checked={
+                      filters.customertype.length === uniqueValues.customertype.length
+                    }
+                    onChange={() => handleFilterAllChange("customertype")}
                   />
                   전체
                 </label>
               </div>
-              {uniqueValues.sort.map((option) => (
+              {uniqueValues.customertype.map((option) => (
                 <div key={option.value}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={filters.sort.includes(option.value)}
-                      onChange={() => handleFilterChange("sort", option.value)}
+                      checked={filters.customertype.includes(option.value)}
+                      onChange={() =>
+                        handleFilterChange("customertype", option.value)
+                      }
                     />
                     {option.item}
                   </label>
@@ -491,40 +491,39 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
 
       {searchdata.state === "hasValue" &&
         filteredData()
-          .filter((k) => k.userinfo && k.data)
-          .map((k) => {
+          .map((customer) => {
             return (
-              <div className={styles.maincontainer} key={k.id}>
-                <Link href={`${linkBase}${k.id}`} className={styles.link}>
+              <div className={styles.maincontainer} key={customer.id}>
+                <Link href={`${linkBase}${customer.id}`} className={styles.link}>
                   <div className={styles.rowContainer}>
-                    <div className={styles.unitContainer}>{k.id}</div>
+                    <div className={styles.unitContainer}>{customer.id}</div>
                     <div className={styles.unitContainer}>
-                      {k.userinfo?.name || "N/A"}
+                      {customer.customerData?.name || "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {k.data?.type || "N/A"}
+                      {customer.type || "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {k.data?.group || "N/A"}
+                      {customer.groupname || "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {k.data?.turn || "N/A"}
+                      {customer.turn || "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {k.data?.submitturn || "N/A"}
+                      {customer.batch || "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {k.data?.submitdate
-                        ? k.data.submitdate.slice(0, 10)
+                      {customer.registerdate
+                        ? customer.registerdate.slice(0, 10)
                         : "N/A"}
                     </div>
                     <div className={styles.unitContainer}>
-                      {categoryMapping[k.userinfo?.sort] || "N/A"}
+                      {categoryMapping[customer.customertype] || "N/A"}
                     </div>
                   </div>
                 </Link>
                 <div className={styles.unitContainer}>
-                  <ModifyButton onClick={() => openConfirmation(k.id)}>
+                  <ModifyButton onClick={() => openConfirmation(customer.id)}>
                     <div className={styles.CBBottonFont}>삭제</div>
                   </ModifyButton>
                 </div>

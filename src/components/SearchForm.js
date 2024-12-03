@@ -29,9 +29,7 @@ const SearchForm = ({ name, setName, number, setNumber, dropdownLists }) => {
         value={name}
         onChange={onNameChange}
       />
-      {dropdownLists.map((list, index) => (
-        <DropInputbox key={index} list={list} />
-      ))}
+      {/* 드롭다운 리스트를 활용하여 필터 기능을 추가할 수 있습니다 */}
     </div>
   );
 };

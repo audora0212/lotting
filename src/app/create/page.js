@@ -1,5 +1,5 @@
 "use client";
-
+// src/app/create/page.js
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
 import {
@@ -15,10 +15,9 @@ import withAuth from "@/utils/hoc/withAuth"; // withAuth HOC 사용
 
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { createFile, newIdGenerate } from "@/utils/api";
+import { createFile, newIdGenerate, createUser } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
-import { createUser } from "@/utils/api";
 import {
   banklist,
   sintacklist,
@@ -38,91 +37,164 @@ function Create() {
   const [newid, setNewid] = useState("");
 
   useEffect(() => {
-    const newId = newIdGenerate();
-    const getData = () => {
-      newId.then((dummyData) => {
-        setNewid(dummyData);
-      });
+    const getData = async () => {
+      try {
+        const nextId = await newIdGenerate();
+        setNewid(nextId);
+      } catch (error) {
+        console.error("관리번호를 가져오는데 실패했습니다:", error);
+      }
     };
     getData();
   }, []);
 
   const [isupload, setIsupload] = useState({
-    upload: false,
-    A: false,
-    B: false,
-    C: false,
-    D: false,
-    E: false,
-    F: false,
-    G: false,
-    H: false,
-    I: false,
-    exception: false,
-    investment: false,
-    jscontract: false,
+    isuploaded: false,
+    sealcertificateprovided: false,
+    selfsignatureconfirmationprovided: false,
+    commitmentletterprovided: false,
+    idcopyprovided: false,
+    freeoption: false,
+    forfounding: false,
+    agreement: false,
+    preferenceattachment: false,
+    prizeattachment: false,
+    exemption7: false,
+    investmentfile: false,
+    contract: false,
   });
-  const [file, setFile] = useState({
-    upload: "",
-    A: "",
-    B: "",
-    C: "",
-    D: "",
-    E: "",
-    F: "",
-    G: "",
-    H: "",
-    I: "",
-    exception: "",
-    investment: "",
-    jscontract: "",
-  });
-  const [files, setFiles] = useState([]);
+
+  const [file, setFile] = useState(null);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
 
-    setIsupload((prev) => {
-      const updatedState = {
+    setIsupload((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files: selectedFiles } = e.target;
+    if (selectedFiles.length > 0) {
+      const selectedFile = selectedFiles[0];
+      const extension = selectedFile.name.split(".").pop();
+      const renamedFile = new File(
+        [selectedFile],
+        `${newid}_${name}.${extension}`,
+        { type: selectedFile.type }
+      );
+      setFile(renamedFile);
+      setIsupload((prev) => ({
         ...prev,
-        [name]: checked,
+        [name]: true,
+      }));
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      // 1단계: 숫자 필드 변환
+      const parsedData = {
+        ...data,
+        CustomerData: {
+          ...data.CustomerData,
+          resnumfront: parseInt(data.CustomerData.resnumfront),
+          resnumback: parseInt(data.CustomerData.resnumback),
+        },
+        registerprice: parseInt(data.registerprice),
+        Deposit: {
+          ...data.Deposit,
+          depositammount: parseInt(data.Deposit.depositammount),
+        },
       };
-      return updatedState;
-    });
-  };
 
-  const handleChange = (e) => {
-    // file 핸들링
-    const changename = e.target.className;
-    console.log(changename);
-    const value = e.target.value;
-    const originalfile = e.target.files[0];
-    const extension = value.split(".")[1];
+      // 2단계: 파일 업로드 및 파일 정보 가져오기
+      let uploadedFileInfo = "";
 
-    setIsupload((prev) => ({ ...prev, [changename]: true }));
-    setFile((prev) => ({ ...prev, [changename]: [value] }));
-    const file = new File(
-      [originalfile],
-      [newid] + "_" + [e.target.className] + "." + extension
-    );
+      if (file) {
+        const uploadResponse = await createFile(file);
+        uploadedFileInfo = uploadResponse.data; // 실제 응답 구조에 따라 조정 필요
+      }
 
-    setFiles((prev) => [...prev, file]);
-  };
+      // 3단계: 파일 정보를 포함한 attachments 구성
+      const attachments = {
+        ...isupload,
+        fileinfo: uploadedFileInfo, // 백엔드의 Attachments 모델에 맞게 조정
+      };
 
-  const onSubmit = (data) => {
-    data.fileinfo = isupload;
-    console.log(data);
+      // 4단계: 완전한 Customer 객체 구성
+      const customerData = {
+        customertype: parsedData.customertype,
+        type: parsedData.type,
+        groupname: parsedData.groupname,
+        turn: parsedData.turn,
+        batch: parsedData.batch,
+        registerdate: parsedData.registerdate,
+        registerprice: parsedData.registerprice,
+        additional: parsedData.additional || "",
+        registerpath: parsedData.registerpath,
+        specialnote: parsedData.specialnote,
+        prizewinning: parsedData.prizewinning || "",
+        customerData: parsedData.CustomerData,
+        legalAddress: parsedData.LegalAddress,
+        postreceive: parsedData.Postreceive,
+        financial: parsedData.Financial,
+        deposits: parsedData.Deposit,
+        attachments: attachments,
+        loan: parsedData.Loan || {},
+        responsible: parsedData.Responsible,
+        dahim: parsedData.Dahim || {},
+        mgm: parsedData.MGM,
+        firstemp: parsedData.Firstemp || {},
+        secondemp: parsedData.Secondemp || {},
+        meetingattend: parsedData.Meetingattend || {},
+        votemachine: parsedData.Votemachine || {},
+      };
 
-    createFile(files);
-    createUser(data);
+      // 5단계: Customer 데이터를 백엔드로 전송
+      const createUserResponse = await createUser(customerData);
 
-    Swal.fire({
-      icon: "success",
-      title: "회원정보가 입력되었습니다.",
-      text: "관리번호 : " + newid + "/ 회원명 : " + data.userinfo.name,
-    });
-    reset();
-    window.scrollTo(0, 0);
+      // 6단계: 성공 처리
+      Swal.fire({
+        icon: "success",
+        title: "회원정보가 입력되었습니다.",
+        text:
+          "관리번호 : " +
+          createUserResponse.data.id +
+          "/ 회원명 : " +
+          parsedData.CustomerData.name,
+      });
+
+      // 7단계: 폼 및 상태 초기화
+      reset();
+      setFile(null);
+      setIsupload({
+        isuploaded: false,
+        sealcertificateprovided: false,
+        selfsignatureconfirmationprovided: false,
+        commitmentletterprovided: false,
+        idcopyprovided: false,
+        freeoption: false,
+        forfounding: false,
+        agreement: false,
+        preferenceattachment: false,
+        prizeattachment: false,
+        exemption7: false,
+        investmentfile: false,
+        contract: false,
+      });
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      Swal.fire({
+        icon: "error",
+        title: "회원정보 입력 실패",
+        text:
+          "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
+      });
+    }
   };
 
   return (
@@ -130,71 +202,74 @@ function Create() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <h3>회원 정보</h3>
         <div className={styles.content_container}>
-          <div className={styles.Font}>관리번호 : {newid}</div> <h1></h1>
+          <div className={styles.Font}>관리번호 : {newid}</div>
+          <h1></h1>
           <Inputbox
             type="text"
             placeholder="이름 *"
-            register={register("userinfo.name", { required: true })}
+            register={register("CustomerData.name", { required: true })}
           />
           <Inputbox
             type="phone"
             placeholder="휴대폰 번호 *"
-            register={register("userinfo.phone", { required: true })}
+            register={register("CustomerData.phone", { required: true })}
           />
           <Inputbox
             type="number"
             placeholder="주민번호 앞자리 *"
-            register={register("userinfo.firstid", { required: true })}
+            register={register("CustomerData.resnumfront", { required: true })}
           />
           <Inputbox
             type="number"
             placeholder="주민번호 뒷자리 *"
-            register={register("userinfo.secondid", { required: true })}
+            register={register("CustomerData.resnumback", { required: true })}
           />
           <Inputbox
             type="email"
             placeholder="이메일 *"
-            register={register("userinfo.email", { required: true })}
+            register={register("CustomerData.email", { required: true })}
           />
           <DropInputbox
             list={classificationlist}
-            register={register("userinfo.sort", { required: true })}
+            register={register("customertype", { required: true })}
             placeholder="분류 *"
           />
           <Inputbox
             type="text"
             placeholder="가입경로 *"
-            register={register("userinfo.come", { required: true })}
+            register={register("registerpath", { required: true })}
           />
           <DropInputbox
             list={banklist}
-            register={register("userinfo.bank", { required: true })}
+            register={register("Financial.bankname", { required: true })}
             placeholder="은행 *"
           />
           <Inputbox
             type="text"
             placeholder="계좌번호 *"
-            register={register("userinfo.bankid", { required: true })}
+            register={register("Financial.accountnum", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="예금주 *"
-            register={register("userinfo.bankwho", { required: true })}
+            register={register("Financial.accountholder", { required: true })}
           />
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>법정주소 *</div>
             <PostInputbox
               placeholder="법정주소"
-              name="userinfo.post"
-              register={register("userinfo.post", { required: true })}
+              register={register("LegalAddress.detailaddress", {
+                required: true,
+              })}
             />
           </div>
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>우편물 주소지 *</div>
             <PostInputbox
               placeholder="우편물 주소지"
-              name="userinfo.getpost"
-              register={register("userinfo.getpost", { required: true })}
+              register={register("Postreceive.detailaddressreceive", {
+                required: true,
+              })}
             />
           </div>
           <div className={styles.InputboxField}></div>
@@ -206,13 +281,13 @@ function Create() {
             <div className={styles.content_body2}>
               <DropInputbox
                 list={typeidlist}
-                register={register("data.submitturn", { required: true })}
+                register={register("batch", { required: true })}
                 placeholder="제출 순번 *"
               />
               <DropInputbox
                 list={typelist}
                 name="type"
-                register={register("data.type", { required: true })}
+                register={register("type", { required: true })}
                 placeholder="유형 *"
               />
             </div>
@@ -220,14 +295,14 @@ function Create() {
               <DropInputbox
                 list={grouplist}
                 name="group"
-                register={register("data.group", { required: true })}
+                register={register("groupname", { required: true })}
                 placeholder="그룹 *"
               />
               <DropInputbox
                 list={turnlist}
                 name="turn"
-                register={register("data.turn", { required: true })}
-                placeholder="턴 *"
+                register={register("turn", { required: true })}
+                placeholder="순번 *"
               />
             </div>
           </div>
@@ -237,14 +312,14 @@ function Create() {
               <Inputbox
                 type="date"
                 date_placeholder="가입일자 *"
-                register={register("data.submitdate", { required: true })}
+                register={register("registerdate", { required: true })}
               />
             </div>
             <div className={styles.content_body2}>
               <Inputbox
                 type="number"
                 placeholder="가입가 *"
-                register={register("data.submitprice", { required: true })}
+                register={register("registerprice", { required: true })}
               />
             </div>
           </div>
@@ -253,14 +328,14 @@ function Create() {
               <Inputbox
                 type="date"
                 date_placeholder="예약금 납입일자 *"
-                register={register("data.earnestdate", { required: true })}
+                register={register("Deposit.depositdate", { required: true })}
               />
             </div>
             <div className={styles.content_body2}>
               <Inputbox
                 type="number"
                 placeholder="예약금 *"
-                register={register("data.earnest", { required: true })}
+                register={register("Deposit.depositammount", { required: true })}
               />
             </div>
           </div>
@@ -268,21 +343,21 @@ function Create() {
             <div className={styles.content_body3}>
               <Checkbox
                 label="7차 면제"
-                name="exception"
+                name="exemption7"
                 onChange={handleCheckboxChange}
               />
             </div>
             <div className={styles.content_body3}>
               <Checkbox
                 label="출자금"
-                name="investment"
+                name="investmentfile"
                 onChange={handleCheckboxChange}
               />
             </div>
             <div className={styles.content_body3}>
               <Checkbox
                 label="자산A동 계약서"
-                name="jscontract"
+                name="contract"
                 onChange={handleCheckboxChange}
               />
             </div>
@@ -294,22 +369,22 @@ function Create() {
           <Inputbox
             type="text"
             placeholder="업체명 *"
-            register={register("mgm.companyname", { required: true })}
+            register={register("MGM.mgmcompanyname", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="이름 *"
-            register={register("mgm.name", { required: true })}
+            register={register("MGM.mgmname", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="기관 *"
-            register={register("mgm.organization", { required: true })}
+            register={register("MGM.mgminstitution", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="계좌 *"
-            register={register("mgm.accountnumber", { required: true })}
+            register={register("MGM.mgmaccount", { required: true })}
           />
         </div>
 
@@ -317,40 +392,57 @@ function Create() {
         <div className={styles.content_container}>
           <Checkbox
             label="인감증명서"
-            name="A"
+            name="sealcertificateprovided"
             onChange={handleCheckboxChange}
           />
           <Checkbox
             label="본인서명확인서"
-            name="B"
+            name="selfsignatureconfirmationprovided"
             onChange={handleCheckboxChange}
           />
-          <Checkbox label="확약서" name="C" onChange={handleCheckboxChange} />
-          <Checkbox label="신분증" name="D" onChange={handleCheckboxChange} />
-          <Checkbox label="무상옵션" name="E" onChange={handleCheckboxChange} />
-          <Checkbox label="창준위용" name="F" onChange={handleCheckboxChange} />
+          <Checkbox
+            label="확약서"
+            name="commitmentletterprovided"
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="신분증"
+            name="idcopyprovided"
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="무상옵션"
+            name="freeoption"
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="창준위용"
+            name="forfounding"
+            onChange={handleCheckboxChange}
+          />
           <Checkbox
             label="총회동의서"
-            name="G"
+            name="agreement"
             onChange={handleCheckboxChange}
           />
           <Checkbox
             label="선호도조사"
-            name="H"
+            name="preferenceattachment"
             onChange={handleCheckboxChange}
           />
-          <Checkbox label="사은품" name="I" onChange={handleCheckboxChange} />
+          <Checkbox
+            label="사은품"
+            name="prizeattachment"
+            onChange={handleCheckboxChange}
+          />
           <span></span>
           <span></span>
           <span></span>
           <span>파일업로드</span>
           <span></span>
           <FileInputbox
-            className="upload"
             name="fileupload"
-            value={file["upload"]}
-            isupload={isupload["upload"]}
-            handleChange={handleChange}
+            handleChange={handleFileChange}
           />
         </div>
 
@@ -359,22 +451,24 @@ function Create() {
           <Inputbox
             type="text"
             placeholder="총괄 *"
-            register={register("ext.manage", { required: true })}
+            register={register("Responsible.generalmanagement", {
+              required: true,
+            })}
           />
           <Inputbox
             type="text"
             placeholder="본부 *"
-            register={register("ext.managemain", { required: true })}
+            register={register("Responsible.division", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="팀 *"
-            register={register("ext.manageteam", { required: true })}
+            register={register("Responsible.team", { required: true })}
           />
           <Inputbox
             type="text"
             placeholder="성명 *"
-            register={register("ext.managename", { required: true })}
+            register={register("Responsible.managername", { required: true })}
           />
         </div>
 
@@ -383,11 +477,11 @@ function Create() {
           <InputAreabox
             type="text"
             placeholder="기타 *"
-            register={register("ext.ext", { required: true })}
+            register={register("specialnote", { required: true })}
           />
         </div>
         <h1></h1>
-        <Button_Y>저장하기</Button_Y>
+        <Button_Y type="submit">저장하기</Button_Y>
         <h1></h1>
       </form>
     </div>
