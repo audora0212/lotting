@@ -2,7 +2,7 @@
 import Mininav from "@/components/Mininav";
 import styles from "@/styles/Userinfo.module.scss";
 import { useParams } from "next/navigation"; // useParams 훅 추가
-import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { userinfoSelector } from "@/utils/selector";
 import { useEffect } from "react"; // useEffect로 변경
 import { useridState } from "@/utils/atom";
@@ -25,7 +25,13 @@ function Search() {
     }
   }, [userid, setIdState]);
 
+// useridState가 설정되었는지 확인
+  const useridStateValue = useRecoilValue(useridState);
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
+  if (!useridStateValue) {
+    // useridState가 설정되기 전에는 로딩 상태를 표시하거나 null을 반환
+    return null;
+  }
   const pathname = usePathname();
   const splitpath = pathname.split("/"); //splitpath[3]
   const sortMapping = {
@@ -46,7 +52,7 @@ function Search() {
     case "hasValue":
       const userdata = userselectordata.contents;
       console.log(userdata);
-      if (userdata === undefined)
+      if (!userdata)
         return (
           <>
             <h1>잘못된 접근입니다</h1>

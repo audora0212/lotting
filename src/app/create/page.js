@@ -128,7 +128,7 @@ function Create() {
       const customerData = {
         customertype: parsedData.customertype,
         type: parsedData.type,
-        groupname: parsedData.groupname,
+        groupname: parsedData.type+parsedData.groupname,
         turn: parsedData.turn,
         batch: parsedData.batch,
         registerdate: parsedData.registerdate,
