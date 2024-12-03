@@ -76,9 +76,9 @@ function Create() {
   };
 
   const handleFileChange = (e) => {
-    const { name, files: selectedFiles } = e.target;
-    if (selectedFiles.length > 0) {
-      const selectedFile = selectedFiles[0];
+    const { name, files } = e.target;
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
       const extension = selectedFile.name.split(".").pop();
       const renamedFile = new File(
         [selectedFile],
@@ -92,10 +92,11 @@ function Create() {
       }));
     }
   };
+  
+  
 
   const onSubmit = async (data) => {
     try {
-      // 1단계: 숫자 필드 변환
       const parsedData = {
         ...data,
         CustomerData: {
@@ -110,21 +111,18 @@ function Create() {
         },
       };
 
-      // 2단계: 파일 업로드 및 파일 정보 가져오기
       let uploadedFileInfo = "";
 
       if (file) {
         const uploadResponse = await createFile(file);
-        uploadedFileInfo = uploadResponse.data; // 실제 응답 구조에 따라 조정 필요
+        uploadedFileInfo = uploadResponse.data;
       }
 
-      // 3단계: 파일 정보를 포함한 attachments 구성
       const attachments = {
         ...isupload,
-        fileinfo: uploadedFileInfo, // 백엔드의 Attachments 모델에 맞게 조정
+        fileinfo: uploadedFileInfo,
       };
 
-      // 4단계: 완전한 Customer 객체 구성
       const customerData = {
         customertype: parsedData.customertype,
         type: parsedData.type,
@@ -153,10 +151,8 @@ function Create() {
         votemachine: parsedData.Votemachine || {},
       };
 
-      // 5단계: Customer 데이터를 백엔드로 전송
       const createUserResponse = await createUser(customerData);
 
-      // 6단계: 성공 처리
       Swal.fire({
         icon: "success",
         title: "회원정보가 입력되었습니다.",
@@ -167,7 +163,6 @@ function Create() {
           parsedData.CustomerData.name,
       });
 
-      // 7단계: 폼 및 상태 초기화
       reset();
       setFile(null);
       setIsupload({

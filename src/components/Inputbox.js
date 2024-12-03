@@ -251,6 +251,7 @@ export const FileInputbox = (props) => {
     </label>
   );
 };
+
 export const PostInputbox = (props) => {
   const [postnumber, setPostnumber] = useState("우편번호");
   const [post, setPost] = useState("주소");

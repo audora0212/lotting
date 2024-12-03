@@ -14,16 +14,16 @@ export const newIdGenerate = () => {
     });
 };
 //고객 추가 페이지 파일 저장 기능
-export const createFile = (files) => { 
+export const createFile = (file) => {
   const formData = new FormData();
-  files.forEach((file) => {
-    formData.append("files", file);
-  });
+  formData.append("file", file); // 백엔드에서 기대하는 'file' 키 사용
 
   return axios.post(path + "/files/upload", formData, {
     headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
   });
 };
+
+
 //고객 추가 페이지
 export const createUser = (data) => {
   return axios.post(path + "/customers", data);
