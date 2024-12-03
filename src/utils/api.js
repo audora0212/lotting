@@ -1,7 +1,7 @@
 import axios from "axios";
 const path = "http://localhost:8080";//Immigrant
 
-
+//고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => { 
   return axios
     .get(path + "/customers/nextId")
@@ -13,7 +13,7 @@ export const newIdGenerate = () => {
       throw error;
     });
 };
-
+//고객 추가 페이지 파일 저장 기능
 export const createFile = (files) => { 
   const formData = new FormData();
   files.forEach((file) => {
@@ -24,12 +24,12 @@ export const createFile = (files) => {
     headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
   });
 };
-
-export const createUser = (data) => { // 고객 만들기 Customer
+//고객 추가 페이지
+export const createUser = (data) => {
   return axios.post(path + "/customers", data);
 };
 
-
+//검색 페이지 유저 분류, 검색 기능
 export const fetchCustomers = (params) => {
   // params는 { name: '...', number: '...'} 형태
   return axios.get(`${path}/customers/search`, { params })
@@ -40,7 +40,7 @@ export const fetchCustomers = (params) => {
     });
 };
 
-
+//검색 페이지 삭제 기능
 export const deleteCustomer = (id) => {
   return axios.delete(`${path}/customers/${id}`)
     .then(response => response.data)
@@ -50,6 +50,16 @@ export const deleteCustomer = (id) => {
     });
 };
 
+//유저 상세 페이지 번호로 검색
+export const fetchCustomerById = (id) => {
+  return axios
+    .get(`${path}/customers/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error fetching customer:", error);
+      throw error;
+    });
+};
 //=====================================================================================
 
 export const downloadFile = async (id, filename) => {

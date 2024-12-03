@@ -1,5 +1,5 @@
 "use client";
-
+//app/inputmoney/userinfo/[id]
 import styles from "@/styles/Inputmoney.module.scss";
 import { useState, useEffect } from "react";
 import Link from "next/link";
