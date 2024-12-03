@@ -64,6 +64,9 @@ const Nav = () => {
           </div>
           <div className={styles.expandableMenu}>
             <Link href="/search">
+              <div className={styles.expandableMenuItem}>전체회원정보</div>
+            </Link>
+            <Link href="/search/fixed">
               <div className={styles.expandableMenuItem}>정계약</div>
             </Link>
             <Link href="/search/modify">
@@ -129,6 +132,9 @@ const Nav = () => {
           </div>
           <div className={styles.expandableMenu}>
             <Link href="/modify">
+              <div className={styles.expandableMenuItem}>전체회원정보</div>
+            </Link>
+            <Link href="/modify/fixed">
               <div className={styles.expandableMenuItem}>정계약</div>
             </Link>
             <Link href="/modify/modify">

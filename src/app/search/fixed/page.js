@@ -1,4 +1,3 @@
-// pages/modify/page.js
 "use client";
 
 import { useState } from "react";
@@ -8,7 +7,7 @@ import styles from "@/styles/Search.module.scss";
 import { typelist, grouplist, turnlist } from "@/components/droplistdata";
 import withAuth from "@/utils/hoc/withAuth";
 
-function Modify() {
+function Search() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
 
@@ -28,24 +27,12 @@ function Modify() {
         <SearchList
           name={name}
           number={number}
-          categoryFilter={[
-            "1",
-            "c",
-            "j",
-            "p",
-            "p1",
-            "t",
-            "t1",
-            "g",
-            "c",
-            "x",
-            "x1",
-          ]}
-          linkBase="/modify/"
+          categoryFilter={["1", "c", "j", "p", "p1", "t", "t1", "g"]}
+          linkBase="/search/"
         />
       )}
     </>
   );
 }
 
-export default withAuth(Modify);
+export default withAuth(Search);

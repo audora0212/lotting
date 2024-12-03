@@ -1,3 +1,5 @@
+// /components/droplistdata.js
+
 export const sortlist = [
   {
     value: "1",
@@ -84,6 +86,7 @@ export const banklist = [
   },
 ];
 export const classificationlist = [
+  //분류
   {
     value: "c",
     item: "청약",
@@ -139,6 +142,7 @@ export const sintacklist = [
 ];
 
 export const typeidlist = [
+  //가입 차순
   {
     value: "1-1차",
     item: "1-1차",
@@ -166,6 +170,7 @@ export const typeidlist = [
 ];
 
 export const typelist = [
+  //타입
   {
     value: "44",
     item: "44",
@@ -189,6 +194,7 @@ export const typelist = [
 ];
 
 export const grouplist = [
+  //군
   {
     value: "가",
     item: "가",
@@ -220,6 +226,7 @@ export const grouplist = [
 ];
 
 export const turnlist = [
+  //순번
   {
     value: "1",
     item: "1",

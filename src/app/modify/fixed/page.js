@@ -16,7 +16,7 @@ function Modify() {
 
   return (
     <>
-      <h3>정계약</h3>
+      <h3>해약</h3>
       <SearchForm
         name={name}
         setName={setName}
@@ -28,19 +28,7 @@ function Modify() {
         <SearchList
           name={name}
           number={number}
-          categoryFilter={[
-            "1",
-            "c",
-            "j",
-            "p",
-            "p1",
-            "t",
-            "t1",
-            "g",
-            "c",
-            "x",
-            "x1",
-          ]}
+          categoryFilter={["1", "c", "j", "p", "p1", "t", "t1", "g"]}
           linkBase="/modify/"
         />
       )}
