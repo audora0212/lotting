@@ -34,6 +34,9 @@ function Search() {
   }
   const pathname = usePathname();
   const splitpath = pathname.split("/"); //splitpath[3]
+
+  console.log(splitpath)
+  console.log(splitpath[2])
   const sortMapping = {
     1: "정계약",
     c: "청약",
@@ -508,7 +511,7 @@ function Search() {
             {/* 납입금 관리 */}
             <h3>납입금 관리</h3>
             <div className={styles.linkbutton}>
-              <Link href={"/inputmoney/userinfo/" + splitpath[3]}>
+              <Link href={"/inputmoney/userinfo/" + splitpath[2]}>
                 <Button>
                   <h3>바로가기</h3>
                 </Button>
