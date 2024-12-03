@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 import { useridState } from "@/utils/atom";
 import { useRecoilValueLoadable, useRecoilState } from "recoil";
-import { userinfoSelector, usermoneySelector } from "@/utils/selector";
+import { userinfoSelector } from "@/utils/selector";
 
 import { BsBagDash, BsDatabase } from "react-icons/bs";
 import { CgSearch } from "react-icons/cg";
@@ -24,30 +24,25 @@ function Inputmoney() {
   const [IdState, setIdState] = useRecoilState(useridState);
 
   const [userData, setUserData] = useState(null);
-  const [loanData, setLoandata] = useState(null);
-
-  useState(() => {
-    setIdState(splitpath[3]);
-  });
-
-  const userselectordata = useRecoilValueLoadable(userinfoSelector);
-  const usermoneyselectordata = useRecoilValueLoadable(usermoneySelector);
+  const [loanData, setLoanData] = useState(null);
 
   useEffect(() => {
-    if (
-      userselectordata.state === "hasValue" &&
-      usermoneyselectordata.state === "hasValue"
-    ) {
+    setIdState(splitpath[3]);
+  }, [splitpath, setIdState]);
+
+  const userselectordata = useRecoilValueLoadable(userinfoSelector);
+
+  useEffect(() => {
+    if (userselectordata.state === "hasValue") {
       const userdata = userselectordata.contents;
-      const userloandata = usermoneyselectordata.contents;
       if (userdata === undefined) {
         console.log("잘못된 접근입니다");
       } else {
         setUserData(userdata);
-        setLoandata(userloandata);
+        setLoanData(userdata.loan); // loan 데이터 설정
       }
     }
-  }, [userselectordata, usermoneyselectordata]);
+  }, [userselectordata]);
 
   const formatDate = (date) => {
     return date ? date : "없음";
@@ -67,28 +62,18 @@ function Inputmoney() {
               <div className={styles.SearchName}>
                 <div className={styles.SearchFont1}>성함 :</div>
                 <div className={styles.SearchFont2}>
-                  {userData.userinfo.name}
+                  {userData.customerData?.name}
                 </div>
               </div>
               <div className={styles.SearchCha}>
                 <div className={styles.SearchFont1}>가입차순 :</div>
-                <div className={styles.SearchFont2}>
-                  {userData.data.submitturn}
-                </div>
+                <div className={styles.SearchFont2}>{userData.batch}</div>
               </div>
               <div className={styles.SearchType}>
                 <div className={styles.SearchFont1}>가입타입 :</div>
-                <div className={styles.SearchFont2}>{userData.data.type}</div>
+                <div className={styles.SearchFont2}>{userData.type}</div>
               </div>
               {/* 납부 정보 표시 부분 */}
-              <Link href="/inputmoney">
-                <SearchButton>
-                  <div className={styles.BottonIcon} style={{ color: "white" }}>
-                    <CgSearch style={{ width: "100%", height: "100%" }} />
-                  </div>
-                  <div className={styles.BottonFont}>회원선택</div>
-                </SearchButton>
-              </Link>
             </div>
             <div className={styles.MainContent}>
               <div
@@ -133,11 +118,15 @@ function Inputmoney() {
                       <div className={styles.CBTDate}>
                         <div className={styles.CBTDateFont}>
                           대출일 :{" "}
-                          {formatDate(loanData?.loandate).substr(0, 10)}
+                          {loanData?.loandate
+                            ? loanData.loandate.slice(0, 10)
+                            : "없음"}
                         </div>
                         <div className={styles.CBTDateFont}>
                           자납일 :{" "}
-                          {formatDate(loanData?.selfdate).substr(0, 10)}
+                          {loanData?.selfdate
+                            ? loanData.selfdate.slice(0, 10)
+                            : "없음"}
                         </div>
                       </div>
                     </div>
@@ -158,7 +147,8 @@ function Inputmoney() {
                     <div className={styles.CBSumText}>대출액</div>
                     <div className={styles.CBSumNum}>
                       {(
-                        (loanData?.price1 || 0) + (loanData?.price2 || 0)
+                        (loanData?.loanprice1 || 0) +
+                        (loanData?.loanprice2 || 0)
                       ).toLocaleString()}{" "}
                       ₩
                     </div>
@@ -171,7 +161,7 @@ function Inputmoney() {
                     </div>
                     <div className={styles.CBSumText}>자납액</div>
                     <div className={styles.CBSumNum}>
-                      {(loanData?.selfprice || 0).toLocaleString()} ₩
+                      {(loanData?.selfpayprice || 0).toLocaleString()} ₩
                     </div>
                   </div>
                   <div className={styles.CBSum}>
@@ -183,9 +173,9 @@ function Inputmoney() {
                     <div className={styles.CBSumText}>총액</div>
                     <div className={styles.CBSumNum}>
                       {(
-                        (loanData?.selfprice || 0) +
-                        (loanData?.price1 || 0) +
-                        (loanData?.price2 || 0)
+                        (loanData?.selfpayprice || 0) +
+                        (loanData?.loanprice1 || 0) +
+                        (loanData?.loanprice2 || 0)
                       ).toLocaleString()}{" "}
                       ₩
                     </div>
@@ -210,7 +200,7 @@ function Inputmoney() {
                     </div>
                   </div>
                   <div className={styles.CBBottonBody}>
-                    <Link href="/inputmoney/cancle">
+                    <Link href="/inputmoney/cancel">
                       <ModifyButton>
                         <div className={styles.CBBottonFont}>해약하기</div>
                       </ModifyButton>

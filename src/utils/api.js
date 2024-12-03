@@ -60,6 +60,29 @@ export const fetchCustomerById = (id) => {
       throw error;
     });
 };
+
+//납부 전 차수들 데이터
+export const fetchPendingPhases = async (userId) => {
+  try {
+    const response = await axios.get(`${path}/customers/${userId}/pending-phases`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching pending phases:", error);
+    throw error;
+  }
+};
+
+
+//납부 후 차수들 데이터
+export const fetchCompletedPhases = async (userId) => {
+  try {
+    const response = await axios.get(`${path}/customers/${userId}/completed-phases`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching completed phases:", error);
+    throw error;
+  }
+};
 //=====================================================================================
 
 export const downloadFile = async (id, filename) => {
@@ -137,17 +160,6 @@ export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phas
     });
 };
 
-export const searchPrechasu = (userid) => { // Customer의 아직 납부되지 않은 Phase 불러오기
-  return axios
-    .get(path + "/api/chasuinit/pre/" + userid)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.error(error);
-      throw error;
-    });
-};
 
 
 export const fetchNameSearch = (username) => { //이름으로 Customer 찾기
