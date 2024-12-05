@@ -1,73 +1,146 @@
+/* Userinfo.module.scss */
+
+/* 기존 스타일 유지 및 수정 */
+
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
     row-gap: 20px;
 }
-.content_container{
+
+.content_container {
     display: grid;
-	grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
     width: 70vw;
-    height: auto;
+    height: auto; /* 높이를 auto로 설정 */
     flex-shrink: 0;
-    margin-left:20px;
+    margin-left: 20px;
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
 }
 
-.rowcontainer{
-    width:1370px;
-    height:110px;
-    margin-top:30px;
-    margin-left:15px;
-    margin-bottom:15px;
-    display:flex;
-}
-.unitbody{
-    width:200px;
-    height:80px;
-    margin-right:15px;
-}
-.titlebody{
-    width:200px;
-    height:20px;
-    margin-bottom:10px;
-}
-.contentbody{
-    width:200px;
-    height:60px;
+.rowcontainer {
+    width: 100%; /* 고정 너비를 제거하고 100%로 설정 */
+    height: auto; /* 고정 높이를 제거하고 auto로 설정 */
+    margin-top: 30px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap; /* 자식 요소들이 다음 줄로 넘어가도록 설정 */
+    gap: 15px; /* 자식 요소 간의 간격을 설정 */
 }
 
-.postunitbody{
-    width:400px;
-    height:80px;
-    margin-right:15px;
-}
-.posttitlebody{
-    width:400px;
-    height:20px;
-    margin-bottom:10px;
-}
-.postcontentbody{
-    width:400px;
-    height:60px;
+.unitbody, .postunitbody {
+    min-width: 200px; /* 최소 너비 설정 */
+    flex: 1 1 200px; /* 유연한 크기 설정 */
+    margin-right: 15px;
+    margin-bottom: 15px; /* 아래쪽 여백 추가 */
 }
 
-.title {
+.titlebody {
     font-size: 14px;
     color: #A2A1A8;
+    margin-bottom: 5px;
 }
 
-.file_container{
-    width:900px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 10px;
-    row-gap: 20px;
+.contentbody, .postcontentbody {
+    background-color: #f9f9f9;
+    padding: 8px;
+    border-radius: 4px;
+    min-height: 60px; /* 최소 높이를 지정 */
+    overflow: hidden; /* 넘치는 내용 숨기기 */
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+.postunitbody {
+    min-width: 400px; /* 포스트 유닛의 최소 너비 설정 */
+    flex: 1 1 400px; /* 유연한 크기 설정 */
+}
+
+.phase_table, .loan_table, .attachments_table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 테이블 레이아웃 고정 */
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+.phase_table th, .phase_table td,
+.loan_table th, .loan_table td,
+.attachments_table th, .attachments_table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px; /* 폰트 크기 조정 */
+    word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+.phase_table th, .loan_table th, .attachments_table th {
+    background-color: #f2f2f2;
+}
+
+.phase_sum, .exemption_sum, .paid_sum {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: right; /* 합계 텍스트 오른쪽 정렬 */
+    font-size: 16px;
+    color: #333;
+}
+
+.file_status ul {
+    list-style: none;
+    padding: 0;
+}
+
+.file_status li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.file_status span:first-child {
+    width: 150px;
+    display: inline-block;
+}
+
+.editButton {
+    background-color: #aa88e0; /* 그린 */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.editButton:hover {
+    background-color: #c5b0e6;
+}
+
+.editIcon {
+    margin-right: 8px;
+}
+
+.phase_container, .loan_container, .attachments_container {
+    width: 100%;
+    overflow-x: auto; /* 가로 스크롤 추가 */
 }
 
 .linkbutton {
     width: 10vw;
+}
+
+/* 추가 스타일링 */
+
+.phase_table, .loan_table, .attachments_table {
+    margin-bottom: 10px;
+}
+
+.phase_sum, .exemption_sum, .paid_sum {
+    font-size: 16px;
+    color: #333;
 }

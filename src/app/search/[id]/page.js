@@ -26,7 +26,7 @@ function Search() {
     }
   }, [userid, setIdState]);
 
-// useridState가 설정되었는지 확인
+  // useridState가 설정되었는지 확인
   const useridStateValue = useRecoilValue(useridState);
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
   if (!useridStateValue) {
@@ -67,11 +67,11 @@ function Search() {
           <>
             <h3>회원 정보</h3>
             <Link href={`/modify/${userid}`} passHref>
-      <button className={styles.editButton}>
-        <FaEdit className={styles.editIcon} />
-        수정
-      </button>
-    </Link>
+              <button className={styles.editButton}>
+                <FaEdit className={styles.editIcon} />
+                수정
+              </button>
+            </Link>
             <div className={styles.rowcontainer}>
               {/* 관리번호 */}
               <div className={styles.unitbody}>
@@ -372,6 +372,193 @@ function Search() {
             <h1></h1>
             <hr />
 
+            {/* Phase 정보 */}
+            <h3>납입차수 정보</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <table className={styles.phase_table}>
+                  <thead>
+                    <tr>
+                      <th>차수</th>
+                      <th>예정일자</th>
+                      <th>완납일자</th>
+                      <th>부담금</th>
+                      <th>업무 대행비</th>
+                      <th>지불한 금액</th>
+                      <th>이동</th>
+                      <th>n차합</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userdata.phases && userdata.phases.length > 0 ? (
+                      userdata.phases.map((phase) => (
+                        <tr key={phase.id}>
+                          <td>{phase.phaseNumber || "N/A"}</td>
+                          <td>{phase.planneddate ? phase.planneddate.slice(0,10) : "N/A"}</td>
+                          <td>{phase.fullpaiddate ? phase.fullpaiddate.slice(0,10) : "N/A"}</td>
+                          <td>
+                            {phase.charge
+                              ? phase.charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              : "N/A"}
+                          </td>
+                          <td>
+                            {phase.service
+                              ? phase.service.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              : "N/A"}
+                          </td>
+                          <td>
+                            {phase.charged
+                              ? phase.charged.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              : "N/A"}
+                          </td>
+                          <td>{phase.move || "N/A"}</td>
+                          <td>
+                            {/* n차합: 해당 차수의 feesum 합계 */}
+                            {userdata.phases
+                              .filter(p => p.phaseNumber === phase.phaseNumber)
+                              .reduce((sum, p) => sum + (p.feesum || 0), 0)}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8">Phase 정보가 없습니다.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+                {/* 납입차수 합계 */}
+                <div className={styles.phase_sum}>
+                  <span>
+                    n차합:{" "}
+                    {userdata.phases
+                      ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
+                      : 0}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Loan 정보 */}
+            <h3>대출 및 자납 정보</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <table className={styles.loan_table}>
+                  <thead>
+                    <tr>
+                      <th>일자</th>
+                      <th>은행</th>
+                      <th>대출액</th>
+                      <th>자납일</th>
+                      <th>자납액</th>
+                      <th>합계</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userdata.loan ? (
+                      <tr>
+                        <td>{userdata.loan.loandate ? userdata.loan.loandate.slice(0,10) : "N/A"}</td>
+                        <td>{userdata.loan.loanbank || "정보 없음"}</td>
+                        <td>
+                          {userdata.loan.loanammount
+                            ? userdata.loan.loanammount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "N/A"}
+                        </td>
+                        <td>{userdata.loan.selfdate ? userdata.loan.selfdate.slice(0,10) : "N/A"}</td>
+                        <td>
+                          {userdata.loan.selfammount
+                            ? userdata.loan.selfammount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {userdata.loan.loanselfsum
+                            ? userdata.loan.loanselfsum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "N/A"}
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr>
+                        <td colSpan="6">대출 및 자납 정보가 없습니다.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* 총 면제금액 */}
+            <h3>총 면제금액</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>총 면제금액</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.phases
+                      ? userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : "0"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 해약 고객 정보 */}
+            {userdata.customertype === 'x' && (
+              <>
+                <h3>해약 고객 정보</h3>
+                <div className={styles.rowcontainer}>
+                  {/* 해지일자 */}
+                  <div className={styles.unitbody}>
+                    <div className={styles.titlebody}>
+                      <span className={styles.title}>해지일자</span>
+                    </div>
+                    <div className={styles.contentbody}>
+                      <span>정보 없음</span>
+                    </div>
+                  </div>
+                  {/* 환급일자 */}
+                  <div className={styles.unitbody}>
+                    <div className={styles.titlebody}>
+                      <span className={styles.title}>환급일자</span>
+                    </div>
+                    <div className={styles.contentbody}>
+                      <span>정보 없음</span>
+                    </div>
+                  </div>
+                  {/* 환급금 */}
+                  <div className={styles.unitbody}>
+                    <div className={styles.titlebody}>
+                      <span className={styles.title}>환급금</span>
+                    </div>
+                    <div className={styles.contentbody}>
+                      <span>정보 없음</span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* 납입 총액 */}
+            <h3>납입 총액</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>납입 총액</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.phases
+                      ? userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : "0"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <h1></h1>
+            <hr />
+
             {/* MGM 정보 */}
             <h3>MGM</h3>
             <div className={styles.rowcontainer}>
@@ -417,99 +604,103 @@ function Search() {
 
             {/* 부속서류 */}
             <h3>부속서류</h3>
-            <div className={styles.file_container}>
-              {userdata.attachments?.isuploaded ? (
-                <DownloadButton userid={userid} filename="upload">
-                  부속 서류
-                </DownloadButton>
-              ) : (
-                <>
-                  <div className={styles.A}>
-                    <p>부속 서류</p>
-                    <p>파일이 없습니다.</p>
-                  </div>
-                </>
-              )}
-
-              <div className={styles.file_status}>
-                <ul>
-                  <li>
-                    <span>인감증명서 </span>
-                    {userdata.attachments?.sealcertificateprovided ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>본인서명확인서 </span>
-                    {userdata.attachments?.selfsignatureconfirmationprovided ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>신분증 </span>
-                    {userdata.attachments?.idcopyprovided ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>확약서 </span>
-                    {userdata.attachments?.commitmentletterprovided ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                </ul>
+            <div className={styles.rowcontainer}>
+              {/* 부속 서류 다운로드 버튼 */}
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>부속 서류</span>
+                </div>
+                <div className={styles.contentbody}>
+                  {userdata.attachments?.isuploaded ? (
+                    <DownloadButton userid={userid} filename="upload">
+                      다운로드
+                    </DownloadButton>
+                  ) : (
+                    <span>파일이 없습니다.</span>
+                  )}
+                </div>
               </div>
-              <div className={styles.file_status}>
-                <ul>
-                  <li>
-                    <span>창준위용 </span>
-                    {userdata.attachments?.forfounding ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>무상옵션 </span>
-                    {userdata.attachments?.freeoption ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>선호도조사 </span>
-                    {userdata.attachments?.preferenceattachment ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>총회동의서 </span>
-                    {userdata.attachments?.agreement ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                  <li>
-                    <span>사은품 </span>
-                    {userdata.attachments?.prizeattachment ? (
-                      <span>✔️</span>
-                    ) : (
-                      <span>❌</span>
-                    )}
-                  </li>
-                </ul>
+              {/* 부속 서류 상태 */}
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>부속 서류 상태</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <ul>
+                    <li>
+                      <span>인감증명서</span>
+                      {userdata.attachments?.sealcertificateprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>본인서명확인서</span>
+                      {userdata.attachments?.selfsignatureconfirmationprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>신분증</span>
+                      {userdata.attachments?.idcopyprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>확약서</span>
+                      {userdata.attachments?.commitmentletterprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>창준위용</span>
+                      {userdata.attachments?.forfounding ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>무상옵션</span>
+                      {userdata.attachments?.freeoption ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>선호도조사</span>
+                      {userdata.attachments?.preferenceattachment ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>총회동의서</span>
+                      {userdata.attachments?.agreement ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                    <li>
+                      <span>사은품</span>
+                      {userdata.attachments?.prizeattachment ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
             <h1></h1>
@@ -517,19 +708,28 @@ function Search() {
 
             {/* 납입금 관리 */}
             <h3>납입금 관리</h3>
-            <div className={styles.linkbutton}>
-              <Link href={"/inputmoney/userinfo/" + splitpath[2]}>
-                <Button>
-                  <h3>바로가기</h3>
-                </Button>
-              </Link>
+            <div className={styles.rowcontainer}>
+              <div className={styles.linkbutton}>
+                <Link href={`/inputmoney/userinfo/${splitpath[2]}`}>
+                  <Button>
+                    <h3>바로가기</h3>
+                  </Button>
+                </Link>
+              </div>
             </div>
             <hr />
 
             {/* 기타 정보 */}
             <h3>기타 정보</h3>
-            <div>
-              <InputAreabox value={userdata.specialnote || "정보 없음"} />
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>기타</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.specialnote || "정보 없음"}</span>
+                </div>
+              </div>
             </div>
           </>
         );

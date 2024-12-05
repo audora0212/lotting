@@ -138,6 +138,8 @@ const onSubmit = async (data) => {
   console.log("onSubmit 호출됨", data);
   try {
     console.log("폼 제출 데이터:", data);
+// 추가: parsedData 생성 후 depositdate 출력
+console.log("Parsed depositdate:", data.Deposit.depositdate);
 
     // 파일 업로드
     let uploadedFileInfo = "";
@@ -159,6 +161,7 @@ const onSubmit = async (data) => {
       registerprice: parseInt(data.registerprice),
       Deposit: {
         ...data.Deposit,
+        depositdate: data.Deposit.depositdate,
         depositammount: parseInt(data.Deposit.depositammount),
       },
     };
@@ -185,7 +188,7 @@ const onSubmit = async (data) => {
       Postreceive: parsedData.Postreceive,
       MGM: data.MGM, // MGM 데이터
       Responsible: data.Responsible, // 담당자 정보
-      Deposit: parsedData.Deposit,
+      deposits: parsedData.Deposit, // <-- 변경: 'Deposit'에서 'deposits'로
       attachments: attachments,
       // 필요한 다른 필드들도 추가
       exemption7: data.exemption7,
@@ -204,6 +207,7 @@ const onSubmit = async (data) => {
       // specialnote 등 기타 필드
       specialnote: data.specialnote,
     };
+    
 
     // 고객 생성 API 호출
     const createUserResponse = await createUser(customerData);
