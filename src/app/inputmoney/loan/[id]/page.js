@@ -160,19 +160,7 @@ function Inputmoneyloan() {
                     <div className={styles.SearchFont2}>{userData.id}</div>
                   </div>
                 </div>
-                <div className={styles.MainTitle2}>
-                  <Link href="/inputmoney">
-                    <SearchButton>
-                      <div
-                        className={styles.BottonIcon}
-                        style={{ color: "white" }}
-                      >
-                        <CgSearch style={{ width: "100%", height: "100%" }} />
-                      </div>
-                      <div className={styles.BottonFont}>고객선택</div>
-                    </SearchButton>
-                  </Link>
-                </div>
+
               </div>
               <div className={styles.InputBody}>
                 {/* 대출 섹션 */}

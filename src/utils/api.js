@@ -170,6 +170,48 @@ export const fetchLoanUpdate = (userid, data, callback) => {
       console.error("Error updating loan data:", error);
     });
 };
+
+
+
+// JWT 토큰을 포함한 요청을 위해 Axios 인터셉터 설정
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // AuthContext에서 관리하는 토큰 사용
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
+export const fetchLogin = (username, password) => { // 매니저 로그인
+  return axios.post(path + "/api/auth/signin", {
+    username,
+    password,
+  });
+};
+
+export const fetchSignup = (username, email, password, roles) => { // 매니저 회원가입
+  return axios.post(path + "/api/auth/signup", {
+    username,
+    email,
+    password,
+    roles,
+  });
+};
+
+
+
+
+
+
+
+
+
 //=====================================================================================
 
 export const downloadFile = async (id, filename) => {
@@ -217,21 +259,6 @@ export const updateUserinfo = (userid, data) => { // 고객 업데이트 Custome
     });
 };
 
-export const fetchLogin = (username, password) => { // 매니저 로그인
-  return axios.post(path + "/api/auth/signin", {
-    username,
-    password,
-  });
-};
-
-export const fetchSignup = (username, email, password, roles) => { // 매니저 회원가입
-  return axios.post(path + "/api/auth/signup", {
-    username,
-    email,
-    password,
-    roles,
-  });
-};
 
 
 

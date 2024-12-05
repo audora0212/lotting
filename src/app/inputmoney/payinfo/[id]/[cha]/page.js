@@ -200,19 +200,7 @@ function Inputmoneypay() {
                     </div>
                   </div>
                 </div>
-                <div className={styles.MainTitle2}>
-                  <Link href="/inputmoney">
-                    <SearchButton>
-                      <div
-                        className={styles.BottonIcon}
-                        style={{ color: "white" }}
-                      >
-                        <CgSearch style={{ width: "100%", height: "100%" }} />
-                      </div>
-                      <div className={styles.BottonFont}>회원선택</div>
-                    </SearchButton>
-                  </Link>
-                </div>
+
               </div>
               <div className={styles.InputBody}>
                 <div className={styles.InputBodyTitle}>
