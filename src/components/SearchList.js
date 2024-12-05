@@ -463,7 +463,8 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
                   <input
                     type="checkbox"
                     checked={
-                      filters.customertype.length === uniqueValues.customertype.length
+                      filters.customertype.length ===
+                      uniqueValues.customertype.length
                     }
                     onChange={() => handleFilterAllChange("customertype")}
                   />
@@ -490,46 +491,53 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
       </div>
 
       {searchdata.state === "hasValue" &&
-        filteredData()
-          .map((customer) => {
-            return (
-              <div className={styles.maincontainer} key={customer.id}>
-                <Link href={`${linkBase}${customer.id}`} className={styles.link}>
-                  <div className={styles.rowContainer}>
-                    <div className={styles.unitContainer}>{customer.id}</div>
-                    <div className={styles.unitContainer}>
-                      {customer.customerData?.name || "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {customer.type || "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {customer.groupname || "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {customer.turn || "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {customer.batch || "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {customer.registerdate
-                        ? customer.registerdate.slice(0, 10)
-                        : "N/A"}
-                    </div>
-                    <div className={styles.unitContainer}>
-                      {categoryMapping[customer.customertype] || "N/A"}
-                    </div>
+        filteredData().map((customer) => {
+          return (
+            <div className={styles.maincontainer} key={customer.id}>
+              <Link href={`${linkBase}${customer.id}`} className={styles.link}>
+                <div className={styles.rowContainer}>
+                  <div className={styles.unitContainer}>{customer.id}</div>
+                  <div className={styles.unitContainer}>
+                    {customer.customerData?.name || "N/A"}
                   </div>
-                </Link>
-                <div className={styles.unitContainer}>
-                  <ModifyButton onClick={() => openConfirmation(customer.id)}>
-                    <div className={styles.CBBottonFont}>삭제</div>
-                  </ModifyButton>
+                  <div className={styles.unitContainer}>
+                    {customer.type || "N/A"}
+                  </div>
+                  <div className={styles.unitContainer}>
+                    {customer.groupname || "N/A"}
+                  </div>
+                  <div className={styles.unitContainer}>
+                    {customer.turn || "N/A"}
+                  </div>
+                  <div className={styles.unitContainer}>
+                    {customer.batch || "N/A"}
+                  </div>
+                  <div className={styles.unitContainer}>
+                    {customer.registerdate
+                      ? customer.registerdate.slice(0, 10)
+                      : "N/A"}
+                  </div>
+                  <div className={styles.unitContainer}>
+                    {categoryMapping[customer.customertype] || "N/A"}
+                  </div>
                 </div>
+              </Link>
+              <div className={styles.actionButtonsContainer}>
+                {/* 수정 (Modify) Button */}
+                <ModifyButton className={styles.editButton}>
+                  <Link href={`/modify/${customer.id}`}>
+                    <div className={styles.CBBottonFont}>수정</div>
+                  </Link>
+                </ModifyButton>
+
+                {/* 삭제 (Delete) Button */}
+                <ModifyButton onClick={() => openConfirmation(customer.id)}>
+                  <div className={styles.CBBottonFont}>삭제</div>
+                </ModifyButton>
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
       {isModalOpen && (
         <ConfirmationModal
           message="삭제하시겠습니까?"

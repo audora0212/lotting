@@ -114,3 +114,25 @@
   align-items: center;
   color: #000000; /* 아이콘 색상 설정 */
 }
+.actionButtonsContainer {
+  display: flex;
+  gap: 10px; /* Adjust spacing as needed */
+}
+
+.editButton {
+  background-color: #f1c40f; /* Yellow color */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #d4ac0d; /* Darker yellow on hover */
+  }
+}

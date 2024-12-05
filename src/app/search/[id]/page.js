@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Inputbox, InputAreabox } from "@/components/Inputbox";
 import withAuth from "@/utils/hoc/withAuth";
 import { usePathname } from "next/navigation";
+import { FaEdit } from "react-icons/fa"; 
 
 function Search() {
   const params = useParams();
@@ -64,7 +65,13 @@ function Search() {
       else
         return (
           <>
-            <h3>회원정보</h3>
+            <h3>회원 정보</h3>
+            <Link href={`/modify/${userid}`} passHref>
+      <button className={styles.editButton}>
+        <FaEdit className={styles.editIcon} />
+        수정
+      </button>
+    </Link>
             <div className={styles.rowcontainer}>
               {/* 관리번호 */}
               <div className={styles.unitbody}>
