@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import styles from "@/styles/Inputbox.module.scss";
 import { IoMdCloudUpload } from "react-icons/io";
 
@@ -59,7 +59,34 @@ export const Inputbox = (props) => {
     />
   );
 };
+export const Inputbox2 = forwardRef((props, ref) => {
+  const {
+    type,
+    placeholder,
+    onChange,
+    date_placeholder,
+    name,
+    defaultValue,
+    value,
+    isError, // 추가된 prop
+    ...rest
+  } = props;
 
+  return (
+    <input
+      className={`${styles.inputcontainer} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      ref={ref} // ref 전달
+      {...rest}
+    />
+  );
+});
 // Textarea InputAreabox 컴포넌트
 export const InputAreabox = (props) => {
   const {

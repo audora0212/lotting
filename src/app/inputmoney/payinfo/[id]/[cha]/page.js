@@ -1,5 +1,5 @@
-"use client";
 // src/app/inputmoney/payinfo/[id]/[cha].js
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { userinfoSelector } from "@/utils/selector";
 import { useridState, chasuState } from "@/utils/atom";
 import { useRecoilValueLoadable, useRecoilState } from "recoil";
 import { updatePhaseData, fetchPhaseData } from "@/utils/api";
-import { Inputbox, Inputbox_M } from "@/components/Inputbox";
+import { Inputbox2, Inputbox_M } from "@/components/Inputbox";
 import {
   PaymentScheduleButton,
   Button_Y,
@@ -236,7 +236,7 @@ function Inputmoneypay() {
                 </div>
                 <div className={styles.SIBLayer}>
                   <div className={styles.SearchFont}>완납일자</div>
-                  <Inputbox
+                  <Inputbox2
                     type="date"
                     {...register("fullpaiddate")}
                     defaultValue={
@@ -248,7 +248,7 @@ function Inputmoneypay() {
                 </div>
                 <div className={styles.SIBLayer}>
                   <div className={styles.SearchFont}>예정일자</div>
-                  <Inputbox
+                  <Inputbox2
                     type="date"
                     {...register("planneddate")}
                     defaultValue={

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { BsBagDash } from "react-icons/bs";
-import { BsDatabase } from "react-icons/bs";
+import { BsBagDash, BsDatabase } from "react-icons/bs";
 import { ModifyButton } from "@/components/Button";
 import styles from "@/styles/Inputmoney.module.scss";
 import Link from "next/link";
@@ -25,6 +24,30 @@ const ChasuPreBody = ({ userId }) => {
     }
   };
 
+  // Helper function to determine the display value for planned date
+  const getDisplayPlannedDate = (phase) => {
+    const { planneddate, planneddateString } = phase;
+
+    if (!planneddate) {
+      return ""; // Return empty string if planneddate is undefined or null
+    }
+
+    const date = new Date(planneddate);
+    const cutoff = new Date("2100-01-01");
+
+    if (isNaN(date.getTime())) {
+      // If planneddate is not a valid date
+      return planneddateString || "";
+    }
+
+    if (date > cutoff) {
+      return planneddateString || "";
+    }
+
+    // Format the date as desired, e.g., YYYY-MM-DD
+    return date.toISOString().split("T")[0];
+  };
+
   if (!data || data.length === 0) {
     return <p>예정된 납부 내역이 없습니다.</p>;
   }
@@ -45,7 +68,7 @@ const ChasuPreBody = ({ userId }) => {
               </div>
               <div className={styles.CBTDate}>
                 <div className={styles.CBTDateFont}>
-                  예정일자: {item.planneddate ? item.planneddate : "N/A"}
+                  예정일자: {getDisplayPlannedDate(item) || "N/A"}
                 </div>
               </div>
             </div>
