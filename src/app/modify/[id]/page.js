@@ -1,269 +1,140 @@
+// src/app/modify/[id]/page.js
+
 "use client";
-import Mininav from "@/components/Mininav";
 import styles from "@/styles/Create.module.scss";
+import Swal from "sweetalert2";
 import {
-  Checkbox,
   Inputbox,
+  PostInputbox,
   InputAreabox,
   DropInputbox,
   FileInputbox,
+  Checkbox,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
-import { usePathname, useRouter } from "next/navigation";
-import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
-import { userinfoSelector } from "@/utils/selector";
-import { useState, useEffect } from "react";
-import { useridState } from "@/utils/atom";
+import withAuth from "@/utils/hoc/withAuth"; // withAuth HOC 사용
+
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { updateUser, fetchCustomerById, createFile } from "@/utils/api";
+import { useRouter } from "next/navigation";
+
 import {
-  classificationlist,
   banklist,
+  sintacklist,
+  classificationlist,
   typeidlist,
   typelist,
   grouplist,
   turnlist,
+  sortlist,
 } from "@/components/droplistdata";
-import { updateUserinfo, createFile } from "@/utils/api";
-import withAuth from "@/utils/hoc/withAuth";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
-// SweetAlert2 with React Content
-const MySwal = withReactContent(Swal);
-
-function Modify() {
-  const pathname = usePathname();
-  const splitpath = pathname.split("/");
+function Modify({ params }) {
   const router = useRouter();
+  const { id } = params; // URL에서 id 파라미터 추출
 
-  const { register, handleSubmit, watch, reset } = useForm({
-    defaultValues: {
-      customerData: {
-        name: "",
-        phone: "",
-        resnumfront: "",
-        resnumback: "",
-        email: "",
-        sort: "",
-      },
-      registerpath: "",
-      financial: {
-        bankname: "",
-        accountnum: "",
-        accountholder: "",
-        trustcompany: "",
-      },
-      legalAddress: {
-        postnumber: "",
-        province: "",
-        county: "",
-        detailaddress: "",
-      },
-      postreceive: {
-        postnumberreceive: "",
-        provincereceive: "",
-        countyreceive: "",
-        detailaddressreceive: "",
-      },
-      deposits: {
-        depositdate: "",
-        depositammount: "",
-      },
-      type: "",
-      groupname: "",
-      turn: "",
-      registerdate: "",
-      registerprice: "",
-      additional: "",
-      specialnote: "",
-      prizewinning: "",
-      attachments: {
-        isuploaded: false,
-        fileinfo: "",
-        exemption7: false,
-        investmentfile: false,
-        contract: false,
-        agreement: false,
-        sealcertificateprovided: false,
-        selfsignatureconfirmationprovided: false,
-        idcopyprovided: false,
-        commitmentletterprovided: false,
-        forfounding: false,
-        freeoption: false,
-        preferenceattachment: false,
-        prizeattachment: false,
-      },
-      loan: {
-        loandate: "",
-        loanbank: "",
-        loanammount: "",
-        selfdate: "",
-        selfammount: "",
-        loanselfsum: "",
-        loanselfcurrent: "",
-      },
-      responsible: {
-        generalmanagement: "",
-        division: "",
-        team: "",
-        managername: "",
-      },
-      dahim: {
-        dahimsisang: "",
-        dahimdate: "",
-        dahimprepaid: "",
-        dahimfirst: "",
-        dahimfirstpay: "",
-        dahimdate2: "",
-        dahimsource: "",
-        dahimsecond: "",
-        dahimsecondpay: "",
-        dahimdate3: "",
-        dahimsum: "",
-      },
-      mgm: {
-        mgmfee: "",
-        mgmcompanyname: "",
-        mgmname: "",
-        mgminstitution: "",
-        mgmaccount: "",
-      },
-      firstemp: {
-        firstemptimes: "",
-        firstempdate: "",
-      },
-      secondemp: {
-        secondemptimes: "",
-        secondempdate: "",
-      },
-      meetingattend: {
-        howtoattend: "",
-        ftofattend: false,
-        selfattend: false,
-        behalfattend: false,
-      },
-      votemachine: {
-        machine1: false,
-        machine2_1: false,
-        machine2_2: false,
-        machine2_3: false,
-        machine2_4: false,
-        machine3: false,
-        machine4: false,
-        machine5: false,
-        machine6: false,
-        machine7: false,
-        machine8: false,
-        machine9: false,
-        machine10: false,
-      },
-      cancel: {
-        canceldate: "",
-        paybackdate: "",
-        paybackprice: "",
-        bank: "",
-        bankwho: "",
-        bankid: "",
-      },
-      delayedloan: {
-        loandate: "",
-        loan: "",
-      },
-    },
-  });
-
-  const onSubmit = async (data) => {
-    try {
-      data.attachments.isuploaded = Object.values(data.attachments).some(
-        (val) => val === true
-      );
-
-      // Handle file uploads if any
-      if (files.length > 0) {
-        const uploadResponses = await Promise.all(
-          files.map((file) => createFile(file))
-        );
-        data.attachments.fileinfo = uploadResponses.map((res) => res.data).join(", ");
-      }
-
-      await updateUserinfo(splitpath[2], data);
-
-      // Success alert
-      await MySwal.fire({
-        icon: "success",
-        title: "회원 정보가 성공적으로 업데이트되었습니다.",
-        confirmButtonText: "확인",
-      });
-
-      // 리다이렉션
-      router.push(`/inputmoney/userinfo/${splitpath[2]}`);
-    } catch (error) {
-      console.error("회원 정보 업데이트 중 오류 발생:", error);
-      // Error alert
-      await MySwal.fire({
-        icon: "error",
-        title: "오류 발생",
-        text: "회원 정보 업데이트 중 오류가 발생했습니다.",
-        confirmButtonText: "확인",
-      });
-    }
-  };
-
-  const setIdState = useSetRecoilState(useridState);
-  useEffect(() => {
-    if (splitpath.length > 2) {
-      setIdState(splitpath[2]);
-    }
-  }, [splitpath, setIdState]);
-
-  const userselectordata = useRecoilValueLoadable(userinfoSelector);
-
-  const handleChange = (e) => {
-    const changename = e.target.name;
-    const originalfile = e.target.files[0];
-
-    if (!originalfile) return;
-
-    const extension = originalfile.name.split(".").pop();
-    const newid = splitpath[2];
-
-    // 업데이트 상태
-    setIsupload((prev) => ({ ...prev, [changename]: true }));
-    const renamedFile = new File(
-      [originalfile],
-      `${newid}_${changename}.${extension}`,
-      { type: originalfile.type }
-    );
-
-    setFiles((prev) => [...prev, renamedFile]);
-  };
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   const [isupload, setIsupload] = useState({
-    upload: false,
-    A: false,
-    B: false,
-    C: false,
-    D: false,
-    E: false,
-    F: false,
-    G: false,
-    H: false,
-    I: false,
+    isuploaded: false,
+    sealcertificateprovided: false,
+    selfsignatureconfirmationprovided: false,
+    commitmentletterprovided: false,
+    idcopyprovided: false,
+    freeoption: false,
+    forfounding: false,
+    agreement: false,
+    preferenceattachment: false,
+    prizeattachment: false,
     exemption7: false,
     investmentfile: false,
     contract: false,
-    agreement: false,
-    sealcertificateprovided: false,
-    selfsignatureconfirmationprovided: false,
-    idcopyprovided: false,
-    commitmentletterprovided: false,
-    forfounding: false,
-    freeoption: false,
-    preferenceattachment: false,
-    prizeattachment: false,
   });
 
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
+  const [existingFileInfo, setExistingFileInfo] = useState("");
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const customer = await fetchCustomerById(id);
+        if (customer) {
+          // 폼에 기본값 설정
+          reset({
+            customertype: customer.customertype,
+            type: customer.type,
+            groupname: customer.groupname,
+            turn: customer.turn,
+            batch: customer.batch,
+            registerdate: customer.registerdate,
+            registerprice: customer.registerprice,
+            additional: customer.additional,
+            registerpath: customer.registerpath,
+            specialnote: customer.specialnote,
+            prizewinning: customer.prizewinning,
+            CustomerData: {
+              name: customer.customerData.name,
+              phone: customer.customerData.phone,
+              resnumfront: customer.customerData.resnumfront,
+              resnumback: customer.customerData.resnumback,
+              email: customer.customerData.email,
+            },
+            LegalAddress: {
+              detailaddress: customer.legalAddress.detailaddress,
+            },
+            Postreceive: {
+              detailaddressreceive: customer.postreceive.detailaddressreceive,
+            },
+            Financial: {
+              bankname: customer.financial.bankname,
+              accountnum: customer.financial.accountnum,
+              accountholder: customer.financial.accountholder,
+            },
+            Deposit: {
+              depositdate: customer.deposits.depositdate,
+              depositammount: customer.deposits.depositammount,
+            },
+            Responsible: {
+              generalmanagement: customer.responsible.generalmanagement,
+              division: customer.responsible.division,
+              team: customer.responsible.team,
+              managername: customer.responsible.managername,
+            },
+            MGM: {
+              mgmcompanyname: customer.mgm.mgmcompanyname,
+              mgmname: customer.mgm.mgmname,
+              mgminstitution: customer.mgm.mgminstitution,
+              mgmaccount: customer.mgm.mgmaccount,
+            },
+            // 필요한 다른 필드들도 추가
+          });
+
+          // 체크박스 상태 설정
+          setIsupload({
+            isuploaded: customer.attachments.isuploaded,
+            sealcertificateprovided: customer.attachments.sealcertificateprovided,
+            selfsignatureconfirmationprovided: customer.attachments.selfsignatureconfirmationprovided,
+            commitmentletterprovided: customer.attachments.commitmentletterprovided,
+            idcopyprovided: customer.attachments.idcopyprovided,
+            freeoption: customer.attachments.freeoption,
+            forfounding: customer.attachments.forfounding,
+            agreement: customer.attachments.agreement,
+            preferenceattachment: customer.attachments.preferenceattachment,
+            prizeattachment: customer.attachments.prizeattachment,
+            exemption7: customer.attachments.exemption7,
+            investmentfile: customer.attachments.investmentfile,
+            contract: customer.attachments.contract,
+          });
+
+          setExistingFileInfo(customer.attachments.fileinfo || "");
+        }
+      } catch (error) {
+        console.error("고객 정보를 가져오는데 실패했습니다:", error);
+      }
+    };
+    getData();
+  }, [id, reset]);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -274,612 +145,424 @@ function Modify() {
     }));
   };
 
-  useEffect(() => {
-    if (userselectordata.state === "hasValue" && userselectordata.contents) {
-      const userdata = userselectordata.contents;
-
-      // Initialize form with fetched data
-      reset({
-        customerData: {
-          name: userdata.customerData?.name || "",
-          phone: userdata.customerData?.phone || "",
-          resnumfront: userdata.customerData?.resnumfront || "",
-          resnumback: userdata.customerData?.resnumback || "",
-          email: userdata.customerData?.email || "",
-          sort: userdata.customertype || "",
-        },
-        registerpath: userdata.registerpath || "",
-        financial: {
-          bankname: userdata.financial?.bankname || "",
-          accountnum: userdata.financial?.accountnum || "",
-          accountholder: userdata.financial?.accountholder || "",
-          trustcompany: userdata.financial?.trustcompany || "",
-        },
-        legalAddress: {
-          postnumber: userdata.legalAddress?.postnumber || "",
-          province: userdata.legalAddress?.province || "",
-          county: userdata.legalAddress?.county || "",
-          detailaddress: userdata.legalAddress?.detailaddress || "",
-        },
-        postreceive: {
-          postnumberreceive: userdata.postreceive?.postnumberreceive || "",
-          provincereceive: userdata.postreceive?.provincereceive || "",
-          countyreceive: userdata.postreceive?.countyreceive || "",
-          detailaddressreceive: userdata.postreceive?.detailaddressreceive || "",
-        },
-        deposits: {
-          depositdate: userdata.deposits?.depositdate
-            ? userdata.deposits.depositdate.split("T")[0]
-            : "",
-          depositammount: userdata.deposits?.depositammount || "",
-        },
-        type: userdata.type || "",
-        groupname: userdata.groupname || "",
-        turn: userdata.turn || "",
-        registerdate: userdata.registerdate
-          ? userdata.registerdate.split("T")[0]
-          : "",
-        registerprice: userdata.registerprice || "",
-        additional: userdata.additional || "",
-        specialnote: userdata.specialnote || "",
-        prizewinning: userdata.prizewinning || "",
-        attachments: {
-          isuploaded: userdata.attachments?.isuploaded || false,
-          fileinfo: userdata.attachments?.fileinfo || "",
-          exemption7: userdata.attachments?.exemption7 || false,
-          investmentfile: userdata.attachments?.investmentfile || false,
-          contract: userdata.attachments?.contract || false,
-          agreement: userdata.attachments?.agreement || false,
-          sealcertificateprovided:
-            userdata.attachments?.sealcertificateprovided || false,
-          selfsignatureconfirmationprovided:
-            userdata.attachments?.selfsignatureconfirmationprovided || false,
-          idcopyprovided: userdata.attachments?.idcopyprovided || false,
-          commitmentletterprovided:
-            userdata.attachments?.commitmentletterprovided || false,
-          forfounding: userdata.attachments?.forfounding || false,
-          freeoption: userdata.attachments?.freeoption || false,
-          preferenceattachment:
-            userdata.attachments?.preferenceattachment || false,
-          prizeattachment: userdata.attachments?.prizeattachment || false,
-        },
-        loan: {
-          loandate: userdata.loan?.loandate
-            ? userdata.loan.loandate.split("T")[0]
-            : "",
-          loanbank: userdata.loan?.loanbank || "",
-          loanammount: userdata.loan?.loanammount || "",
-          selfdate: userdata.loan?.selfdate
-            ? userdata.loan.selfdate.split("T")[0]
-            : "",
-          selfammount: userdata.loan?.selfammount || "",
-          loanselfsum: userdata.loan?.loanselfsum || "",
-          loanselfcurrent: userdata.loan?.loanselfcurrent || "",
-        },
-        responsible: {
-          generalmanagement: userdata.responsible?.generalmanagement || "",
-          division: userdata.responsible?.division || "",
-          team: userdata.responsible?.team || "",
-          managername: userdata.responsible?.managername || "",
-        },
-        dahim: {
-          dahimsisang: userdata.dahim?.dahimsisang || "",
-          dahimdate: userdata.dahim?.dahimdate
-            ? userdata.dahim.dahimdate.split("T")[0]
-            : "",
-          dahimprepaid: userdata.dahim?.dahimprepaid || "",
-          dahimfirst: userdata.dahim?.dahimfirst || "",
-          dahimfirstpay: userdata.dahim?.dahimfirstpay || "",
-          dahimdate2: userdata.dahim?.dahimdate2
-            ? userdata.dahim.dahimdate2.split("T")[0]
-            : "",
-          dahimsource: userdata.dahim?.dahimsource || "",
-          dahimsecond: userdata.dahim?.dahimsecond || "",
-          dahimsecondpay: userdata.dahim?.dahimsecondpay || "",
-          dahimdate3: userdata.dahim?.dahimdate3
-            ? userdata.dahim.dahimdate3.split("T")[0]
-            : "",
-          dahimsum: userdata.dahim?.dahimsum || "",
-        },
-        mgm: {
-          mgmfee: userdata.mgm?.mgmfee || "",
-          mgmcompanyname: userdata.mgm?.mgmcompanyname || "",
-          mgmname: userdata.mgm?.mgmname || "",
-          mgminstitution: userdata.mgm?.mgminstitution || "",
-          mgmaccount: userdata.mgm?.mgmaccount || "",
-        },
-        firstemp: {
-          firstemptimes: userdata.firstemp?.firstemptimes || "",
-          firstempdate: userdata.firstemp?.firstempdate
-            ? userdata.firstemp.firstempdate.split("T")[0]
-            : "",
-        },
-        secondemp: {
-          secondemptimes: userdata.secondemp?.secondemptimes || "",
-          secondempdate: userdata.secondemp?.secondempdate
-            ? userdata.secondemp.secondempdate.split("T")[0]
-            : "",
-        },
-        meetingattend: {
-          howtoattend: userdata.meetingattend?.howtoattend || "",
-          ftofattend: userdata.meetingattend?.ftofattend || false,
-          selfattend: userdata.meetingattend?.selfattend || false,
-          behalfattend: userdata.meetingattend?.behalfattend || false,
-        },
-        votemachine: {
-          machine1: userdata.votemachine?.machine1 || false,
-          machine2_1: userdata.votemachine?.machine2_1 || false,
-          machine2_2: userdata.votemachine?.machine2_2 || false,
-          machine2_3: userdata.votemachine?.machine2_3 || false,
-          machine2_4: userdata.votemachine?.machine2_4 || false,
-          machine3: userdata.votemachine?.machine3 || false,
-          machine4: userdata.votemachine?.machine4 || false,
-          machine5: userdata.votemachine?.machine5 || false,
-          machine6: userdata.votemachine?.machine6 || false,
-          machine7: userdata.votemachine?.machine7 || false,
-          machine8: userdata.votemachine?.machine8 || false,
-          machine9: userdata.votemachine?.machine9 || false,
-          machine10: userdata.votemachine?.machine10 || false,
-        },
-        cancel: {
-          canceldate: userdata.cancel?.canceldate
-            ? userdata.cancel.canceldate.split("T")[0]
-            : "",
-          paybackdate: userdata.cancel?.paybackdate
-            ? userdata.cancel.paybackdate.split("T")[0]
-            : "",
-          paybackprice: userdata.cancel?.paybackprice || "",
-          bank: userdata.cancel?.bank || "",
-          bankwho: userdata.cancel?.bankwho || "",
-          bankid: userdata.cancel?.bankid || "",
-        },
-        delayedloan: {
-          loandate: userdata.delayedloan?.loandate || "",
-          loan: userdata.delayedloan?.loan || "",
-        },
-      });
-    }
-  }, [userselectordata.state, userselectordata.contents, reset]);
-
-  // Watch the value of the 'sort' field
-  const watchSort = watch("customerData.sort", "");
-
-  useEffect(() => {
-    if (watchSort === "x") {
-      MySwal.fire({
-        icon: "info",
-        title: "알림",
-        text: "해지 고객 항목이 활성화 됩니다.",
-        confirmButtonText: "확인",
-      });
-    }
-  }, [watchSort]);
-
-  if (userselectordata.state === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (userselectordata.state === "hasError") {
-    return <div>오류가 발생했습니다.</div>;
-  }
-
-  if (userselectordata.state === "hasValue") {
-    const userdata = userselectordata.contents;
-    if (!userdata) {
-      return (
-        <>
-          <h1>잘못된 접근입니다</h1>
-        </>
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+      const extension = selectedFile.name.split(".").pop();
+      const renamedFile = new File(
+        [selectedFile],
+        `${id}_${name}.${extension}`,
+        { type: selectedFile.type }
       );
-    } else {
-      return (
-        <>
-          <Mininav />
+      setFile(renamedFile);
+      setIsupload((prev) => ({
+        ...prev,
+        [name]: true,
+      }));
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const parsedData = {
+        ...data,
+        CustomerData: {
+          ...data.CustomerData,
+          resnumfront: parseInt(data.CustomerData.resnumfront),
+          resnumback: parseInt(data.CustomerData.resnumback),
+        },
+        registerprice: parseInt(data.registerprice),
+        Deposit: {
+          ...data.Deposit,
+          depositammount: parseInt(data.Deposit.depositammount),
+        },
+      };
+
+      let uploadedFileInfo = existingFileInfo;
+
+      if (file) {
+        const uploadResponse = await createFile(file);
+        uploadedFileInfo = uploadResponse.data;
+      }
+
+      const attachments = {
+        ...isupload,
+        fileinfo: uploadedFileInfo,
+      };
+
+      const customerData = {
+        id: parseInt(id), // 고객 ID 포함
+        customertype: parsedData.customertype,
+        type: parsedData.type,
+        groupname: parsedData.groupname,
+        turn: parsedData.turn,
+        batch: parsedData.batch,
+        registerdate: parsedData.registerdate,
+        registerprice: parsedData.registerprice,
+        additional: parsedData.additional || "",
+        registerpath: parsedData.registerpath,
+        specialnote: parsedData.specialnote,
+        prizewinning: parsedData.prizewinning || "",
+        customerData: parsedData.CustomerData,
+        legalAddress: parsedData.LegalAddress,
+        postreceive: parsedData.Postreceive,
+        financial: parsedData.Financial,
+        deposits: parsedData.Deposit,
+        attachments: attachments,
+        responsible: parsedData.Responsible,
+        mgm: parsedData.MGM,
+        // 필요한 다른 필드들도 추가
+      };
+
+      const updateUserResponse = await updateUser(id, customerData);
+
+      Swal.fire({
+        icon: "success",
+        title: "회원정보가 수정되었습니다.",
+        text:
+          "관리번호 : " +
+          updateUserResponse.id +
+          "/ 회원명 : " +
+          parsedData.CustomerData.name,
+      });
+
+      reset();
+      setFile(null);
+      setIsupload({
+        isuploaded: false,
+        sealcertificateprovided: false,
+        selfsignatureconfirmationprovided: false,
+        commitmentletterprovided: false,
+        idcopyprovided: false,
+        freeoption: false,
+        forfounding: false,
+        agreement: false,
+        preferenceattachment: false,
+        prizeattachment: false,
+        exemption7: false,
+        investmentfile: false,
+        contract: false,
+      });
+      window.scrollTo(0, 0);
+      router.push(`/search/${id}`); // 수정 후 해당 고객 상세 페이지로 이동
+    } catch (error) {
+      console.error("Error updating user:", error);
+      Swal.fire({
+        icon: "error",
+        title: "회원정보 수정 실패",
+        text:
+          "회원 정보를 수정하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
+      });
+    }
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h3>회원 정보 수정</h3>
+        <div className={styles.content_container}>
+          <div className={styles.Font}>관리번호 : {id}</div>
           <h1></h1>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <h3>회원 정보</h3>
-            <div className={styles.content_container}>
-              <div className={styles.Font}>관리번호 : {userdata.id}</div>
-              <h1></h1>
-              <div>
-                <div className={styles.InputFont}>이름</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.customerData?.name || ""}
-                  {...register("customerData.name", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>휴대폰 번호</div>
-                <Inputbox
-                  type="phone"
-                  defaultValue={userdata.customerData?.phone || ""}
-                  {...register("customerData.phone", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>주민번호 앞자리</div>
-                <Inputbox
-                  type="number"
-                  defaultValue={userdata.customerData?.resnumfront || ""}
-                  {...register("customerData.resnumfront", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>주민번호 뒷자리</div>
-                <Inputbox
-                  type="number"
-                  defaultValue={userdata.customerData?.resnumback || ""}
-                  {...register("customerData.resnumback", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>이메일</div>
-                <Inputbox
-                  type="email"
-                  defaultValue={userdata.customerData?.email || ""}
-                  {...register("customerData.email", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>분류</div>
-                <DropInputbox
-                  list={classificationlist}
-                  {...register("customerData.sort", { required: true })}
-                  defaultValue={userdata.customertype || ""}
-                  placeholder="분류"
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>가입경로</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.registerpath || ""}
-                  {...register("registerpath", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>은행명</div>
-                <DropInputbox
-                  list={banklist}
-                  {...register("financial.bankname", { required: true })}
-                  defaultValue={userdata.financial?.bankname || ""}
-                  placeholder="은행명"
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>계좌번호</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.financial?.accountnum || ""}
-                  {...register("financial.accountnum", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>예금주</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.financial?.accountholder || ""}
-                  {...register("financial.accountholder", { required: true })}
-                  required
-                />
-              </div>
+          <Inputbox
+            type="text"
+            placeholder="이름 *"
+            register={register("CustomerData.name", { required: true })}
+          />
+          <Inputbox
+            type="phone"
+            placeholder="휴대폰 번호 *"
+            register={register("CustomerData.phone", { required: true })}
+          />
+          <Inputbox
+            type="number"
+            placeholder="주민번호 앞자리 *"
+            register={register("CustomerData.resnumfront", { required: true })}
+          />
+          <Inputbox
+            type="number"
+            placeholder="주민번호 뒷자리 *"
+            register={register("CustomerData.resnumback", { required: true })}
+          />
+          <Inputbox
+            type="email"
+            placeholder="이메일 *"
+            register={register("CustomerData.email", { required: true })}
+          />
+          <DropInputbox
+            list={classificationlist}
+            register={register("customertype", { required: true })}
+            placeholder="분류 *"
+          />
+          <Inputbox
+            type="text"
+            placeholder="가입경로 *"
+            register={register("registerpath", { required: true })}
+          />
+          <DropInputbox
+            list={banklist}
+            register={register("Financial.bankname", { required: true })}
+            placeholder="은행 *"
+          />
+          <Inputbox
+            type="text"
+            placeholder="계좌번호 *"
+            register={register("Financial.accountnum", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="예금주 *"
+            register={register("Financial.accountholder", { required: true })}
+          />
+          <div className={styles.InputboxField}>
+            <div className={styles.InputFont}>법정주소 *</div>
+            <PostInputbox
+              placeholder="법정주소"
+              register={register("LegalAddress.detailaddress", {
+                required: true,
+              })}
+            />
+          </div>
+          <div className={styles.InputboxField}>
+            <div className={styles.InputFont}>우편물 주소지 *</div>
+            <PostInputbox
+              placeholder="우편물 주소지"
+              register={register("Postreceive.detailaddressreceive", {
+                required: true,
+              })}
+            />
+          </div>
+          <div className={styles.InputboxField}></div>
+        </div>
 
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>법정주소</div>
-                <textarea
-                  className={styles.InputTextarea}
-                  defaultValue={userdata.legalAddress?.detailaddress || ""}
-                  {...register("legalAddress.detailaddress", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>우편물 주소지</div>
-                <textarea
-                  className={styles.InputTextarea}
-                  defaultValue={userdata.postreceive?.detailaddressreceive || ""}
-                  {...register("postreceive.detailaddressreceive", { required: true })}
-                  required
-                />
-              </div>
-            </div>
-
-            <h3>관리 정보</h3>
-            <div className={styles.mainbody}>
-              <div className={styles.content_body}>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>가입차수</div>
-                    <DropInputbox
-                      list={typeidlist}
-                      {...register("deposits.depositdate", { required: true })}
-                      defaultValue={userdata.deposits?.depositdate || ""}
-                      placeholder="가입차수"
-                      required
-                    />
-                  </div>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>타입</div>
-                    <DropInputbox
-                      list={typelist}
-                      {...register("type", { required: true })}
-                      defaultValue={userdata.type || ""}
-                      placeholder="타입"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>군</div>
-                    <DropInputbox
-                      list={grouplist}
-                      {...register("groupname", { required: true })}
-                      defaultValue={userdata.groupname || ""}
-                      placeholder="군"
-                      required
-                    />
-                  </div>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>순번</div>
-                    <DropInputbox
-                      list={turnlist}
-                      {...register("turn", { required: true })}
-                      defaultValue={userdata.turn || ""}
-                      placeholder="순번"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.content_body}>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>가입일자</div>
-                    <Inputbox
-                      type="date"
-                      defaultValue={
-                        userdata.registerdate
-                          ? userdata.registerdate.split("T")[0]
-                          : ""
-                      }
-                      {...register("registerdate", { required: true })}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>가입가</div>
-                    <Inputbox
-                      type="number"
-                      defaultValue={userdata.registerprice || ""}
-                      placeholder="가입가"
-                      {...register("registerprice", { required: true })}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.content_body}>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>납입일자</div>
-                    <Inputbox
-                      type="date"
-                      defaultValue={
-                        userdata.deposits?.depositdate
-                          ? userdata.deposits.depositdate.split("T")[0]
-                          : ""
-                      }
-                      {...register("deposits.depositdate", { required: true })}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className={styles.content_body2}>
-                  <div className={styles.InputboxField}>
-                    <div className={styles.InputFont}>예약금</div>
-                    <Inputbox
-                      type="number"
-                      defaultValue={userdata.deposits?.depositammount || ""}
-                      placeholder="예약금"
-                      {...register("deposits.depositammount", { required: true })}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.content_body}>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="7차 면제"
-                    name="exemption7"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.exemption7 || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="출자금"
-                    name="investmentfile"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.investmentfile || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="자산A동 계약서"
-                    name="contract"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.contract || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="총회동의서"
-                    name="agreement"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.agreement || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="인감증명서"
-                    name="sealcertificateprovided"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={
-                      userdata.attachments?.sealcertificateprovided || false
-                    }
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="본인서명확인서"
-                    name="selfsignatureconfirmationprovided"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={
-                      userdata.attachments?.selfsignatureconfirmationprovided || false
-                    }
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="신분증"
-                    name="idcopyprovided"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.idcopyprovided || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="확약서"
-                    name="commitmentletterprovided"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={
-                      userdata.attachments?.commitmentletterprovided || false
-                    }
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="창준위용"
-                    name="forfounding"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.forfounding || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="무상옵션"
-                    name="freeoption"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.freeoption || false}
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="선호도조사"
-                    name="preferenceattachment"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={
-                      userdata.attachments?.preferenceattachment || false
-                    }
-                  />
-                </div>
-                <div className={styles.content_body3}>
-                  <Checkbox
-                    label="사은품"
-                    name="prizeattachment"
-                    onChange={handleCheckboxChange}
-                    defaultChecked={userdata.attachments?.prizeattachment || false}
-                  />
-                </div>
-
-                <span></span>
-                <span></span>
-                <span></span>
-                <span>파일업로드</span>
-                <span></span>
-                <FileInputbox
-                  name="upload"
-                  handleChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <h3>담당자 정보</h3>
-            <div className={styles.content_container}>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>총괄</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.responsible?.generalmanagement || ""}
-                  {...register("responsible.generalmanagement", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>본부</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.responsible?.division || ""}
-                  {...register("responsible.division", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>팀</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.responsible?.team || ""}
-                  {...register("responsible.team", { required: true })}
-                  required
-                />
-              </div>
-              <div className={styles.InputboxField}>
-                <div className={styles.InputFont}>성명</div>
-                <Inputbox
-                  type="text"
-                  defaultValue={userdata.responsible?.managername || ""}
-                  {...register("responsible.managername", { required: true })}
-                  required
-                />
-              </div>
-            </div>
-
-            <h3>기타 정보</h3>
-            <div className={styles.content_container}>
-              <InputAreabox
-                type="text"
-                placeholder="기타"
-                defaultValue={userdata.dahim?.dahimsum || ""}
-                {...register("dahim.dahimsum")}
+        <h3>관리 정보</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <DropInputbox
+                list={typeidlist}
+                register={register("batch", { required: true })}
+                placeholder="제출 순번 *"
+              />
+              <DropInputbox
+                list={typelist}
+                name="type"
+                register={register("type", { required: true })}
+                placeholder="유형 *"
               />
             </div>
-            <h1></h1>
-            <Button_Y type="submit">저장하기</Button_Y>
-            <h1></h1>
-          </form>
-        </>
-      );
-    }
+            <div className={styles.content_body2}>
+              <DropInputbox
+                list={grouplist}
+                name="group"
+                register={register("groupname", { required: true })}
+                placeholder="그룹 *"
+              />
+              <DropInputbox
+                list={turnlist}
+                name="turn"
+                register={register("turn", { required: true })}
+                placeholder="순번 *"
+              />
+            </div>
+          </div>
 
-    return null;
-  }
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <Inputbox
+                type="date"
+                date_placeholder="가입일자 *"
+                register={register("registerdate", { required: true })}
+              />
+            </div>
+            <div className={styles.content_body2}>
+              <Inputbox
+                type="number"
+                placeholder="가입가 *"
+                register={register("registerprice", { required: true })}
+              />
+            </div>
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <Inputbox
+                type="date"
+                date_placeholder="예약금 납입일자 *"
+                register={register("Deposit.depositdate", { required: true })}
+              />
+            </div>
+            <div className={styles.content_body2}>
+              <Inputbox
+                type="number"
+                placeholder="예약금 *"
+                register={register("Deposit.depositammount", { required: true })}
+              />
+            </div>
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="7차 면제"
+                name="exemption7"
+                checked={isupload.exemption7}
+                onChange={handleCheckboxChange}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="출자금"
+                name="investmentfile"
+                checked={isupload.investmentfile}
+                onChange={handleCheckboxChange}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="자산A동 계약서"
+                name="contract"
+                checked={isupload.contract}
+                onChange={handleCheckboxChange}
+              />
+            </div>
+          </div>
+        </div>
 
-  return null;
+        <h3>MGM</h3>
+        <div className={styles.content_container}>
+          <Inputbox
+            type="text"
+            placeholder="업체명 *"
+            register={register("MGM.mgmcompanyname", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="이름 *"
+            register={register("MGM.mgmname", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="기관 *"
+            register={register("MGM.mgminstitution", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="계좌 *"
+            register={register("MGM.mgmaccount", { required: true })}
+          />
+        </div>
+
+        <h3>부속서류</h3>
+        <div className={styles.content_container}>
+          <Checkbox
+            label="인감증명서"
+            name="sealcertificateprovided"
+            checked={isupload.sealcertificateprovided}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="본인서명확인서"
+            name="selfsignatureconfirmationprovided"
+            checked={isupload.selfsignatureconfirmationprovided}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="확약서"
+            name="commitmentletterprovided"
+            checked={isupload.commitmentletterprovided}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="신분증"
+            name="idcopyprovided"
+            checked={isupload.idcopyprovided}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="무상옵션"
+            name="freeoption"
+            checked={isupload.freeoption}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="창준위용"
+            name="forfounding"
+            checked={isupload.forfounding}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="총회동의서"
+            name="agreement"
+            checked={isupload.agreement}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="선호도조사"
+            name="preferenceattachment"
+            checked={isupload.preferenceattachment}
+            onChange={handleCheckboxChange}
+          />
+          <Checkbox
+            label="사은품"
+            name="prizeattachment"
+            checked={isupload.prizeattachment}
+            onChange={handleCheckboxChange}
+          />
+          <span></span>
+          <span></span>
+          <span></span>
+          <span>파일업로드</span>
+          <span></span>
+          <FileInputbox
+            name="fileupload"
+            handleChange={handleFileChange}
+          />
+          {existingFileInfo && (
+            <div className={styles.existingFile}>
+              기존 파일: {existingFileInfo}
+            </div>
+          )}
+        </div>
+
+        <h3>담당자 정보</h3>
+        <div className={styles.content_container}>
+          <Inputbox
+            type="text"
+            placeholder="총괄 *"
+            register={register("Responsible.generalmanagement", {
+              required: true,
+            })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="본부 *"
+            register={register("Responsible.division", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="팀 *"
+            register={register("Responsible.team", { required: true })}
+          />
+          <Inputbox
+            type="text"
+            placeholder="성명 *"
+            register={register("Responsible.managername", { required: true })}
+          />
+        </div>
+
+        <h3>기타 정보</h3>
+        <div className={styles.content_container}>
+          <InputAreabox
+            type="text"
+            placeholder="기타 *"
+            register={register("specialnote", { required: true })}
+          />
+        </div>
+        <h1></h1>
+        <Button_Y type="submit">수정하기</Button_Y>
+        <h1></h1>
+      </form>
+    </div>
+  );
 }
 
-export default withAuth(Modify);
+export default withAuth(Modify); // withAuth HOC 적용
