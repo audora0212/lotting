@@ -18,6 +18,15 @@
     font-weight: 300;
     line-height: 24px; /* 150% */
 }
+.errorInput {
+    border: 1px solid red;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 5px;
+  }
 .spancontainer {
     border-radius: 10px;
     border: 1px solid rgba(162, 161, 168, 0.20);

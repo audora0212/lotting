@@ -50,13 +50,20 @@ export const CheckButton = (props) => {
     )
 }
 
-export const Button_Y = (props) => {
-    return(
-        <button className={styles.buttonstyle_y}>
-            {props.children}
-        </button>
-    )
-}
+// Button_Y 컴포넌트 수정
+export const Button_Y = ({ type = "submit", onClick, children, ...rest }) => {
+    return (
+      <button
+        type={type}
+        className={styles.buttonstyle_y}
+        onClick={onClick}
+        {...rest}
+      >
+        {children}
+      </button>
+    );
+  };
+  
 
 export const Button_N = (props) => {
     return(

@@ -1,5 +1,6 @@
 "use client";
 // src/app/create/page.js
+
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
 import {
@@ -32,7 +33,7 @@ import {
 function Create() {
   const router = useRouter();
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   const [newid, setNewid] = useState("");
 
@@ -92,11 +93,46 @@ function Create() {
       }));
     }
   };
-  
-  
 
-  const onSubmit = async (data) => {
+  // onError 핸들러
+  const onError = (errors) => {
+    console.log("검증 오류:", errors);
+
+    // 오류 메시지를 수집합니다.
+    const errorMessages = [];
+
+    // 각 오류 필드를 순회하며 메시지를 수집
+    for (const field in errors) {
+      if (errors.hasOwnProperty(field)) {
+        if (errors[field].message) {
+          errorMessages.push(errors[field].message);
+        } else if (typeof errors[field] === 'object' && errors[field] !== null) {
+          // 중첩된 필드 처리
+          for (const subField in errors[field]) {
+            if (errors[field].hasOwnProperty(subField) && errors[field][subField].message) {
+              errorMessages.push(errors[field][subField].message);
+            }
+          }
+        }
+      }
+    }
+
+    // 메시지를 하나의 문자열로 결합
+    const errorMessage = errorMessages.join('\n');
+
+    // Swal을 통해 사용자에게 알립니다.
+    Swal.fire({
+      icon: 'warning',
+      title: '필수 항목 누락',
+      text: errorMessage,
+    });
+  };
+
+  // onSubmit 핸들러
+  const onSubmit = async (data) => { 
+    console.log("onSubmit 호출됨", data); // 디버깅을 위한 로그 추가
     try {
+      console.log("폼 제출 데이터:", data);
       const parsedData = {
         ...data,
         CustomerData: {
@@ -133,7 +169,7 @@ function Create() {
         registerprice: parsedData.registerprice,
         additional: parsedData.additional || "",
         registerpath: parsedData.registerpath,
-        specialnote: parsedData.specialnote,
+        specialnote: parsedData.specialnote || "", // 선택사항이므로 기본값 설정
         prizewinning: parsedData.prizewinning || "",
         customerData: parsedData.CustomerData,
         legalAddress: parsedData.LegalAddress,
@@ -180,7 +216,9 @@ function Create() {
         investmentfile: false,
         contract: false,
       });
-      window.scrollTo(0, 0);
+      if (typeof window !== 'undefined') {
+        window.scrollTo(0, 0);
+      }
     } catch (error) {
       console.error("Error creating user:", error);
       Swal.fire({
@@ -194,80 +232,107 @@ function Create() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <h3>회원 정보</h3>
         <div className={styles.content_container}>
           <div className={styles.Font}>관리번호 : {newid}</div>
           <h1></h1>
-          <Inputbox
-            type="text"
-            placeholder="이름 *"
-            register={register("CustomerData.name", { required: true })}
-          />
-          <Inputbox
-            type="phone"
-            placeholder="휴대폰 번호 *"
-            register={register("CustomerData.phone", { required: true })}
-          />
-          <Inputbox
-            type="number"
-            placeholder="주민번호 앞자리 *"
-            register={register("CustomerData.resnumfront", { required: true })}
-          />
-          <Inputbox
-            type="number"
-            placeholder="주민번호 뒷자리 *"
-            register={register("CustomerData.resnumback", { required: true })}
-          />
-          <Inputbox
-            type="email"
-            placeholder="이메일 *"
-            register={register("CustomerData.email", { required: true })}
-          />
-          <DropInputbox
-            list={classificationlist}
-            register={register("customertype", { required: true })}
-            placeholder="분류 *"
-          />
-          <Inputbox
-            type="text"
-            placeholder="가입경로 *"
-            register={register("registerpath", { required: true })}
-          />
-          <DropInputbox
-            list={banklist}
-            register={register("Financial.bankname", { required: true })}
-            placeholder="은행 *"
-          />
-          <Inputbox
-            type="text"
-            placeholder="계좌번호 *"
-            register={register("Financial.accountnum", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="예금주 *"
-            register={register("Financial.accountholder", { required: true })}
-          />
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="이름 *"
+              register={register("CustomerData.name", { required: "이름을 입력해주세요." })}
+              isError={!!errors.CustomerData?.name}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="phone"
+              placeholder="휴대폰 번호 *"
+              register={register("CustomerData.phone", { required: "휴대폰 번호를 입력해주세요." })}
+              isError={!!errors.CustomerData?.phone}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="number"
+              placeholder="주민번호 앞자리 *"
+              register={register("CustomerData.resnumfront", { required: "주민번호 앞자리를 입력해주세요." })}
+              isError={!!errors.CustomerData?.resnumfront}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="number"
+              placeholder="주민번호 뒷자리 *"
+              register={register("CustomerData.resnumback", { required: "주민번호 뒷자리를 입력해주세요." })}
+              isError={!!errors.CustomerData?.resnumback}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="email"
+              placeholder="이메일 *"
+              register={register("CustomerData.email", { required: "이메일을 입력해주세요." })}
+              isError={!!errors.CustomerData?.email}
+            />
+          </div>
+          <div>
+            <DropInputbox
+              list={classificationlist}
+              register={register("customertype", { required: "분류를 선택해주세요." })}
+              placeholder="분류 *"
+              isError={!!errors.customertype}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="가입경로 *"
+              register={register("registerpath", { required: "가입경로를 입력해주세요." })}
+              isError={!!errors.registerpath}
+            />
+          </div>
+          <div>
+            <DropInputbox
+              list={banklist}
+              register={register("Financial.bankname", { required: "은행을 선택해주세요." })}
+              placeholder="은행 *"
+              isError={!!errors.Financial?.bankname}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="계좌번호 *"
+              register={register("Financial.accountnum", { required: "계좌번호를 입력해주세요." })}
+              isError={!!errors.Financial?.accountnum}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="예금주 *"
+              register={register("Financial.accountholder", { required: "예금주를 입력해주세요." })}
+              isError={!!errors.Financial?.accountholder}
+            />
+          </div>
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>법정주소 *</div>
             <PostInputbox
               placeholder="법정주소"
-              register={register("LegalAddress.detailaddress", {
-                required: true,
-              })}
+              register={register("LegalAddress.detailaddress", { required: "법정주소를 입력해주세요." })}
+              isError={!!errors.LegalAddress?.detailaddress}
             />
           </div>
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>우편물 주소지 *</div>
             <PostInputbox
               placeholder="우편물 주소지"
-              register={register("Postreceive.detailaddressreceive", {
-                required: true,
-              })}
+              register={register("Postreceive.detailaddressreceive", { required: "우편물 주소지를 입력해주세요." })}
+              isError={!!errors.Postreceive?.detailaddressreceive}
             />
           </div>
-          <div className={styles.InputboxField}></div>
         </div>
 
         <h3>관리 정보</h3>
@@ -276,28 +341,32 @@ function Create() {
             <div className={styles.content_body2}>
               <DropInputbox
                 list={typeidlist}
-                register={register("batch", { required: true })}
+                register={register("batch", { required: "제출 순번을 선택해주세요." })}
                 placeholder="제출 순번 *"
+                isError={!!errors.batch}
               />
               <DropInputbox
                 list={typelist}
                 name="type"
-                register={register("type", { required: true })}
+                register={register("type", { required: "유형을 선택해주세요." })}
                 placeholder="유형 *"
+                isError={!!errors.type}
               />
             </div>
             <div className={styles.content_body2}>
               <DropInputbox
                 list={grouplist}
                 name="group"
-                register={register("groupname", { required: true })}
+                register={register("groupname", { required: "그룹을 선택해주세요." })}
                 placeholder="그룹 *"
+                isError={!!errors.groupname}
               />
               <DropInputbox
                 list={turnlist}
                 name="turn"
-                register={register("turn", { required: true })}
+                register={register("turn", { required: "순번을 선택해주세요." })}
                 placeholder="순번 *"
+                isError={!!errors.turn}
               />
             </div>
           </div>
@@ -307,14 +376,16 @@ function Create() {
               <Inputbox
                 type="date"
                 date_placeholder="가입일자 *"
-                register={register("registerdate", { required: true })}
+                register={register("registerdate", { required: "가입일자를 입력해주세요." })}
+                isError={!!errors.registerdate}
               />
             </div>
             <div className={styles.content_body2}>
               <Inputbox
                 type="number"
                 placeholder="가입가 *"
-                register={register("registerprice", { required: true })}
+                register={register("registerprice", { required: "가입가를 입력해주세요." })}
+                isError={!!errors.registerprice}
               />
             </div>
           </div>
@@ -323,14 +394,16 @@ function Create() {
               <Inputbox
                 type="date"
                 date_placeholder="예약금 납입일자 *"
-                register={register("Deposit.depositdate", { required: true })}
+                register={register("Deposit.depositdate", { required: "예약금 납입일자를 입력해주세요." })}
+                isError={!!errors.Deposit?.depositdate}
               />
             </div>
             <div className={styles.content_body2}>
               <Inputbox
                 type="number"
                 placeholder="예약금 *"
-                register={register("Deposit.depositammount", { required: true })}
+                register={register("Deposit.depositammount", { required: "예약금을 입력해주세요." })}
+                isError={!!errors.Deposit?.depositammount}
               />
             </div>
           </div>
@@ -340,6 +413,8 @@ function Create() {
                 label="7차 면제"
                 name="exemption7"
                 onChange={handleCheckboxChange}
+                register={register("exemption7")}
+                isError={!!errors.exemption7}
               />
             </div>
             <div className={styles.content_body3}>
@@ -347,6 +422,8 @@ function Create() {
                 label="출자금"
                 name="investmentfile"
                 onChange={handleCheckboxChange}
+                register={register("investmentfile")}
+                isError={!!errors.investmentfile}
               />
             </div>
             <div className={styles.content_body3}>
@@ -354,6 +431,8 @@ function Create() {
                 label="자산A동 계약서"
                 name="contract"
                 onChange={handleCheckboxChange}
+                register={register("contract")}
+                isError={!!errors.contract}
               />
             </div>
           </div>
@@ -361,123 +440,182 @@ function Create() {
 
         <h3>MGM</h3>
         <div className={styles.content_container}>
-          <Inputbox
-            type="text"
-            placeholder="업체명 *"
-            register={register("MGM.mgmcompanyname", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="이름 *"
-            register={register("MGM.mgmname", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="기관 *"
-            register={register("MGM.mgminstitution", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="계좌 *"
-            register={register("MGM.mgmaccount", { required: true })}
-          />
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="업체명 *"
+              register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
+              isError={!!errors.MGM?.mgmcompanyname}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="이름 *"
+              register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
+              isError={!!errors.MGM?.mgmname}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="기관 *"
+              register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
+              isError={!!errors.MGM?.mgminstitution}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="계좌 *"
+              register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
+              isError={!!errors.MGM?.mgmaccount}
+            />
+          </div>
         </div>
 
         <h3>부속서류</h3>
         <div className={styles.content_container}>
-          <Checkbox
-            label="인감증명서"
-            name="sealcertificateprovided"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="본인서명확인서"
-            name="selfsignatureconfirmationprovided"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="확약서"
-            name="commitmentletterprovided"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="신분증"
-            name="idcopyprovided"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="무상옵션"
-            name="freeoption"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="창준위용"
-            name="forfounding"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="총회동의서"
-            name="agreement"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="선호도조사"
-            name="preferenceattachment"
-            onChange={handleCheckboxChange}
-          />
-          <Checkbox
-            label="사은품"
-            name="prizeattachment"
-            onChange={handleCheckboxChange}
-          />
-          <span></span>
-          <span></span>
-          <span></span>
-          <span>파일업로드</span>
-          <span></span>
-          <FileInputbox
-            name="fileupload"
-            handleChange={handleFileChange}
-          />
+          <div>
+            <Checkbox
+              label="인감증명서"
+              name="sealcertificateprovided"
+              onChange={handleCheckboxChange}
+              register={register("sealcertificateprovided")}
+              isError={!!errors.sealcertificateprovided}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="본인서명확인서"
+              name="selfsignatureconfirmationprovided"
+              onChange={handleCheckboxChange}
+              register={register("selfsignatureconfirmationprovided")}
+              isError={!!errors.selfsignatureconfirmationprovided}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="확약서"
+              name="commitmentletterprovided"
+              onChange={handleCheckboxChange}
+              register={register("commitmentletterprovided")}
+              isError={!!errors.commitmentletterprovided}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="신분증"
+              name="idcopyprovided"
+              onChange={handleCheckboxChange}
+              register={register("idcopyprovided")}
+              isError={!!errors.idcopyprovided}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="무상옵션"
+              name="freeoption"
+              onChange={handleCheckboxChange}
+              register={register("freeoption")}
+              isError={!!errors.freeoption}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="창준위용"
+              name="forfounding"
+              onChange={handleCheckboxChange}
+              register={register("forfounding")}
+              isError={!!errors.forfounding}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="총회동의서"
+              name="agreement"
+              onChange={handleCheckboxChange}
+              register={register("agreement")}
+              isError={!!errors.agreement}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="선호도조사"
+              name="preferenceattachment"
+              onChange={handleCheckboxChange}
+              register={register("preferenceattachment")}
+              isError={!!errors.preferenceattachment}
+            />
+          </div>
+          <div>
+            <Checkbox
+              label="사은품"
+              name="prizeattachment"
+              onChange={handleCheckboxChange}
+              register={register("prizeattachment")}
+              isError={!!errors.prizeattachment}
+            />
+          </div>
+          <div>
+            <span>파일업로드</span>
+            <FileInputbox 
+              name="fileupload" 
+              handleChange={handleFileChange} 
+              register={register("fileupload")} 
+              isupload={isupload.isuploaded} 
+              value={file ? file.name : ""} 
+              isError={!!errors.fileupload}
+            />
+          </div>
         </div>
 
         <h3>담당자 정보</h3>
         <div className={styles.content_container}>
-          <Inputbox
-            type="text"
-            placeholder="총괄 *"
-            register={register("Responsible.generalmanagement", {
-              required: true,
-            })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="본부 *"
-            register={register("Responsible.division", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="팀 *"
-            register={register("Responsible.team", { required: true })}
-          />
-          <Inputbox
-            type="text"
-            placeholder="성명 *"
-            register={register("Responsible.managername", { required: true })}
-          />
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="총괄 *"
+              register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+              isError={!!errors.Responsible?.generalmanagement}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="본부 *"
+              register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+              isError={!!errors.Responsible?.division}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="팀 *"
+              register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+              isError={!!errors.Responsible?.team}
+            />
+          </div>
+          <div>
+            <Inputbox
+              type="text"
+              placeholder="성명 *"
+              register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+              isError={!!errors.Responsible?.managername}
+            />
+          </div>
         </div>
 
         <h3>기타 정보</h3>
         <div className={styles.content_container}>
           <InputAreabox
             type="text"
-            placeholder="기타 *"
-            register={register("specialnote", { required: true })}
+            placeholder="기타"
+            register={register("specialnote")} // 선택사항이므로 required 제거
+            isError={!!errors.specialnote}
           />
         </div>
-        <h1></h1>
         <Button_Y type="submit">저장하기</Button_Y>
-        <h1></h1>
       </form>
     </div>
   );

@@ -5,20 +5,18 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { userchasuSelector, userinfoSelector } from "@/utils/selector";
+import { userinfoSelector } from "@/utils/selector";
 import { useridState, chasuState } from "@/utils/atom";
 import { useRecoilValueLoadable, useRecoilState } from "recoil";
-import { updatePhaseData, fetchPhaseData } from "@/utils/api"; // 수정된 API 함수
+import { updatePhaseData, fetchPhaseData } from "@/utils/api";
 import { Inputbox, Inputbox_M } from "@/components/Inputbox";
 import {
   PaymentScheduleButton,
-  SearchButton,
   Button_Y,
   Button_N,
 } from "@/components/Button";
 import styles from "@/styles/Inputmoneypay.module.scss";
 import { BsDatabase } from "react-icons/bs";
-import { CgSearch } from "react-icons/cg";
 import withAuth from "@/utils/hoc/withAuth";
 
 const formatNumber = (value) => {
@@ -33,22 +31,22 @@ const parseNumber = (value) => {
 };
 
 function Inputmoneypay() {
-  const { register, handleSubmit, setValue } = useForm();
-  const [charge, setCharge] = useState("0");
-  const [service, setService] = useState("0");
-  const [discount, setDiscount] = useState("0");
-  const [exemption, setExemption] = useState("0");
-  const [total, setTotal] = useState(0);
-  const [charged, setCharged] = useState("0");
+  const { register, handleSubmit, setValue, watch } = useForm();
+  const [charge, setCharge] = useState("0");       // 부담금
+  const [service, setService] = useState("0");     // 업무대행비
+  const [discount, setDiscount] = useState("0");   // 할인액
+  const [exemption, setExemption] = useState("0"); // 면제액
+  const [charged, setCharged] = useState("0");     // 납입금액
+  const [feesum, setFeesum] = useState(0);         // 총액
+  const [total, setTotal] = useState(0);           // 남은금액
   const pathname = usePathname();
   const router = useRouter();
 
   const [IdState, setIdState] = useRecoilState(useridState);
   const [ChasuState, setChasuState] = useRecoilState(chasuState);
-  const [phaseId, setPhaseId] = useState(null); // Phase ID 상태
+  const [phaseId, setPhaseId] = useState(null);
   const [userChasuData, setUserChasuData] = useState(null);
 
-  const userChasudatas = useRecoilValueLoadable(userchasuSelector);
   const [userData, setUserData] = useState(null);
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
 
@@ -82,14 +80,15 @@ function Inputmoneypay() {
     if (IdState && ChasuState) {
       fetchPhaseData(IdState, ChasuState)
         .then((phase) => {
+          console.log(phase);
           if (phase) {
             setUserChasuData(phase);
-            setPhaseId(phase.id); // Phase ID 설정
+            setPhaseId(phase.id);
             setCharge(formatNumber(phase.charge));
             setService(formatNumber(phase.service));
             setDiscount(formatNumber(phase.discount));
             setExemption(formatNumber(phase.exemption));
-            setCharged(formatNumber(phase.charged));
+            setCharged(formatNumber(phase.charged)); // charged 값 설정
           } else {
             console.log("해당 차수가 존재하지 않습니다.");
           }
@@ -110,7 +109,14 @@ function Inputmoneypay() {
   };
 
   const onSubmit = (data) => {
-    // 백엔드 Phase 엔티티에 맞추어 데이터 구조 조정
+    const chargeValue = parseInt(parseNumber(charge)) || 0;
+    const serviceValue = parseInt(parseNumber(service)) || 0;
+    const discountValue = parseInt(parseNumber(discount)) || 0;
+    const exemptionValue = parseInt(parseNumber(exemption)) || 0;
+    const chargedValue = parseInt(parseNumber(charged)) || 0;
+
+    const feesumValue = chargeValue + serviceValue - discountValue - exemptionValue;
+
     const updatedData = {
       planneddate: data.planneddate,
       fullpaiddate: data.fullpaiddate,
@@ -118,14 +124,13 @@ function Inputmoneypay() {
       service: parseNumber(service),
       discount: parseNumber(discount),
       exemption: parseNumber(exemption),
-      move: data.move || "",
       charged: parseNumber(charged),
-      sum:
-        parseInt(parseNumber(charge)) +
-        parseInt(parseNumber(service)) -
-        parseInt(parseNumber(discount)) -
-        parseInt(parseNumber(exemption)),
+      move: data.move || "",
+      feesum: feesumValue.toString(), // `feesum` 추가
+      sum: feesumValue - chargedValue, // 남은금액 계산
     };
+
+    console.log(updatedData);
 
     if (phaseId) {
       updatePhaseData(phaseId, updatedData)
@@ -140,7 +145,7 @@ function Inputmoneypay() {
     }
   };
 
-  // 총액 계산
+  // 남은금액 및 총액 계산
   useEffect(() => {
     calculateTotal();
   }, [charge, service, discount, exemption, charged]);
@@ -151,9 +156,12 @@ function Inputmoneypay() {
     const discountValue = parseInt(parseNumber(discount)) || 0;
     const exemptionValue = parseInt(parseNumber(exemption)) || 0;
     const chargedValue = parseInt(parseNumber(charged)) || 0;
-    const total =
-      chargeValue + serviceValue - discountValue - exemptionValue - chargedValue;
-    setTotal(total);
+
+    const feesumValue = chargeValue + serviceValue - discountValue - exemptionValue;
+    setFeesum(feesumValue);
+
+    const totalValue = feesumValue - chargedValue;
+    setTotal(totalValue);
   };
 
   const onChange = (e) => {
@@ -181,6 +189,15 @@ function Inputmoneypay() {
     }
   };
 
+  // planneddate 변경 감지 및 로그 출력
+  const plannedDate = watch("planneddate");
+
+  useEffect(() => {
+    if (plannedDate) {
+      console.log("예정일자가 변경되었습니다:", plannedDate);
+    }
+  }, [plannedDate]);
+
   return (
     <>
       {userChasuData && userselectordata.state === "hasValue" && userData && (
@@ -200,7 +217,6 @@ function Inputmoneypay() {
                     </div>
                   </div>
                 </div>
-
               </div>
               <div className={styles.InputBody}>
                 <div className={styles.InputBodyTitle}>
@@ -214,7 +230,7 @@ function Inputmoneypay() {
                 <div className={styles.Line}></div>
                 <div className={styles.IBBottonLayer}>
                   <PaymentScheduleButton
-                    isclear={userChasuData.sum === 0} // sum이 0이면 완납
+                    isclear={userChasuData.sum === 0}
                     setValue={setValue}
                   />
                 </div>
@@ -282,12 +298,13 @@ function Inputmoneypay() {
                   <Inputbox_M
                     type="text"
                     placeholder="이동"
+                    name="move"
                     {...register("move")}
                     defaultValue={userChasuData.move}
                   />
                   <Inputbox_M
                     type="text"
-                    placeholder="납입액"
+                    placeholder="납입금액"
                     name="charged"
                     {...register("charged")}
                     onChange={onChange}
@@ -297,6 +314,14 @@ function Inputmoneypay() {
                 <div className={styles.IBLayer}>
                   <div className={styles.IBInputBox_S}>
                     <div className={styles.SearchFont1}>총액 :</div>
+                    <div className={styles.SearchFont2}>
+                      {feesum.toLocaleString()}₩
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.IBLayer}>
+                  <div className={styles.IBInputBox_S}>
+                    <div className={styles.SearchFont1}>남은금액 :</div>
                     <div className={styles.SearchFont2}>
                       {total.toLocaleString()}₩
                     </div>

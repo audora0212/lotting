@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import styles from "@/styles/Inputbox.module.scss";
 import { IoMdCloudUpload } from "react-icons/io";
-import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 
+// Checkbox 컴포넌트
 export const Checkbox = (props) => {
-  const { label, name, onChange, defaultChecked, register } = props;
+  const { label, name, onChange, defaultChecked, register, isError, ...rest } = props;
 
   return (
     <div className={styles.checkboxContainer}>
@@ -15,22 +15,21 @@ export const Checkbox = (props) => {
         name={name}
         defaultChecked={defaultChecked}
         onChange={onChange}
+        className={`${styles.checkbox} ${isError ? styles.errorInput : ''}`}
         {...register}
-        className={styles.checkbox}
+        {...rest}
       />
       <label className={styles.checkboxLabel}>{label}</label>
     </div>
   );
 };
 
+// Spanbox 컴포넌트
 export const Spanbox = ({ children }) => {
-  return (
-    <>
-      <span className={styles.spancontainer}>{children}</span>
-    </>
-  );
+  return <span className={styles.spancontainer}>{children}</span>;
 };
 
+// 일반 Inputbox 컴포넌트
 export const Inputbox = (props) => {
   const {
     type,
@@ -39,168 +38,173 @@ export const Inputbox = (props) => {
     date_placeholder,
     name,
     defaultValue,
+    value,
     register,
+    isError, // 추가된 prop
+    ...rest
   } = props;
 
   return (
-    <>
-      <input
-        className={styles.inputcontainer}
-        data-placeholder={date_placeholder}
-        type={type}
-        name={name}
-        onChange={onChange}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        {...register}
-      />
-    </>
+    <input
+      className={`${styles.inputcontainer} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      {...register}
+      {...rest}
+    />
   );
 };
 
+// Textarea InputAreabox 컴포넌트
 export const InputAreabox = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
-  const onChange = props.onChange;
-  const date_placeholder = props.date_placeholder;
-  const name = props.name;
-  const defaultValue = props.defaultValue;
-  const value = props.value;
+  const {
+    type,
+    placeholder,
+    onChange,
+    date_placeholder,
+    name,
+    defaultValue,
+    value,
+    register,
+    isError, // 추가된 prop
+    ...rest
+  } = props;
+
   return (
-    <>
-      <textarea
-        className={styles.areacontainer}
-        data-placeholder={date_placeholder}
-        defaultValue={defaultValue}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        {...props.register}
-      />
-    </>
+    <textarea
+      className={`${styles.areacontainer} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      {...register}
+      {...rest}
+    />
   );
 };
 
+// Searchbox 컴포넌트
 export const Searchbox = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
-  const onChange = props.onChange;
-  const date_placeholder = props.date_placeholder;
-  const name = props.name;
+  const { type, placeholder, onChange, date_placeholder, name, register, isError, ...rest } = props;
 
   return (
-    <>
-      <input
-        className={styles.searchclient}
-        data-placeholder={date_placeholder}
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        onChange={onChange}
-        {...props.register}
-      />
-    </>
+    <input
+      className={`${styles.searchclient} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      onChange={onChange}
+      {...register}
+      {...rest}
+    />
   );
 };
+
+// Inputbox_L 컴포넌트
 export const Inputbox_L = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
-  const onChange = props.onChange;
-  const date_placeholder = props.date_placeholder;
-  const name = props.name;
-  const defaultValue = props.defaultValue;
+  const { type, placeholder, onChange, date_placeholder, name, defaultValue, register, isError, ...rest } = props;
 
   return (
-    <>
-      <input
-        className={styles.inputcontainer_L}
-        data-placeholder={date_placeholder}
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        {...props.register}
-        onChange={onChange}
-        defaultValue={defaultValue}
-      />
-    </>
+    <input
+      className={`${styles.inputcontainer_L} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      onChange={onChange}
+      defaultValue={defaultValue}
+      {...register}
+      {...rest}
+    />
   );
 };
 
+// Inputbox_M 컴포넌트
 export const Inputbox_M = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
-  const onChange = props.onChange;
-  const date_placeholder = props.date_placeholder;
-  const name = props.name;
-  const defaultValue = props.defaultValue;
+  const {
+    type,
+    placeholder,
+    onChange,
+    date_placeholder,
+    name,
+    defaultValue,
+    value,
+    register,
+    isError, // 추가된 prop
+    ...rest
+  } = props;
 
   return (
     <>
       <div className={styles.SearchFont}>{placeholder}</div>
       <input
-        className={styles.inputcontainer_M}
+        className={`${styles.inputcontainer_M} ${isError ? styles.errorInput : ''}`}
         data-placeholder={date_placeholder}
         type={type}
         name={name}
-        {...props.register}
         onChange={onChange}
-        value={defaultValue}
-      />
-    </>
-  );
-};
-
-export const LoginInputbox = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
-  const value = props.value;
-  const onChange = props.onChange;
-  const name = props.name;
-
-  return (
-    <>
-      <input
-        className={styles.logininputcontainer}
-        type={type}
-        name={name}
         value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        {...props.register}
+        defaultValue={defaultValue}
+        {...register}
+        {...rest}
       />
     </>
   );
 };
 
-export const LongInputbox = (props) => {
-  const type = props.type;
-  const placeholder = props.placeholder;
+// LoginInputbox 컴포넌트
+export const LoginInputbox = (props) => {
+  const { type, placeholder, value, onChange, name, register, isError, ...rest } = props;
+
   return (
-    <>
-      <input
-        className={styles.Longinputcontainer}
-        type={type}
-        placeholder={placeholder}
-        {...props.register}
-      />
-    </>
+    <input
+      className={`${styles.logininputcontainer} ${isError ? styles.errorInput : ''}`}
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      {...register}
+      {...rest}
+    />
   );
 };
 
+// LongInputbox 컴포넌트
+export const LongInputbox = (props) => {
+  const { type, placeholder, register, isError, ...rest } = props;
+
+  return (
+    <input
+      className={`${styles.Longinputcontainer} ${isError ? styles.errorInput : ''}`}
+      type={type}
+      placeholder={placeholder}
+      {...register}
+      {...rest}
+    />
+  );
+};
+
+// DropInputbox 컴포넌트
 export const DropInputbox = (props) => {
-  const optionlist = props.list;
-  const handlechange = props.handlechange;
-  const defaultValue = props.defaultValue;
-  const placeholder = props.placeholder;
-  const value = props.value;
+  const { list, placeholder, register, isError, ...rest } = props;
+
   return (
     <select
-      className={styles.Dropinputcontainer}
-      defaultValue={defaultValue}
-      {...props.register}
+      className={`${styles.Dropinputcontainer} ${isError ? styles.errorInput : ''}`}
+      {...register}
+      {...rest}
     >
-      {optionlist.map((i, index) => {
+      {list.map((i, index) => {
         return (
           <option key={index} value={i.value}>
             {i.item}
@@ -210,6 +214,7 @@ export const DropInputbox = (props) => {
     </select>
   );
 };
+
 const iconstyle = {
   fontSize: "3.4em",
   textAlign: "center",
@@ -218,24 +223,29 @@ const iconstyle = {
   paddingLeft: "7%",
 };
 
+// FileInputbox 컴포넌트
 export const FileInputbox = (props) => {
+  const { className, handleChange, isupload, value, name, register, isError, ...rest } = props;
+
   return (
-    <label className={styles.Fileinputcontainer} htmlFor={props.className}>
+    <label className={styles.Fileinputcontainer} htmlFor={className}>
       <input
         type="file"
-        id={props.className}
-        onChange={props.handleChange}
-        className={props.className}
-        name={props.name}
+        id={className}
+        onChange={handleChange}
+        className={className}
+        name={name}
+        {...register}
+        {...rest}
       />
       <p style={{ textAlign: "center", margin: 0 }}>
         <IoMdCloudUpload style={iconstyle} />
       </p>
-      {props.isupload ? (
+      {isupload ? (
         <>
           <p className={styles.successtext}>업로드완료</p>
           <p className={styles.successfilename}>
-            {props.value.toString().slice(12)}
+            {value.toString().slice(12)}
           </p>
         </>
       ) : (
@@ -248,57 +258,63 @@ export const FileInputbox = (props) => {
           <p className={styles.filetypetext}>파일형식 : PDF, PNG, JPEG</p>
         </>
       )}
+      {isError && <span className={styles.error}>파일을 업로드해주세요.</span>}
     </label>
   );
 };
 
+// PostInputbox 컴포넌트
 export const PostInputbox = (props) => {
   const [postnumber, setPostnumber] = useState("우편번호");
   const [post, setPost] = useState("주소");
   const [postdetail, setPostdetail] = useState("주소상세");
-  const placeholder = props.placeholder;
+  const { placeholder, register, isError, ...rest } = props;
 
   const getpost = () => {
-    new daum.Postcode({
-      oncomplete: function (data) {
-        setPostnumber(data.zonecode);
-        setPost(data.roadAddress);
-        setPostdetail(data.roadAddress + ",");
-      },
-    }).open();
+    if (typeof window !== 'undefined' && window.daum) { // daum 객체가 있는지 확인
+      new window.daum.Postcode({
+        oncomplete: function (data) {
+          setPostnumber(data.zonecode);
+          setPost(data.roadAddress);
+          setPostdetail(data.roadAddress + ",");
+        },
+      }).open();
+    } else {
+      console.error("Daum Postcode 라이브러리가 로드되지 않았습니다.");
+    }
   };
 
   const handleChange = (e) => {
     setPostdetail(e.target.value);
   };
 
-  const postInput = () => {
-    return [postnumber, post];
-  };
-
   return (
     <>
       <input
-        className={styles.postcontainer}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
         type="button"
         onClick={getpost}
         defaultValue={postnumber}
         placeholder="우편번호"
+        {...rest}
       />
       <input
-        className={styles.postcontainer}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
         type="button"
         onClick={getpost}
         defaultValue={post}
         placeholder="주소"
+        {...rest}
       />
       <input
-        className={styles.inputcontainer}
+        className={`${styles.inputcontainer} ${isError ? styles.errorInput : ''}`}
         type="text"
         onChange={handleChange}
         defaultValue={postdetail}
-        {...props.register}
+        {...register}
+        {...rest}
       />
+      {isError && <span className={styles.error}>주소상세를 입력해주세요.</span>}
     </>
   );
 };
