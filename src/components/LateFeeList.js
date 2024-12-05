@@ -10,12 +10,8 @@ import Swal from "sweetalert2";
 import Link from "next/link";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
-const LateFeeList = ({ name, number, linkBase }) => {
-  const [lateFees, setLateFees] = useState([]);
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "ascending",
-  });
+const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortConfig }) => {
+  const [localLateFees, setLocalLateFees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
@@ -23,7 +19,8 @@ const LateFeeList = ({ name, number, linkBase }) => {
     const fetchData = async () => {
       try {
         const data = await fetchLateFees(name, number);
-        setLateFees(data);
+        setLocalLateFees(data);
+        setLateFees(data); // 상위 상태 업데이트
       } catch (error) {
         console.error("Error fetching late fees:", error);
         // 필요 시 에러 처리 (예: 로그인 페이지로 리다이렉트)
@@ -31,7 +28,7 @@ const LateFeeList = ({ name, number, linkBase }) => {
     };
 
     fetchData();
-  }, [name, number]);
+  }, [name, number, setLateFees]);
 
   // 정렬 핸들러
   const handleSort = (key) => {
@@ -56,7 +53,7 @@ const LateFeeList = ({ name, number, linkBase }) => {
 
   // 정렬된 데이터 계산
   const sortedLateFees = React.useMemo(() => {
-    let sortableFees = [...lateFees];
+    let sortableFees = [...localLateFees];
     if (sortConfig.key !== null) {
       sortableFees.sort((a, b) => {
         let aValue = a[sortConfig.key];
@@ -81,7 +78,12 @@ const LateFeeList = ({ name, number, linkBase }) => {
       });
     }
     return sortableFees;
-  }, [lateFees, sortConfig]);
+  }, [localLateFees, sortConfig]);
+
+  // 상위 상태 업데이트
+  useEffect(() => {
+    setLateFees(sortedLateFees);
+  }, [sortedLateFees, setLateFees]);
 
   // 고객 해지 핸들러
   const handleDelete = async (id) => {
@@ -94,7 +96,9 @@ const LateFeeList = ({ name, number, linkBase }) => {
         confirmButtonText: "확인",
       }).then(() => {
         // 리스트 갱신
-        setLateFees((prev) => prev.filter((fee) => fee.id !== id));
+        const updatedFees = localLateFees.filter((fee) => fee.id !== id);
+        setLocalLateFees(updatedFees);
+        setLateFees(updatedFees);
       });
     } catch (error) {
       console.error("Error cancelling customer:", error);
@@ -147,9 +151,7 @@ const LateFeeList = ({ name, number, linkBase }) => {
         >
           <span>
             마지막 미납 차수
-            <span className={styles.sortIcon}>
-              {getSortIcon("lastUnpaidPhaseNumber")}
-            </span>
+            <span className={styles.sortIcon}>{getSortIcon("lastUnpaidPhaseNumber")}</span>
           </span>
         </div>
         <div

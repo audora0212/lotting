@@ -118,3 +118,31 @@
   width: 100%;
   display: flex;
 }
+
+
+/* src/styles/Search.module.scss */
+
+/* 기존 스타일 유지 */
+
+/* 헤더 컨테이너 스타일 */
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Export 버튼 스타일 */
+.exportButton {
+  padding: 8px 16px;
+  background-color: #4CAF50; /* 초록색 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.exportButton:hover {
+  background-color: #45a049; /* 더 진한 초록색 */
+}
