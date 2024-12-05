@@ -77,9 +77,11 @@ function Create() {
   };
 
   const handleFileChange = (e) => {
+    console.log("file changing")
     const { name, files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
+      console.log("선택된 파일:", selectedFile); // 추가된 로그
       const extension = selectedFile.name.split(".").pop();
       const renamedFile = new File(
         [selectedFile],
@@ -93,6 +95,7 @@ function Create() {
       }));
     }
   };
+  
 
   // onError 핸들러
   const onError = (errors) => {
@@ -129,106 +132,124 @@ function Create() {
   };
 
   // onSubmit 핸들러
-  const onSubmit = async (data) => { 
-    console.log("onSubmit 호출됨", data); // 디버깅을 위한 로그 추가
-    try {
-      console.log("폼 제출 데이터:", data);
-      const parsedData = {
-        ...data,
-        CustomerData: {
-          ...data.CustomerData,
-          resnumfront: parseInt(data.CustomerData.resnumfront),
-          resnumback: parseInt(data.CustomerData.resnumback),
-        },
-        registerprice: parseInt(data.registerprice),
-        Deposit: {
-          ...data.Deposit,
-          depositammount: parseInt(data.Deposit.depositammount),
-        },
-      };
+// src/app/create/page.js
 
-      let uploadedFileInfo = "";
+const onSubmit = async (data) => { 
+  console.log("onSubmit 호출됨", data);
+  try {
+    console.log("폼 제출 데이터:", data);
 
-      if (file) {
-        const uploadResponse = await createFile(file);
-        uploadedFileInfo = uploadResponse.data;
-      }
-
-      const attachments = {
-        ...isupload,
-        fileinfo: uploadedFileInfo,
-      };
-
-      const customerData = {
-        customertype: parsedData.customertype,
-        type: parsedData.type,
-        groupname: parsedData.groupname,
-        turn: parsedData.turn,
-        batch: parsedData.batch,
-        registerdate: parsedData.registerdate,
-        registerprice: parsedData.registerprice,
-        additional: parsedData.additional || "",
-        registerpath: parsedData.registerpath,
-        specialnote: parsedData.specialnote || "", // 선택사항이므로 기본값 설정
-        prizewinning: parsedData.prizewinning || "",
-        customerData: parsedData.CustomerData,
-        legalAddress: parsedData.LegalAddress,
-        postreceive: parsedData.Postreceive,
-        financial: parsedData.Financial,
-        deposits: parsedData.Deposit,
-        attachments: attachments,
-        loan: parsedData.Loan || {},
-        responsible: parsedData.Responsible,
-        dahim: parsedData.Dahim || {},
-        mgm: parsedData.MGM,
-        firstemp: parsedData.Firstemp || {},
-        secondemp: parsedData.Secondemp || {},
-        meetingattend: parsedData.Meetingattend || {},
-        votemachine: parsedData.Votemachine || {},
-      };
-
-      const createUserResponse = await createUser(customerData);
-
-      Swal.fire({
-        icon: "success",
-        title: "회원정보가 입력되었습니다.",
-        text:
-          "관리번호 : " +
-          createUserResponse.data.id +
-          "/ 회원명 : " +
-          parsedData.CustomerData.name,
-      });
-
-      reset();
-      setFile(null);
-      setIsupload({
-        isuploaded: false,
-        sealcertificateprovided: false,
-        selfsignatureconfirmationprovided: false,
-        commitmentletterprovided: false,
-        idcopyprovided: false,
-        freeoption: false,
-        forfounding: false,
-        agreement: false,
-        preferenceattachment: false,
-        prizeattachment: false,
-        exemption7: false,
-        investmentfile: false,
-        contract: false,
-      });
-      if (typeof window !== 'undefined') {
-        window.scrollTo(0, 0);
-      }
-    } catch (error) {
-      console.error("Error creating user:", error);
-      Swal.fire({
-        icon: "error",
-        title: "회원정보 입력 실패",
-        text:
-          "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
-      });
+    // 파일 업로드
+    let uploadedFileInfo = "";
+    if (file) {
+      console.log("업로드할 파일:", file);
+      const uploadResponse = await createFile(file);
+      console.log("파일 업로드 응답:", uploadResponse);
+      uploadedFileInfo = uploadResponse.data; // 파일 경로 또는 필요한 정보
     }
-  };
+
+    // 데이터 파싱 및 정리
+    const parsedData = {
+      ...data,
+      CustomerData: {
+        ...data.CustomerData,
+        resnumfront: parseInt(data.CustomerData.resnumfront),
+        resnumback: parseInt(data.CustomerData.resnumback),
+      },
+      registerprice: parseInt(data.registerprice),
+      Deposit: {
+        ...data.Deposit,
+        depositammount: parseInt(data.Deposit.depositammount),
+      },
+    };
+
+    // Attachments 정보 추가
+    const attachments = {
+      ...isupload,
+      fileinfo: uploadedFileInfo,
+    };
+
+    // 최종 고객 데이터 구성
+    const customerData = {
+      customertype: data.customertype,
+      registerpath: data.registerpath,
+      type: data.type,
+      groupname: data.groupname,
+      turn: data.turn,
+      batch: data.batch,
+      registerdate: parsedData.registerdate,
+      registerprice: parsedData.registerprice,
+      CustomerData: parsedData.CustomerData,
+      Financial: parsedData.Financial,
+      LegalAddress: parsedData.LegalAddress,
+      Postreceive: parsedData.Postreceive,
+      MGM: data.MGM, // MGM 데이터
+      Responsible: data.Responsible, // 담당자 정보
+      Deposit: parsedData.Deposit,
+      attachments: attachments,
+      // 필요한 다른 필드들도 추가
+      exemption7: data.exemption7,
+      investmentfile: data.investmentfile,
+      contract: data.contract,
+      agreement: data.agreement,
+      preferenceattachment: data.preferenceattachment,
+      prizeattachment: data.prizeattachment,
+      // 기타 체크박스 필드
+      sealcertificateprovided: data.sealcertificateprovided,
+      selfsignatureconfirmationprovided: data.selfsignatureconfirmationprovided,
+      commitmentletterprovided: data.commitmentletterprovided,
+      idcopyprovided: data.idcopyprovided,
+      freeoption: data.freeoption,
+      forfounding: data.forfounding,
+      // specialnote 등 기타 필드
+      specialnote: data.specialnote,
+    };
+
+    // 고객 생성 API 호출
+    const createUserResponse = await createUser(customerData);
+
+    Swal.fire({
+      icon: "success",
+      title: "회원정보가 입력되었습니다.",
+      text:
+        "관리번호 : " +
+        createUserResponse.data.id +
+        "/ 회원명 : " +
+        parsedData.CustomerData.name,
+    });
+
+    reset();
+    setFile(null);
+    setIsupload({
+      isuploaded: false,
+      sealcertificateprovided: false,
+      selfsignatureconfirmationprovided: false,
+      commitmentletterprovided: false,
+      idcopyprovided: false,
+      freeoption: false,
+      forfounding: false,
+      agreement: false,
+      preferenceattachment: false,
+      prizeattachment: false,
+      exemption7: false,
+      investmentfile: false,
+      contract: false,
+    });
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    Swal.fire({
+      icon: "error",
+      title: "회원정보 입력 실패",
+      text:
+        "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
+    });
+  }
+};
+
+  
 
   return (
     <div>
@@ -557,17 +578,18 @@ function Create() {
               isError={!!errors.prizeattachment}
             />
           </div>
+          <div></div>
           <div>
-            <span>파일업로드</span>
-            <FileInputbox 
-              name="fileupload" 
-              handleChange={handleFileChange} 
-              register={register("fileupload")} 
-              isupload={isupload.isuploaded} 
-              value={file ? file.name : ""} 
-              isError={!!errors.fileupload}
-            />
-          </div>
+  <span>파일업로드</span>
+  <FileInputbox 
+    name="fileupload" 
+    handleChange={handleFileChange} 
+    register={register("fileupload")} 
+    isupload={isupload.isuploaded} 
+    value={file ? file.name : ""} 
+    isError={!!errors.fileupload}
+  />
+</div>
         </div>
 
         <h3>담당자 정보</h3>

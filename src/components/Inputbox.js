@@ -250,19 +250,29 @@ const iconstyle = {
   paddingLeft: "7%",
 };
 
-// FileInputbox 컴포넌트
+
 export const FileInputbox = (props) => {
-  const { className, handleChange, isupload, value, name, register, isError, ...rest } = props;
+  const { handleChange, isupload, value, name, register, isError, ...rest } = props;
+
+  // register에서 제공하는 onChange, onBlur, ref 분리
+  const { onChange: registerOnChange, onBlur, ref, ...restRegister } = register || {};
+
+  // 두 개의 onChange를 호출하는 함수
+  const combinedOnChange = (e) => {
+    handleChange(e); // 커스텀 핸들러 호출
+    if (registerOnChange) registerOnChange(e); // react-hook-form의 onChange 호출
+  };
 
   return (
-    <label className={styles.Fileinputcontainer} htmlFor={className}>
+    <label className={styles.Fileinputcontainer} htmlFor={name}>
       <input
         type="file"
-        id={className}
-        onChange={handleChange}
-        className={className}
+        id={name} // htmlFor과 동일하게 설정
+        onChange={combinedOnChange}
+        className={styles.fileInput} // 필요한 클래스명 추가
         name={name}
-        {...register}
+        ref={ref} // react-hook-form의 ref 전달
+        {...restRegister} // 나머지 register 속성 전달
         {...rest}
       />
       <p style={{ textAlign: "center", margin: 0 }}>
@@ -270,9 +280,9 @@ export const FileInputbox = (props) => {
       </p>
       {isupload ? (
         <>
-          <p className={styles.successtext}>업로드완료</p>
+          <p className={styles.successtext}>업로드 완료</p>
           <p className={styles.successfilename}>
-            {value.toString().slice(12)}
+            {value}
           </p>
         </>
       ) : (
@@ -289,6 +299,7 @@ export const FileInputbox = (props) => {
     </label>
   );
 };
+
 
 // PostInputbox 컴포넌트
 export const PostInputbox = (props) => {

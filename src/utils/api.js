@@ -19,7 +19,7 @@ export const createFile = (file) => {
   formData.append("file", file); // 백엔드에서 기대하는 'file' 키 사용
 
   return axios.post(path + "/files/upload", formData, {
-    headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
