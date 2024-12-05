@@ -1,0 +1,120 @@
+/* src/styles/Search.module.scss */
+
+.tablecontainer {
+  display: flex;
+  width: 100%;
+  margin: 30px 0;
+  border-bottom: 2px solid #ccc;
+}
+
+.unitContainer {
+  width: 125px; /* 필요에 따라 조정 가능 */
+  font-size: 14px;
+  color: #000;
+  padding: 10px;
+  margin-right: 20px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.maincontainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.rowContainer {
+  display: flex;
+  width: 100%;
+}
+
+.actionButtonsContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.editButton {
+  background-color: #f1c40f; /* 노란색 */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.editButton:hover {
+  background-color: #d4ac0d; /* 더 진한 노란색 */
+}
+
+.deleteButton {
+  background-color: #ff4d4f; /* 빨간색 */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: #ff7875; /* 더 진한 빨간색 */
+}
+
+.sortIcon {
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  color: #7152f3;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 150px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.dropdown div {
+  padding: 5px 0;
+}
+
+.dropdown label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.dropdown input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.dropdown label:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  display: flex;
+}

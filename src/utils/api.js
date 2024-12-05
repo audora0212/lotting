@@ -225,6 +225,23 @@ export const updateUser = (id, data) => {
     });
 };
 
+
+// 연체료 조회 페이지: 연체료 정보 가져오기
+export const fetchLateFees = (name, number, token) => {
+  return axios
+    .get(`${path}/latefees`, {
+      params: {
+        name: name.length > 1 ? name : undefined,
+        number: number.length > 1 ? number : undefined,
+      },
+    })
+    .then((result) => result.data)
+    .catch((error) => {
+      console.error("Error fetching late fees:", error);
+      throw error;
+    });
+};
+
 //=====================================================================================
 
 export const downloadFile = async (id, filename) => {

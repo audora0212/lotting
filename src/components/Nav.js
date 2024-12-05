@@ -11,6 +11,7 @@ import {
   AiFillDollarCircle,
 } from "react-icons/ai";
 import { HiOutlineUsers, HiUsers } from "react-icons/hi2";
+import { GrMoney } from "react-icons/gr";
 import LOGO from "@/img/logo.png";
 import styles from "../styles/Nav.module.scss";
 
@@ -80,7 +81,23 @@ const Nav = () => {
             </div>
           </div>
         </Link>
-
+        {/* 연체료 메뉴 Link */}
+        <Link href="/latefees">
+          <div
+            className={
+              splitpath[1] === "latefees" ? styles.select : styles.nonselect
+            }
+          >
+            <div className={styles.innerContainer}>
+              {splitpath[1] === "latefees" ? (
+                <GrMoney style={iconstyle} />
+              ) : (
+                <GrMoney style={iconstyle} />
+              )}
+              <span className={styles.innertext}>연체료</span>
+            </div>
+          </div>
+        </Link>
         {/* 차수 관리 Link */}
         <Link href="/control">
           <div
