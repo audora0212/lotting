@@ -1,7 +1,8 @@
 import { selector } from "recoil";
-import { fetchNameSearch, fetchNumberSearch, fetchT, fetchUserinfo, fetchLoanInit, fetchChasuData, fetchCustomers, fetchCustomerById } from "./api";
+import { fetchNameSearch, fetchNumberSearch, fetchT, fetchUserinfo, fetchLoanInit, fetchChasuData, fetchCustomers, fetchCustomerById, fetchPhaseData } from "./api";
 import { searchnameState, searchnumberState, useridState, searchtypeState, chasuState } from "./atom";
 
+//유저 검색
 export const userinfoSelector = selector({ 
   key: "userinfoSelector",
   get: async ({ get }) => {
@@ -18,7 +19,7 @@ export const userinfoSelector = selector({
     }
   },
 });
-
+//유저 검색2
 export const namesearchSelector = selector({
   key: 'namesearchSelector',
   get: async ({ get }) => {
@@ -40,37 +41,48 @@ export const namesearchSelector = selector({
 });
 
 
-//=======================================================================================
-
+/**
+ * 사용자 대출 정보 셀렉터
+ */
 export const usermoneySelector = selector({
   key: 'usermoneySelector',
   get: async ({ get }) => {
     const userid = get(useridState);
-    console.log(userid);
-    try {
-      const data = await fetchLoanInit(userid);
-      return data;
-    } catch (error) {
-      console.error('Error fetching userinfo: ', error);
-      throw error;
+    if (userid) {
+      try {
+        const data = await fetchLoanInit(userid);
+        return data;
+      } catch (error) {
+        console.error('Error fetching loan data: ', error);
+        throw error;
+      }
     }
+    return null;
   }
-})
+});
 
+
+/**
+ * 사용자 차수(Phase) 정보 셀렉터
+ */
 export const userchasuSelector = selector({
   key: 'userchasuSelector',
-  get: async ({get}) => {
+  get: async ({ get }) => {
     const userid = get(useridState);
     const chasu = get(chasuState);
-    if(userid){
-    try {
-      const data = await fetchChasuData(userid,chasu);
-      return data;
-    } catch (error) {
-      console.error('Error fetching chasu: ',error);
-      throw error;
-    }}
+    if (userid && chasu) {
+      try {
+        const phase = await fetchPhaseData(userid, chasu);
+        return phase;
+      } catch (error) {
+        console.error('Error fetching phase data:', error);
+        throw error;
+      }
+    }
+    return null;
   }
-})
+});
+//=======================================================================================
+
 
 

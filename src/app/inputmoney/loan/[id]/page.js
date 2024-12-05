@@ -1,4 +1,5 @@
 "use client";
+// src/app/inputmoney/loan/[id].js
 
 import {
   Inputbox,
@@ -52,19 +53,30 @@ function Inputmoneyloan() {
     const regex = /\/(\d+)$/;
     const match = pathname.match(regex);
     if (match) {
-      const extractedId = match[1];
+      const extractedId = parseInt(match[1], 10);
       setIdState(extractedId);
     }
-  }, [pathname, setIdState, IdState]);
+  }, [pathname, setIdState]);
 
-  const onSubmit = (data) => {
-    data["price1"] = price1;
-    data["price2"] = price2;
-    data["selfprice"] = parseInt(selfprice);
-    data["sumprice"] = tot;
-    console.log(data, IdState);
+  const onSubmit = (formData) => {
+    // Backend Loan 엔티티에 맞추어 데이터 구조 조정
+    const loanammount = parseInt(price1, 10) + parseInt(price2, 10);
+    const selfammount = parseInt(selfprice, 10);
+    const loanselfsum = loanammount + selfammount;
 
-    fetchLoanUpdate(IdState, data, () => {
+    const updatedData = {
+      loandate: loandate,
+      loanbank: "농협, 새마을", // 여러 대출 은행을 지원하려면 하나의 필드로 조합
+      loanammount: loanammount,
+      selfdate: selfdate,
+      selfammount: selfammount,
+      loanselfsum: loanselfsum,
+      loanselfcurrent: loanselfsum, // 현재 남은 금액을 단순히 합계로 설정
+    };
+
+    console.log("Updated Loan Data:", updatedData, "UserID:", IdState);
+
+    fetchLoanUpdate(IdState, updatedData, () => {
       router.back();
     });
   };
@@ -77,15 +89,15 @@ function Inputmoneyloan() {
     try {
       const fetchedData = await fetchLoanInit(IdState);
       setData(fetchedData);
-      console.log("fetchdata : ", fetchedData);
-      setLoandate(fetchedData.loandate);
-      setSelfdate(fetchedData.selfdate);
-      setPrice1(fetchedData.price1);
-      setPrice2(fetchedData.price2);
-      setSelfprice(fetchedData.selfprice);
-      settot(fetchedData.sumprice);
+      console.log("Fetched Loan Data:", fetchedData);
+      setLoandate(fetchedData.loandate ? fetchedData.loandate.substring(0, 10) : "");
+      setSelfdate(fetchedData.selfdate ? fetchedData.selfdate.substring(0, 10) : "");
+      setPrice1(fetchedData.loanammount ? (fetchedData.loanammount / 2).toString() : ""); // 임시: 두 은행으로 나누어 표시
+      setPrice2(fetchedData.loanammount ? (fetchedData.loanammount / 2).toString() : ""); // 임시: 두 은행으로 나누어 표시
+      setSelfprice(fetchedData.selfammount ? fetchedData.selfammount.toString() : "");
+      settot(fetchedData.loanselfsum || 0);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching loan data:", error);
     }
   };
 
@@ -105,9 +117,9 @@ function Inputmoneyloan() {
   }, [price1, price2, selfprice]);
 
   const calculateTotal = () => {
-    const price1Value = parseInt(price1) || 0;
-    const price2Value = parseInt(price2) || 0;
-    const selfpriceValue = parseInt(selfprice) || 0;
+    const price1Value = parseInt(price1, 10) || 0;
+    const price2Value = parseInt(price2, 10) || 0;
+    const selfpriceValue = parseInt(selfprice, 10) || 0;
     const total = price1Value + price2Value + selfpriceValue;
     settot(total);
   };
@@ -115,14 +127,20 @@ function Inputmoneyloan() {
   const onChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
-      case "price1": // 수정: name 속성을 price1, price2와 일치하도록 수정
+      case "price1":
         setPrice1(value);
         break;
-      case "price2": // 수정: name 속성을 price1, price2와 일치하도록 수정
+      case "price2":
         setPrice2(value);
         break;
-      case "selfprice": // 수정: name 속성을 selfprice와 일치하도록 수정
+      case "selfprice":
         setSelfprice(value);
+        break;
+      case "loandate":
+        setLoandate(value);
+        break;
+      case "selfdate":
+        setSelfdate(value);
         break;
       default:
         break;
@@ -157,6 +175,7 @@ function Inputmoneyloan() {
                 </div>
               </div>
               <div className={styles.InputBody}>
+                {/* 대출 섹션 */}
                 <div className={styles.InputBodyTitle}>
                   <div className={styles.IBTIcon}>
                     <div className={styles.Icon} style={{ color: "#7152F3" }}>
@@ -172,12 +191,8 @@ function Inputmoneyloan() {
                     date_placeholder="대출일"
                     name="loandate"
                     onChange={onChange}
-                    defaultValue={
-                      loandate
-                        ? new Date(loandate).toISOString().substring(0, 10)
-                        : 0
-                    }
-                    register={register("loandate")}
+                    defaultValue={loandate}
+                    {...register("loandate")}
                   />
                 </div>
                 <div className={styles.IBLayer}>
@@ -189,12 +204,11 @@ function Inputmoneyloan() {
                     placeholder="농협 대출금"
                     name="price1"
                     onChange={onChange}
-                    register={register("price1")}
-                    defaultValue={price1}
+                    {...register("price1")}
+                    value={price1}
                   />
                 </div>
-                {/* 한 덩어리 */}
-
+                {/* 새마을 대출 섹션 */}
                 <div className={styles.IBLayer}>
                   <div className={styles.IBTText2}>
                     <div className={styles.IBTText2Font}>새마을</div>
@@ -204,13 +218,12 @@ function Inputmoneyloan() {
                     placeholder="새마을대출금"
                     name="price2"
                     onChange={onChange}
-                    register={register("price2")}
-                    defaultValue={price2}
+                    {...register("price2")}
+                    value={price2}
                   />
                 </div>
-                {/* 한 덩어리 */}
 
-                {/* 한 덩어리 */}
+                {/* 자납 섹션 */}
                 <div className={styles.InputBodyTitle}>
                   <div className={styles.IBTIcon}>
                     <div className={styles.Icon} style={{ color: "#7152F3" }}>
@@ -226,15 +239,10 @@ function Inputmoneyloan() {
                     date_placeholder="자납일"
                     name="selfdate"
                     onChange={onChange}
-                    defaultValue={
-                      selfdate
-                        ? new Date(selfdate).toISOString().substring(0, 10)
-                        : 0
-                    }
-                    register={register("selfdate")}
+                    defaultValue={selfdate}
+                    {...register("selfdate")}
                   />
                 </div>
-                {/* 한 덩어리 */}
 
                 <div className={styles.IBLayer}>
                   <div className={styles.IBTText2}>
@@ -245,11 +253,12 @@ function Inputmoneyloan() {
                     placeholder="자납"
                     name="selfprice"
                     onChange={onChange}
-                    register={register("selfprice")}
-                    defaultValue={selfprice}
+                    {...register("selfprice")}
+                    value={selfprice}
                   />
                 </div>
 
+                {/* 총액 섹션 */}
                 <div className={styles.InputBodyTitle}>
                   <div className={styles.IBTIcon}>
                     <div className={styles.Icon} style={{ color: "#7152F3" }}>
@@ -266,11 +275,12 @@ function Inputmoneyloan() {
                   </div>
                 </div>
 
+                {/* 버튼 섹션 */}
                 <div className={styles.IBBottonLayer}>
-                  <Button_N>
+                  <Button_N type="button" onClick={() => router.back()}>
                     <div className={styles.BottonFont2}>취소</div>
                   </Button_N>
-                  <Button_Y>
+                  <Button_Y type="submit">
                     <div className={styles.BottonFont}>확인</div>
                   </Button_Y>
                 </div>
@@ -279,8 +289,8 @@ function Inputmoneyloan() {
           </form>
         </div>
       )}
-      ;
     </>
   );
 }
+
 export default withAuth(Inputmoneyloan);

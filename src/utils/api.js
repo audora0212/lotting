@@ -83,6 +83,93 @@ export const fetchCompletedPhases = async (userId) => {
     throw error;
   }
 };
+
+
+/**
+ * 특정 사용자의 특정 차수(Phase) 데이터를 가져옵니다.
+ * @param {number} userid - 사용자 ID
+ * @param {number} chasu - 차수 번호
+ * @returns {Promise<Object>} - Phase 데이터
+ */
+export const fetchPhaseData = (userid, chasu) => {
+  return axios
+    .get(`${path}/customers/${userid}/phases`)
+    .then((result) => {
+      const phases = result.data;
+      const phase = phases.find((p) => p.phaseNumber === parseInt(chasu, 10));
+      return phase;
+    })
+    .catch((error) => {
+      console.error("Error fetching phase data:", error);
+      throw error;
+    });
+};
+
+/**
+ * 특정 Phase를 업데이트합니다.
+ * @param {number} phaseId - Phase ID
+ * @param {Object} data - 업데이트할 데이터
+ * @returns {Promise<Object>} - 업데이트된 Phase 데이터
+ */
+export const updatePhaseData = (phaseId, data) => {
+  return axios
+    .put(`${path}/phases/${phaseId}`, data)
+    .then((result) => result.data)
+    .catch((error) => {
+      console.error("Error updating phase data:", error);
+      throw error;
+    });
+};
+
+/**
+ * 특정 Phase를 업데이트합니다. (콜백 사용)
+ * @param {number} phaseId - Phase ID
+ * @param {Object} data - 업데이트할 데이터
+ * @param {Function} callback - 업데이트 후 호출할 콜백 함수
+ */
+export const updatePhaseDataWithCallback = (phaseId, data, callback) => {
+  axios
+    .put(`${path}/phases/${phaseId}`, data)
+    .then(() => {
+      callback();
+    })
+    .catch((error) => {
+      console.error("Error updating phase data:", error);
+    });
+};
+
+
+/**
+ * 특정 사용자의 Loan 데이터를 가져옵니다.
+ * @param {number} userid - 사용자 ID
+ * @returns {Promise<Object>} - Loan 데이터
+ */
+export const fetchLoanInit = (userid) => {
+  return axios
+    .get(`${path}/customers/${userid}/loan`)
+    .then((result) => result.data)
+    .catch((error) => {
+      console.error("Error fetching loan data:", error);
+      throw error;
+    });
+};
+
+/**
+ * 특정 사용자의 Loan 데이터를 업데이트합니다.
+ * @param {number} userid - 사용자 ID
+ * @param {Object} data - 업데이트할 Loan 데이터
+ * @param {Function} callback - 업데이트 후 호출할 콜백 함수
+ */
+export const fetchLoanUpdate = (userid, data, callback) => {
+  axios
+    .put(`${path}/customers/${userid}/loan`, data)
+    .then(() => {
+      callback();
+    })
+    .catch((error) => {
+      console.error("Error updating loan data:", error);
+    });
+};
 //=====================================================================================
 
 export const downloadFile = async (id, filename) => {
@@ -200,48 +287,4 @@ export const deleteUser = (id) => { //Customer 삭제
     });
 };
 
-export const fetchLoanInit = (userid) => { //Customer 의 id로 Loan 항목 불러오기
-  return axios
-    .get(path + "/api/chasuinit/loan/" + userid)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
-};
 
-export const fetchChasuData = (userid, chasu) => { // Customer
-  return axios
-    .get(path + "/api/chasu/" + userid + "/" + chasu)
-    .then((result) => {
-      return result.data[0];
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
-};
-
-export const fetchChasuUpdate = (userid, data, callback) => {
-  axios
-    .put(path + "/api/chasuupdate/" + userid, data)
-    .then(() => {
-      callback();
-    })
-    .catch((error) => {
-      console.error("Error updating data:", error);
-    });
-};
-
-export const fetchLoanUpdate = (userid, data, callback) => {
-  axios
-    .put(path + "/api/loanupdate/" + userid, data)
-    .then(() => {
-      callback();
-    })
-    .catch((error) => {
-      console.error("Error updating data: ", error);
-    });
-};

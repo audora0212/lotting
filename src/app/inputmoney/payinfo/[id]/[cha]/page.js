@@ -1,4 +1,5 @@
 "use client";
+// src/app/inputmoney/payinfo/[id]/[cha].js
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -7,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { userchasuSelector, userinfoSelector } from "@/utils/selector";
 import { useridState, chasuState } from "@/utils/atom";
 import { useRecoilValueLoadable, useRecoilState } from "recoil";
-import { fetchChasuUpdate } from "@/utils/api";
+import { updatePhaseData, fetchPhaseData } from "@/utils/api"; // 수정된 API 함수
 import { Inputbox, Inputbox_M } from "@/components/Inputbox";
 import {
   PaymentScheduleButton,
@@ -33,35 +34,38 @@ const parseNumber = (value) => {
 
 function Inputmoneypay() {
   const { register, handleSubmit, setValue } = useForm();
-  const [pay, setpay] = useState("0");
-  const [work, setwork] = useState("0");
-  const [discount, setdiscount] = useState("0");
-  const [del, setdel] = useState("0");
-  const [tot, settotal] = useState(0);
-  const [payprice, setpayprice] = useState("0");
+  const [charge, setCharge] = useState("0");
+  const [service, setService] = useState("0");
+  const [discount, setDiscount] = useState("0");
+  const [exemption, setExemption] = useState("0");
+  const [total, setTotal] = useState(0);
+  const [charged, setCharged] = useState("0");
   const pathname = usePathname();
   const router = useRouter();
 
   const [IdState, setIdState] = useRecoilState(useridState);
   const [ChasuState, setChasuState] = useRecoilState(chasuState);
+  const [phaseId, setPhaseId] = useState(null); // Phase ID 상태
   const [userChasuData, setUserChasuData] = useState(null);
 
   const userChasudatas = useRecoilValueLoadable(userchasuSelector);
   const [userData, setUserData] = useState(null);
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
 
+  // URL에서 userid와 chasu 추출
   useEffect(() => {
     const regex = /\/(\d+)\/(\d+)$/;
     const match = pathname.match(regex);
 
     if (match) {
-      const extractedId = match[1];
-      const extractedChasu = match[2];
+      const extractedId = parseInt(match[1], 10);
+      const extractedChasu = parseInt(match[2], 10);
       setIdState(extractedId);
       setChasuState(extractedChasu);
     }
   }, [pathname, setIdState, setChasuState]);
 
+  // 사용자 정보 가져오기
   useEffect(() => {
     if (userselectordata.state === "hasValue") {
       const userdata = userselectordata.contents;
@@ -73,21 +77,28 @@ function Inputmoneypay() {
     }
   }, [userselectordata]);
 
+  // Phase 데이터 가져오기
   useEffect(() => {
-    if (userChasudatas.state === "hasValue") {
-      const userdata = userChasudatas.contents;
-      if (userdata === undefined) {
-        console.log("잘못된 접근입니다");
-      } else {
-        setUserChasuData(userdata);
-        setpay(formatNumber(userdata.pay));
-        setwork(formatNumber(userdata.work));
-        setdiscount(formatNumber(userdata.discount));
-        setdel(formatNumber(userdata.del));
-        setpayprice(formatNumber(userdata.payprice));
-      }
+    if (IdState && ChasuState) {
+      fetchPhaseData(IdState, ChasuState)
+        .then((phase) => {
+          if (phase) {
+            setUserChasuData(phase);
+            setPhaseId(phase.id); // Phase ID 설정
+            setCharge(formatNumber(phase.charge));
+            setService(formatNumber(phase.service));
+            setDiscount(formatNumber(phase.discount));
+            setExemption(formatNumber(phase.exemption));
+            setCharged(formatNumber(phase.charged));
+          } else {
+            console.log("해당 차수가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) => {
+          console.error("Phase 데이터를 가져오는 중 오류 발생:", error);
+        });
     }
-  }, [userChasudatas]);
+  }, [IdState, ChasuState]);
 
   const isValidDateString = (dateString) => {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -99,37 +110,50 @@ function Inputmoneypay() {
   };
 
   const onSubmit = (data) => {
-    data["sumprice"] =
-      parseInt(parseNumber(pay)) +
-      parseInt(parseNumber(work)) -
-      parseInt(parseNumber(discount)) -
-      parseInt(parseNumber(del));
-    if (data["isclear"] === undefined) {
-      data["isclear"] = false;
+    // 백엔드 Phase 엔티티에 맞추어 데이터 구조 조정
+    const updatedData = {
+      planneddate: data.planneddate,
+      fullpaiddate: data.fullpaiddate,
+      charge: parseNumber(charge),
+      service: parseNumber(service),
+      discount: parseNumber(discount),
+      exemption: parseNumber(exemption),
+      move: data.move || "",
+      charged: parseNumber(charged),
+      sum:
+        parseInt(parseNumber(charge)) +
+        parseInt(parseNumber(service)) -
+        parseInt(parseNumber(discount)) -
+        parseInt(parseNumber(exemption)),
+    };
+
+    if (phaseId) {
+      updatePhaseData(phaseId, updatedData)
+        .then(() => {
+          router.back();
+        })
+        .catch((error) => {
+          console.error("Phase 업데이트 중 오류 발생:", error);
+        });
+    } else {
+      console.error("유효한 Phase ID가 없습니다.");
     }
-    data["pay"] = parseNumber(pay);
-    data["work"] = parseNumber(work);
-    data["discount"] = parseNumber(discount);
-    data["del"] = parseNumber(del);
-    data["payprice"] = parseNumber(payprice);
-    fetchChasuUpdate(IdState, data, () => {
-      router.back();
-    });
   };
 
+  // 총액 계산
   useEffect(() => {
     calculateTotal();
-  }, [pay, work, discount, del, payprice]);
+  }, [charge, service, discount, exemption, charged]);
 
   const calculateTotal = () => {
-    const payValue = parseInt(parseNumber(pay)) || 0;
-    const workValue = parseInt(parseNumber(work)) || 0;
+    const chargeValue = parseInt(parseNumber(charge)) || 0;
+    const serviceValue = parseInt(parseNumber(service)) || 0;
     const discountValue = parseInt(parseNumber(discount)) || 0;
-    const deleteValue = parseInt(parseNumber(del)) || 0;
-    const paypriceValue = parseInt(parseNumber(payprice)) || 0;
+    const exemptionValue = parseInt(parseNumber(exemption)) || 0;
+    const chargedValue = parseInt(parseNumber(charged)) || 0;
     const total =
-      payValue + workValue - discountValue - deleteValue - paypriceValue;
-    settotal(total);
+      chargeValue + serviceValue - discountValue - exemptionValue - chargedValue;
+    setTotal(total);
   };
 
   const onChange = (e) => {
@@ -137,20 +161,20 @@ function Inputmoneypay() {
     const formattedValue = formatNumber(value);
 
     switch (name) {
-      case "pay":
-        setpay(formattedValue === "0" ? "" : formattedValue);
+      case "charge":
+        setCharge(formattedValue === "0" ? "" : formattedValue);
         break;
-      case "work":
-        setwork(formattedValue === "0" ? "" : formattedValue);
+      case "service":
+        setService(formattedValue === "0" ? "" : formattedValue);
         break;
       case "discount":
-        setdiscount(formattedValue === "0" ? "" : formattedValue);
+        setDiscount(formattedValue === "0" ? "" : formattedValue);
         break;
-      case "del":
-        setdel(formattedValue === "0" ? "" : formattedValue);
+      case "exemption":
+        setExemption(formattedValue === "0" ? "" : formattedValue);
         break;
-      case "payprice":
-        setpayprice(formattedValue === "0" ? "" : formattedValue);
+      case "charged":
+        setCharged(formattedValue === "0" ? "" : formattedValue);
         break;
       default:
         break;
@@ -172,7 +196,7 @@ function Inputmoneypay() {
                   <div className={styles.SearchClientNum}>
                     <div className={styles.SearchFont1}>성함 : </div>
                     <div className={styles.SearchFont2}>
-                      {userData.userinfo.name}
+                      {userData.customerData?.name}
                     </div>
                   </div>
                 </div>
@@ -202,7 +226,7 @@ function Inputmoneypay() {
                 <div className={styles.Line}></div>
                 <div className={styles.IBBottonLayer}>
                   <PaymentScheduleButton
-                    isclear={userChasuData.isclear}
+                    isclear={userChasuData.sum === 0} // sum이 0이면 완납
                     setValue={setValue}
                   />
                 </div>
@@ -210,11 +234,11 @@ function Inputmoneypay() {
                   <div className={styles.SearchFont}>완납일자</div>
                   <Inputbox
                     type="date"
-                    register={register("findate")}
+                    {...register("fullpaiddate")}
                     defaultValue={
-                      isValidDateString(userChasuData.findate)
-                        ? userChasuData.findate
-                        : null
+                      isValidDateString(userChasuData.fullpaiddate)
+                        ? userChasuData.fullpaiddate
+                        : ""
                     }
                   />
                 </div>
@@ -222,11 +246,11 @@ function Inputmoneypay() {
                   <div className={styles.SearchFont}>예정일자</div>
                   <Inputbox
                     type="date"
-                    register={register("duedate")}
+                    {...register("planneddate")}
                     defaultValue={
-                      isValidDateString(userChasuData.duedate)
-                        ? userChasuData.duedate
-                        : null
+                      isValidDateString(userChasuData.planneddate)
+                        ? userChasuData.planneddate
+                        : ""
                     }
                   />
                 </div>
@@ -234,18 +258,18 @@ function Inputmoneypay() {
                   <Inputbox_M
                     type="text"
                     placeholder="부담금"
-                    name="pay"
-                    register={register("pay")}
+                    name="charge"
+                    {...register("charge")}
                     onChange={onChange}
-                    defaultValue={pay}
+                    value={charge}
                   />
                   <Inputbox_M
                     type="text"
                     placeholder="업무대행비"
-                    name="work"
-                    register={register("work")}
+                    name="service"
+                    {...register("service")}
                     onChange={onChange}
-                    defaultValue={work}
+                    value={service}
                   />
                 </div>
                 <div className={styles.IBLayer}>
@@ -253,51 +277,46 @@ function Inputmoneypay() {
                     type="text"
                     placeholder="할인액"
                     name="discount"
-                    register={register("discount")}
+                    {...register("discount")}
                     onChange={onChange}
-                    defaultValue={discount}
+                    value={discount}
                   />
                   <Inputbox_M
                     type="text"
                     placeholder="면제액"
-                    name="del"
-                    register={register("del")}
+                    name="exemption"
+                    {...register("exemption")}
                     onChange={onChange}
-                    defaultValue={del}
+                    value={exemption}
                   />
                 </div>
                 <div className={styles.IBLayer}>
                   <Inputbox_M
                     type="text"
                     placeholder="이동"
-                    register={register("move")}
+                    {...register("move")}
                     defaultValue={userChasuData.move}
                   />
                   <Inputbox_M
                     type="text"
                     placeholder="납입액"
-                    name="payprice"
-                    register={register("payprice")}
+                    name="charged"
+                    {...register("charged")}
                     onChange={onChange}
-                    defaultValue={payprice}
-                  />
-                  <input
-                    type="hidden"
-                    {...register("chasu")}
-                    value={ChasuState}
+                    value={charged}
                   />
                 </div>
                 <div className={styles.IBLayer}>
                   <div className={styles.IBInputBox_S}>
                     <div className={styles.SearchFont1}>총액 :</div>
                     <div className={styles.SearchFont2}>
-                      {tot.toLocaleString()}₩
+                      {total.toLocaleString()}₩
                     </div>
                   </div>
                 </div>
                 <div className={styles.IBBottonLayer}>
-                  <Link href={"/inputmoney/userinfo/" + IdState}>
-                    <Button_N type="submit">
+                  <Link href={`/inputmoney/userinfo/${IdState}`}>
+                    <Button_N type="button">
                       <div className={styles.BottonFont2}>취소</div>
                     </Button_N>
                   </Link>
