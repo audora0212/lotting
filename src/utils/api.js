@@ -204,9 +204,33 @@ export const fetchSignup = (username, email, password, roles) => { // 매니저 
   });
 };
 
+export const cancelCustomer = (id) => {
+  return axios
+    .put(`${path}/customers/${id}/cancel`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error("Error cancelling customer:", error);
+      throw error;
+    });
+};
 
-
-
+// 고객 수정 API 함수
+export const updateUserinfo = (userid, data) => { // 고객 업데이트 Customer
+  // 파일 정보 처리
+  if (data.attachments && data.attachments.fileinfo) {
+    // 필요에 따라 fileinfo 처리
+    // 예: data.attachments.fileinfo = data.attachments.fileinfo.join(", ");
+  }
+  return axios
+    .put(`${path}/customers/${userid}`, data) // 백엔드 엔드포인트와 일치
+    .then((result) => {
+      return result.data;
+    })
+    .catch((error) => {
+      console.error("Error updating customer:", error);
+      throw error;
+    });
+};
 
 
 
@@ -244,20 +268,6 @@ export const downloadFile = async (id, filename) => {
 
 
 
-export const updateUserinfo = (userid, data) => { // 고객 업데이트 Customer
-  if (data.fileinfo && data.fileinfo._id) {
-    delete data.fileinfo._id;
-  }
-  return axios
-    .put(path + "/api/userinfo/" + userid, data)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.error(error);
-      throw error;
-    });
-};
 
 
 
