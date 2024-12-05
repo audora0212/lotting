@@ -14,6 +14,7 @@ export const newIdGenerate = () => {
     });
 };
 //고객 추가 페이지 파일 저장 기능
+// 파일 업로드 기능
 export const createFile = (file) => {
   const formData = new FormData();
   formData.append("file", file); // 백엔드에서 기대하는 'file' 키 사용
@@ -22,6 +23,41 @@ export const createFile = (file) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export const downloadFile = async (id, filename) => {
+  try {
+    const response = await axios.get(`${path}/files/download`, {
+      params: { id, filename }, // 'filename'은 이제 파일명만 포함
+      responseType: "blob", // 바이너리 데이터로 응답 받기
+    });
+
+    // 파일명 추출
+    const disposition = response.headers["content-disposition"];
+    let fileName = "downloaded_file";
+    if (disposition && disposition.indexOf("filename=") !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) { 
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+    }
+
+    // Blob의 MIME 타입을 설정하여 Blob 생성
+    const blob = new Blob([response.data], { type: response.headers["content-type"] });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    throw error;
+  }
+};
+
 
 
 //고객 추가 페이지
@@ -242,37 +278,10 @@ export const fetchLateFees = (name, number, token) => {
     });
 };
 
+
+
+
 //=====================================================================================
-
-export const downloadFile = async (id, filename) => {
-  try {
-    const response = await axios.post(
-      path + "/api/download",
-      { id, filename },
-      {
-        responseType: "blob",
-      }
-    );
-
-    // 파일 다운로드
-    const name = response.headers["content-disposition"]
-      .split("filename=")[1]
-      .replace(/"/g, "");
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", name);
-    link.style.cssText = "display:none";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error("Error downloading file:", error);
-    // 오류 처리
-  }
-};
-
-
 
 
 

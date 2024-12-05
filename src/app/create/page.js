@@ -77,7 +77,7 @@ function Create() {
   };
 
   const handleFileChange = (e) => {
-    console.log("file changing")
+    console.log("file changing");
     const { name, files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
@@ -92,9 +92,11 @@ function Create() {
       setIsupload((prev) => ({
         ...prev,
         [name]: true,
+        isuploaded: true, // 추가: isuploaded를 true로 설정
       }));
     }
   };
+  
   
 
   // onError 핸들러

@@ -1,14 +1,13 @@
-"use client"
-import styles from "@/styles/Button.module.scss"
-import { useState } from 'react'
-
+// src/components/Button.js
+"use client";
+import styles from "@/styles/Button.module.scss";
+import { useState } from 'react';
 import { CgSearch } from "react-icons/cg";
 import { FaFileDownload } from "react-icons/fa";
-
 import { downloadFile } from "@/utils/api";
 
 export const Button = (props) => {
-    return(
+    return (
         <button className={styles.buttonstyle}>
             {props.children}
         </button>
@@ -17,25 +16,20 @@ export const Button = (props) => {
 
 const iconstyle = { fontSize: "1.5em", marginLeft: "10px", marginTop: "10px" };
 
-export const DownloadButton = (props) => {
-    const userid = props.userid;
-    const filename = props.filename;
-
+export const DownloadButton = ({ userid, filename, children }) => {
     const handleClick = () => {
-        downloadFile(userid,filename);
+        downloadFile(userid, filename);
     }
-    return(
-        <>
-        <p>{props.children}</p>
+
+    return (
         <button className={styles.downloadbuttonstyle} onClick={handleClick}>
-            다운로드
+            {children || "다운로드"}
         </button>
-        </>
     )
-} 
+}
 
 export const CgSearchButton = (props) => {
-    return(
+    return (
         <button className={styles.CgButton}>
             <CgSearch />
             {props.children}
@@ -44,8 +38,8 @@ export const CgSearchButton = (props) => {
 }
 
 export const CheckButton = (props) => {
-    const {name, value} = props;
-    return(
+    const { name, value } = props;
+    return (
         <input type="checkbox" className={styles.checkstyle} name={name} value={value} />
     )
 }
@@ -63,10 +57,9 @@ export const Button_Y = ({ type = "submit", onClick, children, ...rest }) => {
       </button>
     );
   };
-  
 
 export const Button_N = (props) => {
-    return(
+    return (
         <button className={styles.buttonstyle_n}>
             {props.children}
         </button>
@@ -74,7 +67,7 @@ export const Button_N = (props) => {
 }
 
 export const SearchButton = (props) => {
-    return(
+    return (
         <button className={styles.searchbuttonstyle}>
             {props.children}
         </button>
@@ -82,7 +75,7 @@ export const SearchButton = (props) => {
 }
 
 export const ModifyButton = (props) => {
-    return(
+    return (
         <button className={styles.modifybutton} onClick={props.onClick}>
             {props.children}
         </button>
@@ -90,7 +83,7 @@ export const ModifyButton = (props) => {
 }
 
 export const ChecButton = (props) => {
-    return(
+    return (
         <button className={styles.checkbutton}>
             {props.children}
         </button>
@@ -102,12 +95,12 @@ export const PaymentScheduleButton = (props) => {
     const setValue = props.setValue;
     const handlePaymentClick = () => {
         setIsActivePayment(true); // 납입 버튼 활성화
-        setValue('isclear',true);
+        setValue('isclear', true);
     };
 
     const handleScheduleClick = () => {
         setIsActivePayment(false); // 예정 버튼 활성화
-        setValue('isclear',false);
+        setValue('isclear', false);
     };
 
     return (
@@ -115,7 +108,7 @@ export const PaymentScheduleButton = (props) => {
             <button type="button" className={`${styles.toggleButton} ${isActivePayment ? styles.active : ''}`} onClick={handlePaymentClick}>
                 <div className={styles.ButtonFont}>납입</div>
             </button>
-            <button  type="button" className={`${styles.toggleButton} ${!isActivePayment ? styles.active : ''}`} onClick={handleScheduleClick}>
+            <button type="button" className={`${styles.toggleButton} ${!isActivePayment ? styles.active : ''}`} onClick={handleScheduleClick}>
                 <div className={styles.ButtonFont2}>예정</div>
             </button>
         </>

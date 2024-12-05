@@ -11,7 +11,8 @@ import Link from "next/link";
 import { Inputbox, InputAreabox } from "@/components/Inputbox";
 import withAuth from "@/utils/hoc/withAuth";
 import { usePathname } from "next/navigation";
-import { FaEdit } from "react-icons/fa"; 
+import { FaEdit, FaFileDownload } from "react-icons/fa"; 
+import categoryMapping from "@/utils/categoryMapping"; // 카테고리 매핑 가져오기
 
 function Search() {
   const params = useParams();
@@ -38,18 +39,13 @@ function Search() {
 
   console.log(splitpath)
   console.log(splitpath[2])
-  const sortMapping = {
-    1: "정계약",
-    c: "청약",
-    j: "정계약",
-    r: "수정",
-    x: "해지",
-    x1: "해지",
-    p: "업대",
-    p1: "업대",
-    t: "창준위",
-    t1: "창준위",
-    g: "지주",
+  const sortMapping = categoryMapping; // categoryMapping 가져오기
+
+  // 파일명 추출 함수 추가
+  const getFileName = (filePath) => {
+    if (!filePath) return "";
+    // 정규식을 사용하여 파일명 추출 (역슬래시와 슬래시 모두 처리)
+    return filePath.split(/[/\\]/).pop();
   };
 
   switch (userselectordata.state) {
@@ -413,7 +409,7 @@ function Search() {
                           </td>
                           <td>{phase.move || "N/A"}</td>
                           <td>
-                            {/* n차합: 해당 차수의 feesum 합계 */}
+                            {/* n차합: 해당 차수의 feesum 합 */}
                             {userdata.phases
                               .filter(p => p.phaseNumber === phase.phaseNumber)
                               .reduce((sum, p) => sum + (p.feesum || 0), 0)}
@@ -555,7 +551,6 @@ function Search() {
                 </div>
               </div>
             </div>
-
             <h1></h1>
             <hr />
 
@@ -611,8 +606,11 @@ function Search() {
                   <span className={styles.title}>부속 서류</span>
                 </div>
                 <div className={styles.contentbody}>
-                  {userdata.attachments?.isuploaded ? (
-                    <DownloadButton userid={userid} filename="upload">
+                  {userdata.attachments?.isuploaded && userdata.attachments?.fileinfo ? (
+                    <DownloadButton 
+                      userid={userdata.id} 
+                      filename={getFileName(userdata.attachments.fileinfo)} // 파일명만 전달
+                    >
                       다운로드
                     </DownloadButton>
                   ) : (
