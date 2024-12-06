@@ -1,5 +1,5 @@
 import axios from "axios";
-const path = "http://localhost:8080";//Immigrant
+const path = "http://211.201.69.236:8080";//Immigrant
 
 //고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => { 
