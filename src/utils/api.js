@@ -1,6 +1,21 @@
 import axios from "axios";
 const path = "http://localhost:8080";
-// JUN SEO OH 개발 환경에서 사용하는 path 입니다. git 시 필수로 주석처리.\
+
+// request interceptor
+api.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const newIdGenerate = () => {
   return axios
@@ -54,11 +69,13 @@ export const downloadFile = async (id, filename) => {
   }
 };
 
-export const createUser = (data) => { // 고객 만들기 Customer
+export const createUser = (data) => {
+  // 고객 만들기 Customer
   return axios.post(path + "/api/createuser", data);
 };
 
-export const updateUserinfo = (userid, data) => { // 고객 업데이트 Customer
+export const updateUserinfo = (userid, data) => {
+  // 고객 업데이트 Customer
   if (data.fileinfo && data.fileinfo._id) {
     delete data.fileinfo._id;
   }
@@ -73,14 +90,16 @@ export const updateUserinfo = (userid, data) => { // 고객 업데이트 Custome
     });
 };
 
-export const fetchLogin = (username, password) => { // 매니저 로그인
+export const fetchLogin = (username, password) => {
+  // 매니저 로그인
   return axios.post(path + "/api/auth/signin", {
     username,
     password,
   });
 };
 
-export const fetchSignup = (username, email, password, roles) => { // 매니저 회원가입
+export const fetchSignup = (username, email, password, roles) => {
+  // 매니저 회원가입
   return axios.post(path + "/api/auth/signup", {
     username,
     email,
@@ -89,7 +108,8 @@ export const fetchSignup = (username, email, password, roles) => { // 매니저 
   });
 };
 
-export const fetchUserinfo = (userid) => { // 고객정보 불러오기 customer
+export const fetchUserinfo = (userid) => {
+  // 고객정보 불러오기 customer
   return axios
     .get(path + "/api/userinfo/" + userid)
     .then((result) => {
@@ -101,7 +121,8 @@ export const fetchUserinfo = (userid) => { // 고객정보 불러오기 customer
     });
 };
 
-export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phase 불러오기
+export const searchFinchasu = (userid) => {
+  // Customer의 이미 납부된 Phase 불러오기
   return axios
     .get(path + "/api/chasuinit/fin/" + userid)
     .then((result) => {
@@ -113,7 +134,8 @@ export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phas
     });
 };
 
-export const searchPrechasu = (userid) => { // Customer의 아직 납부되지 않은 Phase 불러오기
+export const searchPrechasu = (userid) => {
+  // Customer의 아직 납부되지 않은 Phase 불러오기
   return axios
     .get(path + "/api/chasuinit/pre/" + userid)
     .then((result) => {
@@ -125,8 +147,8 @@ export const searchPrechasu = (userid) => { // Customer의 아직 납부되지 �
     });
 };
 
-
-export const fetchNameSearch = (username) => { //이름으로 Customer 찾기
+export const fetchNameSearch = (username) => {
+  //이름으로 Customer 찾기
   return axios
     .get(path + "/api/searchname/" + username)
     .then((result) => {
@@ -138,8 +160,8 @@ export const fetchNameSearch = (username) => { //이름으로 Customer 찾기
     });
 };
 
-
-export const fetchNumberSearch = (usernumber) => { //회원번호로 Customer 찾기
+export const fetchNumberSearch = (usernumber) => {
+  //회원번호로 Customer 찾기
   return axios
     .get(`${path}/api/searchnumber/${usernumber}`)
     .then((result) => {
@@ -151,8 +173,8 @@ export const fetchNumberSearch = (usernumber) => { //회원번호로 Customer �
     });
 };
 
-
-export const deleteUser = (id) => { //Customer 삭제
+export const deleteUser = (id) => {
+  //Customer 삭제
   return axios
     .post(path + "/api/deleteuser", { id: id.toString() })
     .then((result) => {
@@ -164,7 +186,8 @@ export const deleteUser = (id) => { //Customer 삭제
     });
 };
 
-export const fetchLoanInit = (userid) => { //Customer 의 id로 Loan 항목 불러오기
+export const fetchLoanInit = (userid) => {
+  //Customer 의 id로 Loan 항목 불러오기
   return axios
     .get(path + "/api/chasuinit/loan/" + userid)
     .then((result) => {
@@ -176,7 +199,8 @@ export const fetchLoanInit = (userid) => { //Customer 의 id로 Loan 항목 불�
     });
 };
 
-export const fetchChasuData = (userid, chasu) => { // Customer
+export const fetchChasuData = (userid, chasu) => {
+  // Customer
   return axios
     .get(path + "/api/chasu/" + userid + "/" + chasu)
     .then((result) => {

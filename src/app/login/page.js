@@ -11,8 +11,8 @@ import AuthContext from "@/utils/context/AuthContext";
 export default function Login() {
   const { login } = useContext(AuthContext);
   const [userform, setUserform] = useState({
-    id: "",
-    pw: "",
+    username: "",
+    password: "",
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
@@ -34,10 +34,9 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetchLogin(userform.id, userform.pw);
+      const response = await fetchLogin(userform.username, userform.password);
       const token = response.data.token;
-      console.log("asd");
-      login(userform.id, token);
+      login(userform.username, token);
       Swal.fire({
         title: "로그인 성공",
         text: "로그인에 성공했습니다!",
@@ -48,10 +47,12 @@ export default function Login() {
       });
       console.log("Login successful:", response.data);
     } catch (error) {
-      console.error("Login error:", error.response.data.message);
+      const errorMessage =
+        error?.response?.data?.message || "로그인에 실패했습니다.";
+      console.error("Login error:", errorMessage);
       Swal.fire({
         title: "로그인 실패",
-        text: error.response.data.message || "로그인에 실패했습니다.",
+        text: errorMessage,
         icon: "error",
         confirmButtonText: "확인",
       });
@@ -75,12 +76,12 @@ export default function Login() {
         <h3>민간임대주택 분양인관리시스템에 오신것을 환영합니다!</h3>
         <form onSubmit={handleSubmit}>
           <LoginInputbox
-            name="id"
+            name="username"
             placeholder="아이디"
             onChange={handleChange}
           />
           <LoginInputbox
-            name="pw"
+            name="password"
             placeholder="비밀번호"
             type="password"
             onChange={handleChange}
