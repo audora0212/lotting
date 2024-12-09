@@ -1,57 +1,51 @@
 "use client";
-import Mininav from "@/components/Mininav";
 import styles from "@/styles/Userinfo.module.scss";
-import { useParams } from "next/navigation"; // useParams 훅 추가
-import { useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { useParams, usePathname } from "next/navigation";
+import { useRecoilValueLoadable, useSetRecoilState, useRecoilRefresher_UNSTABLE } from "recoil";
 import { userinfoSelector } from "@/utils/selector";
-import { useEffect } from "react"; // useEffect로 변경
+import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
 import { DownloadButton, Button } from "@/components/Button";
 import Link from "next/link";
-import { Inputbox, InputAreabox } from "@/components/Inputbox";
 import withAuth from "@/utils/hoc/withAuth";
-import { usePathname } from "next/navigation";
-import { FaEdit, FaFileDownload } from "react-icons/fa"; 
-import categoryMapping from "@/utils/categoryMapping"; // 카테고리 매핑 가져오기
+import { FaEdit } from "react-icons/fa";
+import categoryMapping from "@/utils/categoryMapping";
 
 function Search() {
   const params = useParams();
   const userid = params.id;
   const setIdState = useSetRecoilState(useridState);
 
+  // userinfoSelector를 강제로 재실행하기 위한 refresher
+  const refreshUserInfo = useRecoilRefresher_UNSTABLE(userinfoSelector);
+
   useEffect(() => {
     if (userid) {
       setIdState(userid);
+      // 페이지 마운트 시 강제로 selector 재실행
+      refreshUserInfo();
     } else {
       console.error("유효하지 않은 사용자 ID입니다.");
     }
-  }, [userid, setIdState]);
+  }, [userid, setIdState, refreshUserInfo]);
 
-  // useridState가 설정되었는지 확인
-  const useridStateValue = useRecoilValue(useridState);
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
-  if (!useridStateValue) {
-    // useridState가 설정되기 전에는 로딩 상태를 표시하거나 null을 반환
-    return null;
-  }
   const pathname = usePathname();
-  const splitpath = pathname.split("/"); //splitpath[3]
+  const splitpath = pathname.split("/");
+  const sortMapping = categoryMapping;
 
-  console.log(splitpath)
-  console.log(splitpath[2])
-  const sortMapping = categoryMapping; // categoryMapping 가져오기
-
-  // 파일명 추출 함수 추가
   const getFileName = (filePath) => {
     if (!filePath) return "";
-    // 정규식을 사용하여 파일명 추출 (역슬래시와 슬래시 모두 처리)
     return filePath.split(/[/\\]/).pop();
   };
+
+  if (!userid) {
+    return null;
+  }
 
   switch (userselectordata.state) {
     case "hasValue":
       const userdata = userselectordata.contents;
-      console.log(userdata);
       if (!userdata)
         return (
           <>
@@ -119,7 +113,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 관리 정보 */}
             <div className={styles.rowcontainer}>
               {/* 타입 */}
               <div className={styles.unitbody}>
@@ -170,7 +163,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 가입 및 예약금 정보 */}
             <div className={styles.rowcontainer}>
               {/* 가입일자 */}
               <div className={styles.unitbody}>
@@ -230,7 +222,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 주소 정보 */}
             <div className={styles.rowcontainer}>
               {/* 법정주소 */}
               <div className={styles.postunitbody}>
@@ -238,7 +229,9 @@ function Search() {
                   <span className={styles.title}>법정주소</span>
                 </div>
                 <div className={styles.postcontentbody}>
-                  <span>{userdata.legalAddress?.detailaddress || "정보 없음"}</span>
+                  <span>
+                    {userdata.legalAddress?.detailaddress || "정보 없음"}
+                  </span>
                 </div>
               </div>
               {/* 우편물 수령주소 */}
@@ -247,12 +240,13 @@ function Search() {
                   <span className={styles.title}>우편물 수령주소</span>
                 </div>
                 <div className={styles.postcontentbody}>
-                  <span>{userdata.postreceive?.detailaddressreceive || "정보 없음"}</span>
+                  <span>
+                    {userdata.postreceive?.detailaddressreceive || "정보 없음"}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* 금융 정보 */}
             <div className={styles.rowcontainer}>
               {/* 은행명 */}
               <div className={styles.unitbody}>
@@ -283,7 +277,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 부속서류 */}
             <div className={styles.rowcontainer}>
               {/* 7차 면제 */}
               <div className={styles.unitbody}>
@@ -326,7 +319,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 담당자 정보 */}
             <div className={styles.rowcontainer}>
               {/* 총괄 */}
               <div className={styles.unitbody}>
@@ -368,7 +360,6 @@ function Search() {
             <h1></h1>
             <hr />
 
-            {/* Phase 정보 */}
             <h3>납입차수 정보</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
@@ -409,7 +400,6 @@ function Search() {
                           </td>
                           <td>{phase.move || "N/A"}</td>
                           <td>
-                            {/* n차합: 해당 차수의 feesum 합 */}
                             {userdata.phases
                               .filter(p => p.phaseNumber === phase.phaseNumber)
                               .reduce((sum, p) => sum + (p.feesum || 0), 0)}
@@ -423,7 +413,6 @@ function Search() {
                     )}
                   </tbody>
                 </table>
-                {/* 납입차수 합계 */}
                 <div className={styles.phase_sum}>
                   <span>
                     n차합:{" "}
@@ -435,7 +424,6 @@ function Search() {
               </div>
             </div>
 
-            {/* Loan 정보 */}
             <h3>대출 및 자납 정보</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
@@ -482,7 +470,6 @@ function Search() {
               </div>
             </div>
 
-            {/* 총 면제금액 */}
             <h3>총 면제금액</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
@@ -492,14 +479,15 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.phases
-                      ? userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                       : "0"}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* 해약 고객 정보 */}
             {userdata.customertype === 'x' && (
               <>
                 <h3>해약 고객 정보</h3>
@@ -535,7 +523,6 @@ function Search() {
               </>
             )}
 
-            {/* 납입 총액 */}
             <h3>납입 총액</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
@@ -545,7 +532,9 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.phases
-                      ? userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                       : "0"}
                   </span>
                 </div>
@@ -554,7 +543,6 @@ function Search() {
             <h1></h1>
             <hr />
 
-            {/* MGM 정보 */}
             <h3>MGM</h3>
             <div className={styles.rowcontainer}>
               {/* 업체명 */}
@@ -597,19 +585,17 @@ function Search() {
             <h1></h1>
             <hr />
 
-            {/* 부속서류 */}
             <h3>부속서류</h3>
             <div className={styles.rowcontainer}>
-              {/* 부속 서류 다운로드 버튼 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <span className={styles.title}>부속 서류</span>
                 </div>
                 <div className={styles.contentbody}>
                   {userdata.attachments?.isuploaded && userdata.attachments?.fileinfo ? (
-                    <DownloadButton 
-                      userid={userdata.id} 
-                      filename={getFileName(userdata.attachments.fileinfo)} // 파일명만 전달
+                    <DownloadButton
+                      userid={userdata.id}
+                      filename={getFileName(userdata.attachments.fileinfo)}
                     >
                       다운로드
                     </DownloadButton>
@@ -618,7 +604,6 @@ function Search() {
                   )}
                 </div>
               </div>
-              {/* 부속 서류 상태 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <span className={styles.title}>부속 서류 상태</span>
@@ -704,7 +689,6 @@ function Search() {
             <h1></h1>
             <hr />
 
-            {/* 납입금 관리 */}
             <h3>납입금 관리</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.linkbutton}>
@@ -717,7 +701,6 @@ function Search() {
             </div>
             <hr />
 
-            {/* 기타 정보 */}
             <h3>기타 정보</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
