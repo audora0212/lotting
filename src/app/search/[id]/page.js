@@ -39,6 +39,12 @@ function Search() {
     return filePath.split(/[/\\]/).pop();
   };
 
+  // 콤마 삽입 함수
+  const formatNumberWithComma = (num) => {
+    if (num == null) return "정보 없음";
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   if (!userid) {
     return null;
   }
@@ -185,9 +191,7 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.registerprice
-                      ? userdata.registerprice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? formatNumberWithComma(userdata.registerprice)
                       : "정보 없음"}
                   </span>
                 </div>
@@ -213,9 +217,7 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.deposits?.depositammount
-                      ? userdata.deposits.depositammount
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? formatNumberWithComma(userdata.deposits.depositammount)
                       : "정보 없음"}
                   </span>
                 </div>
@@ -385,24 +387,26 @@ function Search() {
                           <td>{phase.fullpaiddate ? phase.fullpaiddate.slice(0,10) : "N/A"}</td>
                           <td>
                             {phase.charge
-                              ? phase.charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              ? formatNumberWithComma(phase.charge)
                               : "N/A"}
                           </td>
                           <td>
                             {phase.service
-                              ? phase.service.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              ? formatNumberWithComma(phase.service)
                               : "N/A"}
                           </td>
                           <td>
                             {phase.charged
-                              ? phase.charged.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                              ? formatNumberWithComma(phase.charged)
                               : "N/A"}
                           </td>
                           <td>{phase.move || "N/A"}</td>
                           <td>
-                            {userdata.phases
-                              .filter(p => p.phaseNumber === phase.phaseNumber)
-                              .reduce((sum, p) => sum + (p.feesum || 0), 0)}
+                            {formatNumberWithComma(
+                              userdata.phases
+                                .filter(p => p.phaseNumber === phase.phaseNumber)
+                                .reduce((sum, p) => sum + (p.feesum || 0), 0)
+                            )}
                           </td>
                         </tr>
                       ))
@@ -416,9 +420,11 @@ function Search() {
                 <div className={styles.phase_sum}>
                   <span>
                     n차합:{" "}
-                    {userdata.phases
-                      ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
-                      : 0}
+                    {formatNumberWithComma(
+                      userdata.phases
+                        ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
+                        : 0
+                    )}
                   </span>
                 </div>
               </div>
@@ -445,18 +451,18 @@ function Search() {
                         <td>{userdata.loan.loanbank || "정보 없음"}</td>
                         <td>
                           {userdata.loan.loanammount
-                            ? userdata.loan.loanammount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            ? formatNumberWithComma(userdata.loan.loanammount)
                             : "N/A"}
                         </td>
                         <td>{userdata.loan.selfdate ? userdata.loan.selfdate.slice(0,10) : "N/A"}</td>
                         <td>
                           {userdata.loan.selfammount
-                            ? userdata.loan.selfammount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            ? formatNumberWithComma(userdata.loan.selfammount)
                             : "N/A"}
                         </td>
                         <td>
                           {userdata.loan.loanselfsum
-                            ? userdata.loan.loanselfsum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            ? formatNumberWithComma(userdata.loan.loanselfsum)
                             : "N/A"}
                         </td>
                       </tr>
@@ -479,9 +485,9 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.phases
-                      ? userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0)
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? formatNumberWithComma(
+                          userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0)
+                        )
                       : "0"}
                   </span>
                 </div>
@@ -532,9 +538,9 @@ function Search() {
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.phases
-                      ? userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      ? formatNumberWithComma(
+                          userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
+                        )
                       : "0"}
                   </span>
                 </div>
