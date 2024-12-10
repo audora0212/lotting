@@ -10,17 +10,31 @@ import Swal from "sweetalert2";
 import Link from "next/link";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
-const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortConfig }) => {
+const LateFeeList = ({
+  name,
+  number,
+  linkBase,
+  setLateFees,
+  sortConfig,
+  setSortConfig,
+}) => {
   const [localLateFees, setLocalLateFees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+    const currentName = name;
+    const currentNumber = number;
+
     const fetchData = async () => {
       try {
         const data = await fetchLateFees(name, number);
-        setLocalLateFees(data);
-        setLateFees(data); // 상위 상태 업데이트
+        // 요청 당시의 name/number와 응답 도착 시점 name/number가 동일하고 컴포넌트가 여전히 마운트 상태인지 확인
+        if (isMounted && currentName === name && currentNumber === number) {
+          setLocalLateFees(data);
+          setLateFees(data); // 상위 상태 업데이트
+        }
       } catch (error) {
         console.error("Error fetching late fees:", error);
         // 필요 시 에러 처리 (예: 로그인 페이지로 리다이렉트)
@@ -28,6 +42,10 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [name, number, setLateFees]);
 
   // 정렬 핸들러
@@ -136,10 +154,7 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
     <div>
       <div className={styles.tablecontainer}>
         {/* 테이블 헤더 */}
-        <div
-          className={styles.unitContainer}
-          onClick={() => handleSort("id")}
-        >
+        <div className={styles.unitContainer} onClick={() => handleSort("id")}>
           <span>
             ID
             <span className={styles.sortIcon}>{getSortIcon("id")}</span>
@@ -151,7 +166,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             마지막 미납 차수
-            <span className={styles.sortIcon}>{getSortIcon("lastUnpaidPhaseNumber")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("lastUnpaidPhaseNumber")}
+            </span>
           </span>
         </div>
         <div
@@ -160,7 +177,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             분류
-            <span className={styles.sortIcon}>{getSortIcon("customertype")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("customertype")}
+            </span>
           </span>
         </div>
         <div
@@ -178,7 +197,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             가입일
-            <span className={styles.sortIcon}>{getSortIcon("registerdate")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("registerdate")}
+            </span>
           </span>
         </div>
         <div
@@ -187,7 +208,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             연체기준일
-            <span className={styles.sortIcon}>{getSortIcon("lateBaseDate")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("lateBaseDate")}
+            </span>
           </span>
         </div>
         <div
@@ -196,7 +219,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             최근납부
-            <span className={styles.sortIcon}>{getSortIcon("recentPaymentDate")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("recentPaymentDate")}
+            </span>
           </span>
         </div>
         <div
@@ -205,7 +230,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             일수
-            <span className={styles.sortIcon}>{getSortIcon("daysOverdue")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("daysOverdue")}
+            </span>
           </span>
         </div>
         <div
@@ -223,7 +250,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
         >
           <span>
             연체금액
-            <span className={styles.sortIcon}>{getSortIcon("overdueAmount")}</span>
+            <span className={styles.sortIcon}>
+              {getSortIcon("overdueAmount")}
+            </span>
           </span>
         </div>
         <div
@@ -253,7 +282,6 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
             <span className={styles.sortIcon}>{getSortIcon("totalOwed")}</span>
           </span>
         </div>
-        {/* Actions 열 제거 */}
       </div>
 
       {/* 테이블 바디 */}
@@ -272,14 +300,10 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
               </div>
               <div className={styles.unitContainer}>{fee.name || "N/A"}</div>
               <div className={styles.unitContainer}>
-                {fee.registerdate
-                  ? fee.registerdate.slice(0, 10)
-                  : "N/A"}
+                {fee.registerdate ? fee.registerdate.slice(0, 10) : "N/A"}
               </div>
               <div className={styles.unitContainer}>
-                {fee.lateBaseDate
-                  ? fee.lateBaseDate.slice(0, 10)
-                  : "N/A"}
+                {fee.lateBaseDate ? fee.lateBaseDate.slice(0, 10) : "N/A"}
               </div>
               <div className={styles.unitContainer}>
                 {fee.recentPaymentDate
@@ -287,7 +311,9 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
                   : "N/A"}
               </div>
               <div className={styles.unitContainer}>{fee.daysOverdue}</div>
-              <div className={styles.unitContainer}>{fee.lateRate.toFixed(2)}</div>
+              <div className={styles.unitContainer}>
+                {fee.lateRate.toFixed(2)}
+              </div>
               <div className={styles.unitContainer}>
                 {fee.overdueAmount.toLocaleString()}원
               </div>
@@ -302,7 +328,6 @@ const LateFeeList = ({ name, number, linkBase, setLateFees, sortConfig, setSortC
               </div>
             </div>
           </Link>
-          {/* Actions 버튼 제거 */}
         </div>
       ))}
 
