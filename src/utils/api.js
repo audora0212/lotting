@@ -1,8 +1,8 @@
 import axios from "axios";
-const path = "http://localhost:8080";//Immigrant
+const path = "http://localhost:8080"; //Immigrant
 
 //고객 추가 페이지 새로운 아이디 받아오기
-export const newIdGenerate = () => { 
+export const newIdGenerate = () => {
   return axios
     .get(path + "/customers/nextId")
     .then((result) => {
@@ -37,13 +37,15 @@ export const downloadFile = async (id, filename) => {
     if (disposition && disposition.indexOf("filename=") !== -1) {
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
       const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) { 
+      if (matches != null && matches[1]) {
         fileName = matches[1].replace(/['"]/g, "");
       }
     }
 
     // Blob의 MIME 타입을 설정하여 Blob 생성
-    const blob = new Blob([response.data], { type: response.headers["content-type"] });
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -58,8 +60,6 @@ export const downloadFile = async (id, filename) => {
   }
 };
 
-
-
 //고객 추가 페이지
 export const createUser = (data) => {
   return axios.post(path + "/customers", data);
@@ -68,20 +68,22 @@ export const createUser = (data) => {
 //검색 페이지 유저 분류, 검색 기능
 export const fetchCustomers = (params) => {
   // params는 { name: '...', number: '...'} 형태
-  return axios.get(`${path}/customers/search`, { params })
-    .then(response => response.data)
-    .catch(error => {
-      console.error('Error fetching customers:', error);
+  return axios
+    .get(`${path}/customers/search`, { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error fetching customers:", error);
       throw error;
     });
 };
 
 //검색 페이지 삭제 기능
 export const deleteCustomer = (id) => {
-  return axios.delete(`${path}/customers/${id}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.error('Error deleting customer:', error);
+  return axios
+    .delete(`${path}/customers/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error deleting customer:", error);
       throw error;
     });
 };
@@ -100,7 +102,9 @@ export const fetchCustomerById = (id) => {
 //납부 전 차수들 데이터
 export const fetchPendingPhases = async (userId) => {
   try {
-    const response = await axios.get(`${path}/customers/${userId}/pending-phases`);
+    const response = await axios.get(
+      `${path}/customers/${userId}/pending-phases`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching pending phases:", error);
@@ -108,18 +112,18 @@ export const fetchPendingPhases = async (userId) => {
   }
 };
 
-
 //납부 후 차수들 데이터
 export const fetchCompletedPhases = async (userId) => {
   try {
-    const response = await axios.get(`${path}/customers/${userId}/completed-phases`);
+    const response = await axios.get(
+      `${path}/customers/${userId}/completed-phases`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching completed phases:", error);
     throw error;
   }
 };
-
 
 /**
  * 특정 사용자의 특정 차수(Phase) 데이터를 가져옵니다.
@@ -174,7 +178,6 @@ export const updatePhaseDataWithCallback = (phaseId, data, callback) => {
     });
 };
 
-
 /**
  * 특정 사용자의 Loan 데이터를 가져옵니다.
  * @param {number} userid - 사용자 ID
@@ -207,8 +210,6 @@ export const fetchLoanUpdate = (userid, data, callback) => {
     });
 };
 
-
-
 // JWT 토큰을 포함한 요청을 위해 Axios 인터셉터 설정
 axios.interceptors.request.use(
   (config) => {
@@ -223,15 +224,16 @@ axios.interceptors.request.use(
   }
 );
 
-
-export const fetchLogin = (username, password) => { // 매니저 로그인
+export const fetchLogin = (username, password) => {
+  // 매니저 로그인
   return axios.post(path + "/api/auth/signin", {
     username,
     password,
   });
 };
 
-export const fetchSignup = (username, email, password, roles) => { // 매니저 회원가입
+export const fetchSignup = (username, email, password, roles) => {
+  // 매니저 회원가입
   return axios.post(path + "/api/auth/signup", {
     username,
     email,
@@ -243,24 +245,23 @@ export const fetchSignup = (username, email, password, roles) => { // 매니저 
 export const cancelCustomer = (id) => {
   return axios
     .put(`${path}/customers/${id}/cancel`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       console.error("Error cancelling customer:", error);
       throw error;
     });
 };
 
-
 // 고객 정보 업데이트 기능
 export const updateUser = (id, data) => {
-  return axios.put(`${path}/customers/${id}`, data)
-    .then(response => response.data)
-    .catch(error => {
+  return axios
+    .put(`${path}/customers/${id}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
       console.error("Error updating user:", error);
       throw error;
     });
 };
-
 
 // 연체료 조회 페이지: 연체료 정보 가져오기
 export const fetchLateFees = (name, number, token) => {
@@ -278,16 +279,10 @@ export const fetchLateFees = (name, number, token) => {
     });
 };
 
-
-
-
 //=====================================================================================
 
-
-
-
-
-export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phase 불러오기
+export const searchFinchasu = (userid) => {
+  // Customer의 이미 납부된 Phase 불러오기
   return axios
     .get(path + "/api/chasuinit/fin/" + userid)
     .then((result) => {
@@ -299,9 +294,8 @@ export const searchFinchasu = (userid) => { // Customer의 이미 납부된 Phas
     });
 };
 
-
-
-export const fetchNameSearch = (username) => { //이름으로 Customer 찾기
+export const fetchNameSearch = (username) => {
+  //이름으로 Customer 찾기
   return axios
     .get(path + "/api/searchname/" + username)
     .then((result) => {
@@ -313,8 +307,8 @@ export const fetchNameSearch = (username) => { //이름으로 Customer 찾기
     });
 };
 
-
-export const fetchNumberSearch = (usernumber) => { //회원번호로 Customer 찾기
+export const fetchNumberSearch = (usernumber) => {
+  //회원번호로 Customer 찾기
   return axios
     .get(`${path}/api/searchnumber/${usernumber}`)
     .then((result) => {
@@ -326,8 +320,8 @@ export const fetchNumberSearch = (usernumber) => { //회원번호로 Customer �
     });
 };
 
-
-export const deleteUser = (id) => { //Customer 삭제
+export const deleteUser = (id) => {
+  //Customer 삭제
   return axios
     .post(path + "/api/deleteuser", { id: id.toString() })
     .then((result) => {
@@ -338,5 +332,3 @@ export const deleteUser = (id) => { //Customer 삭제
       throw error;
     });
 };
-
-

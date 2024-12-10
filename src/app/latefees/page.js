@@ -61,7 +61,9 @@ function LateFees() {
       성명: fee.name || "N/A",
       가입일: fee.registerdate ? fee.registerdate.slice(0, 10) : "N/A",
       연체기준일: fee.lateBaseDate ? fee.lateBaseDate.slice(0, 10) : "N/A",
-      최근납부: fee.recentPaymentDate ? fee.recentPaymentDate.slice(0, 10) : "N/A",
+      최근납부: fee.recentPaymentDate
+        ? fee.recentPaymentDate.slice(0, 10)
+        : "N/A",
       일수: fee.daysOverdue,
       "연체율 (%)": fee.lateRate.toFixed(2),
       연체금액: fee.overdueAmount,
@@ -79,8 +81,7 @@ function LateFees() {
       type: "array",
     });
     const data = new Blob([excelBuffer], {
-      type:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
 
     // 현재 날짜를 "YYYYMMDD" 형식으로 포맷팅
