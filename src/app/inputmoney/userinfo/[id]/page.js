@@ -7,26 +7,29 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useridState } from "@/utils/atom";
-import { useRecoilValueLoadable, useRecoilState } from "recoil";
+import {
+  useRecoilValueLoadable,
+  useRecoilState,
+  useRecoilRefresher_UNSTABLE,
+} from "recoil";
 import { userinfoSelector } from "@/utils/selector";
 
 import { BsBagDash, BsDatabase } from "react-icons/bs";
-import { CgSearch } from "react-icons/cg";
 
 import ChasuPreBody from "@/components/ChasuPreBody";
 import ChasuFinBody from "@/components/ChasuFinBody";
 import { SearchButton, ModifyButton } from "@/components/Button";
 
-import withAuth from "@/utils/hoc/withAuth"; // withAuth 임포트
-import { cancelCustomer } from "@/utils/api"; // 해약 API 함수 임포트
+import withAuth from "@/utils/hoc/withAuth";
+import { cancelCustomer } from "@/utils/api";
 
-import Swal from "sweetalert2"; // SweetAlert2 import
+import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-// SweetAlert2 with React Content
 const MySwal = withReactContent(Swal);
 
 function Inputmoney() {
+  const refreshUserInfo = useRecoilRefresher_UNSTABLE(userinfoSelector); // Recoil 데이터 강제 새로고침 훅
   const pathname = usePathname();
   const splitpath = pathname.split("/");
   const [IdState, setIdState] = useRecoilState(useridState);
@@ -34,10 +37,7 @@ function Inputmoney() {
   const [userData, setUserData] = useState(null);
   const [loanData, setLoanData] = useState(null);
 
-  const router = useRouter(); // useRouter는 클라이언트 컴포넌트 내에서 사용
-
-  const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지
-  const [successMessage, setSuccessMessage] = useState(""); // 성공 메시지
+  const router = useRouter();
 
   useEffect(() => {
     if (splitpath.length > 3) {
@@ -48,13 +48,18 @@ function Inputmoney() {
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
 
   useEffect(() => {
+    // 컴포넌트가 마운트될 때마다 userinfoSelector를 강제로 새로고침
+    refreshUserInfo();
+  }, [IdState, refreshUserInfo]);
+
+  useEffect(() => {
     if (userselectordata.state === "hasValue") {
       const userdata = userselectordata.contents;
       if (userdata === undefined) {
         console.log("잘못된 접근입니다");
       } else {
         setUserData(userdata);
-        setLoanData(userdata.loan); // loan 데이터 설정
+        setLoanData(userdata.loan);
       }
     }
   }, [userselectordata]);
@@ -71,16 +76,16 @@ function Inputmoney() {
       cancelButtonText: "아니오",
     }).then((result) => {
       if (result.isConfirmed) {
-        // 해약 API 호출
         cancelCustomer(IdState)
-          .then((response) => {
+          .then(() => {
             MySwal.fire(
               "해약 완료!",
               "고객의 가입 타입이 'x'로 변경되었습니다.",
               "success"
             );
-            // 필요시 페이지 이동
             setTimeout(() => {
+              // 해약 후 데이터 새로고침
+              refreshUserInfo();
               router.push(`/inputmoney/userinfo/${IdState}`);
             }, 2000);
           })
@@ -101,7 +106,6 @@ function Inputmoney() {
         <div className={styles.Container}>
           <div className={styles.Mainbody}>
             <div className={styles.SearchBody}>
-              {/* 사용자 정보 표시 부분 */}
               <div className={styles.SearchNum}>
                 <div className={styles.SearchFont1}>관리번호 :</div>
                 <div className={styles.SearchFont2}>{userData.id}</div>
@@ -120,7 +124,6 @@ function Inputmoney() {
                 <div className={styles.SearchFont1}>가입타입 :</div>
                 <div className={styles.SearchFont2}>{userData.type}</div>
               </div>
-              {/* 납부 정보 표시 부분 */}
             </div>
             <div className={styles.MainContent}>
               <div
@@ -193,10 +196,7 @@ function Inputmoney() {
                     </div>
                     <div className={styles.CBSumText}>대출액</div>
                     <div className={styles.CBSumNum}>
-                      {(
-                        (loanData?.loanammount || 0) // 'loanprice1'과 'loanprice2' 대신 'loanammount' 사용
-                      ).toLocaleString()}{" "}
-                      ₩
+                      {(loanData?.loanammount || 0).toLocaleString()} ₩
                     </div>
                   </div>
                   <div className={styles.CBSum}>
@@ -253,12 +253,10 @@ function Inputmoney() {
               </div>
             </div>
           </div>
-          {/* 메시지 표시 */}
-          {/* SweetAlert2를 사용하므로 div 메시지는 제거 */}
         </div>
       )}
     </>
   );
 }
 
-export default withAuth(Inputmoney); // withAuth로 감싸기
+export default withAuth(Inputmoney);
