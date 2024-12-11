@@ -231,6 +231,13 @@ function Search() {
                   <span className={styles.title}>법정주소</span>
                 </div>
                 <div className={styles.postcontentbody}>
+                <span>
+                    우편번호: {userdata.legalAddress?.postnumber || "정보 없음"}
+                  </span>
+                  <br />
+                  <span>
+                    {userdata.legalAddress?.post || "정보 없음"},
+                  </span>   
                   <span>
                     {userdata.legalAddress?.detailaddress || "정보 없음"}
                   </span>
@@ -242,6 +249,13 @@ function Search() {
                   <span className={styles.title}>우편물 수령주소</span>
                 </div>
                 <div className={styles.postcontentbody}>
+                <span>
+                    우편번호: {userdata.postreceive?.postnumberreceive || "정보 없음"}
+                  </span>
+                  <br />
+                  <span>
+                    {userdata.postreceive?.postreceive || "정보 없음"},
+                  </span>
                   <span>
                     {userdata.postreceive?.detailaddressreceive || "정보 없음"}
                   </span>
