@@ -59,6 +59,33 @@ function Modify({ params }) {
   const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] = useState("");
   const [initialPostreceiveAddress, setInitialPostreceiveAddress] = useState("");
 
+  // 수정 부분: 천 단위 콤마 표시를 위한 로컬 상태
+  const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
+  const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
+
+  // 천 단위 콤마 포맷 함수
+  const formatNumberWithCommas = (value) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    if (!numericValue) return "";
+    return parseInt(numericValue, 10).toLocaleString();
+  };
+
+  // 가입가 변경 핸들러
+  const handleRegisterPriceChange = (e) => {
+    const formattedValue = formatNumberWithCommas(e.target.value);
+    setFormattedRegisterPrice(formattedValue);
+    const rawValue = formattedValue.replace(/,/g, "");
+    setValue("registerprice", rawValue ? parseInt(rawValue, 10) : null);
+  };
+
+  // 예약금 변경 핸들러
+  const handleDepositAmmountChange = (e) => {
+    const formattedValue = formatNumberWithCommas(e.target.value);
+    setFormattedDepositAmmount(formattedValue);
+    const rawValue = formattedValue.replace(/,/g, "");
+    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
+  };
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -141,6 +168,14 @@ function Modify({ params }) {
 
           console.log(isupload)
           setExistingFileInfo(customer.attachments.fileinfo || "");
+
+          // 수정 부분: 초기 데이터 로딩 후 콤마 추가
+          if (customer.registerprice) {
+            setFormattedRegisterPrice(customer.registerprice.toLocaleString());
+          }
+          if (customer.deposits.depositammount) {
+            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
+          }
         }
       } catch (error) {
         console.error("고객 정보를 가져오는데 실패했습니다:", error);
@@ -225,7 +260,6 @@ function Modify({ params }) {
           await deleteFile(existingFileInfo);
         }
         // 새로운 파일 업로드
-        // 수정 부분: createFile에 관리번호(id)를 함께 전달하여 파일명 변경
         const uploadResponse = await createFile(file, parseInt(id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
@@ -303,6 +337,8 @@ function Modify({ params }) {
         investmentfile: false,
         contract: false,
       });
+      setFormattedRegisterPrice("");
+      setFormattedDepositAmmount("");
       window.scrollTo(0, 0);
       router.push(`/search/${id}`); // 수정 후 해당 고객 상세 페이지로 이동
     } catch (error) {
@@ -491,10 +527,12 @@ function Modify({ params }) {
               />
             </div>
             <div className={styles.content_body2}>
+              {/* 수정 부분: 가입가를 천단위 콤마 표시 */}
               <Inputbox
-                type="number"
+                type="text"
                 placeholder="가입가 *"
-                register={register("registerprice", { required: "가입가를 입력해주세요." })}
+                value={formattedRegisterPrice}
+                onChange={handleRegisterPriceChange}
                 isError={!!errors.registerprice}
               />
             </div>
@@ -509,10 +547,12 @@ function Modify({ params }) {
               />
             </div>
             <div className={styles.content_body2}>
+              {/* 수정 부분: 예약금을 천단위 콤마 표시 */}
               <Inputbox
-                type="number"
+                type="text"
                 placeholder="예약금 *"
-                register={register("Deposit.depositammount", { required: "예약금을 입력해주세요." })}
+                value={formattedDepositAmmount}
+                onChange={handleDepositAmmountChange}
                 isError={!!errors.Deposit?.depositammount}
               />
             </div>

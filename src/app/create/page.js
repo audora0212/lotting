@@ -38,6 +38,10 @@ function Create() {
   const [idExists, setIdExists] = useState(false);
   const [checkingId, setCheckingId] = useState(false);
 
+  // 수정 부분: 천 단위 콤마 표시를 위한 로컬 상태
+  const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
+  const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -119,6 +123,29 @@ function Create() {
     }
   };
 
+  // 수정 부분: 천 단위 콤마 포맷 함수
+  const formatNumberWithCommas = (value) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    if (!numericValue) return "";
+    return parseInt(numericValue, 10).toLocaleString();
+  };
+
+  // 수정 부분: 가입가 변경 핸들러
+  const handleRegisterPriceChange = (e) => {
+    const formattedValue = formatNumberWithCommas(e.target.value);
+    setFormattedRegisterPrice(formattedValue);
+    const rawValue = formattedValue.replace(/,/g, "");
+    setValue("registerprice", rawValue ? parseInt(rawValue, 10) : null);
+  };
+
+  // 수정 부분: 예약금 변경 핸들러
+  const handleDepositAmmountChange = (e) => {
+    const formattedValue = formatNumberWithCommas(e.target.value);
+    setFormattedDepositAmmount(formattedValue);
+    const rawValue = formattedValue.replace(/,/g, "");
+    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
+  };
+
   // onError 핸들러
   const onError = (errors) => {
     console.log("검증 오류:", errors);
@@ -159,7 +186,7 @@ function Create() {
       let uploadedFileInfo = "";
       if (file) {
         console.log("업로드할 파일:", file);
-        // 수정 부분: createFile에 관리번호(id)를 함께 전달하여 파일명 변경
+        // 파일명 변경: createFile에 관리번호(id) 전달
         const uploadResponse = await createFile(file, parseInt(data.id, 10)); 
         console.log("파일 업로드 응답:", uploadResponse);
         uploadedFileInfo = uploadResponse.data;
@@ -263,6 +290,8 @@ function Create() {
         contract: false,
       });
       setIdExists(false);
+      setFormattedRegisterPrice("");
+      setFormattedDepositAmmount("");
       if (typeof window !== 'undefined') {
         window.scrollTo(0, 0);
       }
@@ -465,10 +494,12 @@ function Create() {
               />
             </div>
             <div className={styles.content_body2}>
+              {/* 수정 부분: 가입가 필드를 천 단위 콤마 표시 */}
               <Inputbox
-                type="number"
+                type="text"
                 placeholder="가입가 *"
-                register={register("registerprice", { required: "가입가를 입력해주세요." })}
+                value={formattedRegisterPrice}
+                onChange={handleRegisterPriceChange}
                 isError={!!errors.registerprice}
               />
             </div>
@@ -483,10 +514,12 @@ function Create() {
               />
             </div>
             <div className={styles.content_body2}>
+              {/* 수정 부분: 예약금 필드를 천 단위 콤마 표시 */}
               <Inputbox
-                type="number"
+                type="text"
                 placeholder="예약금 *"
-                register={register("Deposit.depositammount", { required: "예약금을 입력해주세요." })}
+                value={formattedDepositAmmount}
+                onChange={handleDepositAmmountChange}
                 isError={!!errors.Deposit?.depositammount}
               />
             </div>
