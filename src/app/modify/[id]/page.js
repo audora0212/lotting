@@ -580,7 +580,7 @@ function Modify({ params }) {
             </div>
             <div className={styles.content_body3}>
               <Checkbox
-                label="자산A동 계약서"
+                label="지산A동 계약서"
                 name="contract"
                 checked={isupload.contract}
                 onChange={handleCheckboxChange}
