@@ -9,7 +9,6 @@ const testlist = [{
 }]
 
 export default function Home() {
-  }
 
   return (
       <div >
