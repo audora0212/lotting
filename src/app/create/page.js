@@ -43,7 +43,7 @@ function Create() {
       try {
         const nextId = await newIdGenerate();
         setNewid(nextId);
-         console.log(nextId)
+        console.log(nextId)
         setValue("id", nextId);
       } catch (error) {
         console.error("관리번호를 가져오는데 실패했습니다:", error);
@@ -88,13 +88,7 @@ function Create() {
     if (files && files.length > 0) {
       const selectedFile = files[0];
       console.log("선택된 파일:", selectedFile);
-      const extension = selectedFile.name.split(".").pop();
-      const renamedFile = new File(
-        [selectedFile],
-        `${watch("id")}_${name}.${extension}`,
-        { type: selectedFile.type }
-      );
-      setFile(renamedFile);
+      setFile(selectedFile); 
       setIsupload((prev) => ({
         ...prev,
         [name]: true,
@@ -165,7 +159,8 @@ function Create() {
       let uploadedFileInfo = "";
       if (file) {
         console.log("업로드할 파일:", file);
-        const uploadResponse = await createFile(file);
+        // 수정 부분: createFile에 관리번호(id)를 함께 전달하여 파일명 변경
+        const uploadResponse = await createFile(file, parseInt(data.id, 10)); 
         console.log("파일 업로드 응답:", uploadResponse);
         uploadedFileInfo = uploadResponse.data;
       }
@@ -214,7 +209,7 @@ function Create() {
         Postreceive: {
           ...parsedData.Postreceive,
           postnumberreceive: data.Postreceive.postnumberreceive,
-          postreceive: data.Postreceive.postreceive, // 커스텀 필드 이름 사용
+          postreceive: data.Postreceive.postreceive,
         },
         MGM: data.MGM,
         Responsible: data.Responsible,
@@ -412,7 +407,7 @@ function Create() {
               setValue={setValue}
               namePrefix="Postreceive"
               postcodeName="Postreceive.postnumberreceive"
-              addressName="Postreceive.postreceive" // 커스텀 필드 이름 사용
+              addressName="Postreceive.postreceive"
               isError={!!errors.Postreceive?.postcode || !!errors.Postreceive?.addressreceive || !!errors.Postreceive?.detailaddressreceive}
             />
             <Inputbox
@@ -711,4 +706,4 @@ function Create() {
   );
 }
 
-export default withAuth(Create); // withAuth HOC 적용
+export default withAuth(Create);

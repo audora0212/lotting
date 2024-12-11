@@ -13,11 +13,19 @@ export const newIdGenerate = () => {
       throw error;
     });
 };
+
 //고객 추가 페이지 파일 저장 기능
 // 파일 업로드 기능
-export const createFile = (file) => {
+// 수정 부분: createFile에 id를 인자로 받아 파일명 변경
+export const createFile = (file, custId) => {
   const formData = new FormData();
-  formData.append("file", file); // 백엔드에서 기대하는 'file' 키 사용
+  
+  const originalName = file.name;
+  const extension = originalName.split('.').pop();
+  const baseName = originalName.substring(0, originalName.lastIndexOf('.'));
+  const newFileName = `${custId}_${baseName}.${extension}`; // 새로운 파일명 생성
+
+  formData.append("file", file, newFileName);
 
   return axios.post(path + "/files/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -291,3 +299,12 @@ export const checkIdExists = async (id) => {
   }
 };
 
+export const deleteFile = (filename) => {
+  return axios
+    .delete(`${path}/files/delete`, { params: { filename } })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("파일 삭제 오류:", error);
+      throw error;
+    });
+};

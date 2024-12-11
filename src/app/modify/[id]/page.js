@@ -9,14 +9,14 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
-  PostInputbox2, // PostInputbox2 추가
+  PostInputbox2,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
-import withAuth from "@/utils/hoc/withAuth"; // withAuth HOC 사용
+import withAuth from "@/utils/hoc/withAuth";
 
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { updateUser, fetchCustomerById, createFile } from "@/utils/api";
+import { updateUser, fetchCustomerById, createFile, deleteFile } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 import {
@@ -161,19 +161,11 @@ function Modify({ params }) {
     const { name, files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
-      const extension = selectedFile.name.split(".").pop();
-      const renamedFile = new File(
-        [selectedFile],
-        `${id}_${name}.${extension}`,
-        { type: selectedFile.type }
-      );
-      setFile(renamedFile);
-      console.log(file)
+      setFile(selectedFile);
       setIsupload((prev) => ({
         ...prev,
-        isuploaded: 1,
+        isuploaded: true,
       }));
-      console.log(isupload)
     }
   };
 
@@ -228,7 +220,13 @@ function Modify({ params }) {
       let uploadedFileInfo = existingFileInfo;
 
       if (file) {
-        const uploadResponse = await createFile(file);
+        // 기존 파일이 존재하면 삭제
+        if (existingFileInfo) {
+          await deleteFile(existingFileInfo);
+        }
+        // 새로운 파일 업로드
+        // 수정 부분: createFile에 관리번호(id)를 함께 전달하여 파일명 변경
+        const uploadResponse = await createFile(file, parseInt(id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
 
@@ -261,7 +259,6 @@ function Modify({ params }) {
         Responsible: parsedData.Responsible,
         deposits: parsedData.Deposit,
         attachments: attachments,
-        // 추가 필드들도 create 페이지와 동일하게 반영
         exemption7: parsedData.exemption7,
         investmentfile: parsedData.investmentfile,
         contract: parsedData.contract,
