@@ -279,56 +279,15 @@ export const fetchLateFees = (name, number, token) => {
     });
 };
 
-//=====================================================================================
-
-export const searchFinchasu = (userid) => {
-  // Customer의 이미 납부된 Phase 불러오기
-  return axios
-    .get(path + "/api/chasuinit/fin/" + userid)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.error(error);
-      throw error;
-    });
+export const checkIdExists = async (id) => {
+  try {
+    const response = await axios.get(`${path}/customers/${id}`);
+    return !!response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return false;
+    }
+    throw error;
+  }
 };
 
-export const fetchNameSearch = (username) => {
-  //이름으로 Customer 찾기
-  return axios
-    .get(path + "/api/searchname/" + username)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
-};
-
-export const fetchNumberSearch = (usernumber) => {
-  //회원번호로 Customer 찾기
-  return axios
-    .get(`${path}/api/searchnumber/${usernumber}`)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
-};
-
-export const deleteUser = (id) => {
-  //Customer 삭제
-  return axios
-    .post(path + "/api/deleteuser", { id: id.toString() })
-    .then((result) => {
-      return result.data;
-    })
-    .catch((error) => {
-      console.error("Error deleting user:", error);
-      throw error;
-    });
-};
