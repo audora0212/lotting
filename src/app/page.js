@@ -13,19 +13,6 @@ export default function Home() {
   return (
       <div >
         <h1>123</h1>
-        <div className={styles.container}>
-          <PostInputbox />
-          <FileInputbox />
-          <Inputbox type="text" placeholder="이름" onChange={handleChange} />
-          <Inputbox type="date" placeholder="날짜" />
-          <Inputbox />
-          <Inputbox />
-          <LongInputbox />
-          <Inputbox />
-          <Inputbox />
-          <DropInputbox list={testlist}/>
-
-        </div>    
       </div>
     )
 }
