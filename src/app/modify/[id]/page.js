@@ -1,5 +1,3 @@
-// src/app/modify/[id]/page.js
-
 "use client";
 
 import styles from "@/styles/Create.module.scss";
@@ -11,6 +9,7 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
+  PostInputbox2, // PostInputbox2 추가
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth"; // withAuth HOC 사용
@@ -56,11 +55,26 @@ function Modify({ params }) {
   const [file, setFile] = useState(null);
   const [existingFileInfo, setExistingFileInfo] = useState("");
 
+  // 주소 값을 미리 담아두기 위한 state
+  const [initialLegalPostNumber, setInitialLegalPostNumber] = useState("");
+  const [initialLegalAddress, setInitialLegalAddress] = useState("");
+  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] = useState("");
+  const [initialPostreceiveAddress, setInitialPostreceiveAddress] = useState("");
+
   useEffect(() => {
     const getData = async () => {
       try {
         const customer = await fetchCustomerById(id);
         if (customer) {
+
+          console.log("받아온 데이터")
+          console.log(customer)
+          // 미리 주소값 설정
+          setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
+          setInitialLegalAddress(customer.legalAddress.post || "");
+          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
+          setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
+
           // 폼에 기본값 설정
           reset({
             customertype: customer.customertype,
@@ -82,13 +96,13 @@ function Modify({ params }) {
               email: customer.customerData.email,
             },
             LegalAddress: {
-              postnumber: customer.legalAddress.postcode,
-              post: customer.legalAddress.address,
+              postnumber: customer.legalAddress.postnumber,
+              post: customer.legalAddress.post,
               detailaddress: customer.legalAddress.detailaddress,
             },
             Postreceive: {
-              postnumberreceive: customer.postreceive.postcode,
-              postreceive: customer.postreceive.addressreceive,
+              postnumberreceive: customer.postreceive.postnumberreceive,
+              postreceive: customer.postreceive.postreceive,
               detailaddressreceive: customer.postreceive.detailaddressreceive,
             },
             Financial: {
@@ -244,14 +258,14 @@ function Modify({ params }) {
         Financial: parsedData.Financial,
         LegalAddress: {
           ...parsedData.LegalAddress,
-          postcode: parsedData.LegalAddress.postcode,
-          address: parsedData.LegalAddress.address,
+          postnumber: parsedData.LegalAddress.postnumber,
+          post: parsedData.LegalAddress.post,
           detailaddress: parsedData.LegalAddress.detailaddress,
         },
         Postreceive: {
           ...parsedData.Postreceive,
-          postcode: parsedData.Postreceive.postcode,
-          address: parsedData.Postreceive.address,
+          postnumberreceive: parsedData.Postreceive.postnumberreceive,
+          postreceive: parsedData.Postreceive.postreceive,
           detailaddressreceive: parsedData.Postreceive.detailaddressreceive,
         },
         MGM: parsedData.MGM,
@@ -262,6 +276,8 @@ function Modify({ params }) {
       };
 
       // 고객 수정 API 호출
+      console.log("제출시 데이터")
+      console.log(customerData)
       const updateUserResponse = await updateUser(id, customerData);
 
       console.log(customerData)
@@ -392,15 +408,19 @@ function Modify({ params }) {
               isError={!!errors.Financial?.accountholder}
             />
           </div>
+
+          {/* 기존 PostInputbox 대신 PostInputbox2 사용 */}
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>법정주소 *</div>
-            <PostInputbox
+            <PostInputbox2
               register={register}
               setValue={setValue}
               namePrefix="LegalAddress"
-              postcodeName="LegalAddress.postcode"
-              addressName="LegalAddress.address"
-              isError={!!errors.LegalAddress?.postcode || !!errors.LegalAddress?.address || !!errors.LegalAddress?.detailaddress}
+              postcodeName="LegalAddress.postnumber"
+              addressName="LegalAddress.post"
+              initialPostNumber={initialLegalPostNumber}
+              initialAddress={initialLegalAddress}
+              isError={!!errors.LegalAddress?.postnumber || !!errors.LegalAddress?.post || !!errors.LegalAddress?.detailaddress}
             />
             <Inputbox
               type="text"
@@ -409,15 +429,18 @@ function Modify({ params }) {
               isError={!!errors.LegalAddress?.detailaddress}
             />
           </div>
+
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>우편물 주소지 *</div>
-            <PostInputbox
+            <PostInputbox2
               register={register}
               setValue={setValue}
               namePrefix="Postreceive"
-              postcodeName="Postreceive.postcode"
-              addressName="Postreceive.address"
-              isError={!!errors.Postreceive?.postcode || !!errors.Postreceive?.address || !!errors.Postreceive?.detailaddressreceive}
+              postcodeName="Postreceive.postnumberreceive"
+              addressName="Postreceive.postreceive"
+              initialPostNumber={initialPostreceivePostNumber}
+              initialAddress={initialPostreceiveAddress}
+              isError={!!errors.Postreceive?.postnumberreceive || !!errors.Postreceive?.postreceive || !!errors.Postreceive?.detailaddressreceive}
             />
             <Inputbox
               type="text"

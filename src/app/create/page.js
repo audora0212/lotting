@@ -179,13 +179,13 @@ function Create() {
         Financial: parsedData.Financial,
         LegalAddress: {
           ...parsedData.LegalAddress,
-          postcode: data.LegalAddress.postnumber,
-          address: data.LegalAddress.post,
+          postnumber: data.LegalAddress.postnumber,
+          post: data.LegalAddress.post,
         },
         Postreceive: {
           ...parsedData.Postreceive,
-          postcode: data.Postreceive.postnumberreceive,
-          address: data.Postreceive.postreceive, // 커스텀 필드 이름 사용
+          postnumberreceive: data.Postreceive.postnumberreceive,
+          postreceive: data.Postreceive.postreceive, // 커스텀 필드 이름 사용
         },
         MGM: data.MGM,
         Responsible: data.Responsible,
@@ -206,6 +206,7 @@ function Create() {
         specialnote: data.specialnote,
       };
 
+      console.log("최종ㄷ ㅔ이터 " + customerData)
       // 고객 생성 API 호출
       const createUserResponse = await createUser(customerData);
 

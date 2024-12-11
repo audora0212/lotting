@@ -1,8 +1,6 @@
-// src/components/Inputbox.js
-
 "use client";
 
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import styles from "@/styles/Inputbox.module.scss";
 import { IoMdCloudUpload } from "react-icons/io";
 
@@ -303,14 +301,13 @@ export const FileInputbox = (props) => {
   );
 };
 
-// PostInputbox 컴포넌트
-
+// PostInputbox 컴포넌트 (기존)
 export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, addressName, isError }) => {
   const [postnumber, setPostnumber] = useState("우편번호");
   const [post, setPost] = useState("주소");
 
   const getpost = () => {
-    if (typeof window !== 'undefined' && window.daum) { // daum 객체가 있는지 확인
+    if (typeof window !== 'undefined' && window.daum) {
       new window.daum.Postcode({
         oncomplete: function (data) {
           const zonecode = data.zonecode;
@@ -319,9 +316,8 @@ export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, add
           setPostnumber(zonecode);
           setPost(roadAddress);
 
-          // react-hook-form의 setValue를 사용하여 우편번호와 주소를 설정
-          const postcodeField = postcodeName || `${namePrefix}.postcode`;
-          const addressField = addressName || `${namePrefix}.address`;
+          const postcodeField = postcodeName || `${namePrefix}.postnumber`;
+          const addressField = addressName || `${namePrefix}.post`;
 
           setValue(postcodeField, zonecode);
           setValue(addressField, roadAddress);
@@ -351,11 +347,73 @@ export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, add
       {/* 숨겨진 필드 */}
       <input
         type="hidden"
-        {...register(postcodeName || `${namePrefix}.postcode`, { required: "우편번호를 입력해주세요." })}
+        {...register(postcodeName || `${namePrefix}.postnumber`, { required: "우편번호를 입력해주세요." })}
       />
       <input
         type="hidden"
-        {...register(addressName || `${namePrefix}.address`, { required: "주소를 입력해주세요." })}
+        {...register(addressName || `${namePrefix}.post`, { required: "주소를 입력해주세요." })}
+      />
+    </div>
+  );
+};
+
+// PostInputbox2 컴포넌트 (추가) 
+export const PostInputbox2 = ({ register, setValue, namePrefix, postcodeName, addressName, isError, initialPostNumber, initialAddress }) => {
+  const [postnumber, setPostnumber] = useState(initialPostNumber || "우편번호");
+  const [post, setPost] = useState(initialAddress || "주소");
+
+  useEffect(() => {
+    // initialPostNumber, initialAddress가 변경될 때 state 업데이트
+    setPostnumber(initialPostNumber || "우편번호");
+    setPost(initialAddress || "주소");
+  }, [initialPostNumber, initialAddress]);
+
+  const getpost = () => {
+    if (typeof window !== 'undefined' && window.daum) {
+      new window.daum.Postcode({
+        oncomplete: function (data) {
+          const zonecode = data.zonecode;
+          const roadAddress = data.roadAddress;
+
+          setPostnumber(zonecode);
+          setPost(roadAddress);
+
+          const postcodeField = postcodeName || `${namePrefix}.postnumber`;
+          const addressField = addressName || `${namePrefix}.post`;
+
+          setValue(postcodeField, zonecode);
+          setValue(addressField, roadAddress);
+        },
+      }).open();
+    } else {
+      console.error("Daum Postcode 라이브러리가 로드되지 않았습니다.");
+    }
+  };
+
+  return (
+    <div className={styles.postContainer}>
+      <input
+        type="button"
+        onClick={getpost}
+        value={postnumber}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
+      />
+      <input
+        type="button"
+        onClick={getpost}
+        value={post}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
+      />
+      {isError && <span className={styles.error}>주소를 입력해주세요.</span>}
+
+      {/* 숨겨진 필드 */}
+      <input
+        type="hidden"
+        {...register(postcodeName || `${namePrefix}.postnumber`, { required: "우편번호를 입력해주세요." })}
+      />
+      <input
+        type="hidden"
+        {...register(addressName || `${namePrefix}.post`, { required: "주소를 입력해주세요." })}
       />
     </div>
   );
