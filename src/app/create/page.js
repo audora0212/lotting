@@ -71,10 +71,13 @@ function Create() {
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
 
+    console.log(isupload)
+    
     setIsupload((prev) => ({
       ...prev,
       [name]: checked,
     }));
+
   };
 
   const handleFileChange = (e) => {
@@ -206,6 +209,7 @@ function Create() {
         specialnote: data.specialnote,
       };
 
+      console.log("파일업로드데이터"+ attachments)
       console.log("최종ㄷ ㅔ이터 " + customerData)
       // 고객 생성 API 호출
       const createUserResponse = await createUser(customerData);

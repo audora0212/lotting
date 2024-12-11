@@ -7,16 +7,23 @@ import { IoMdCloudUpload } from "react-icons/io";
 // Checkbox 컴포넌트
 export const Checkbox = (props) => {
   const { label, name, onChange, defaultChecked, register, isError, ...rest } = props;
+  
+  // register에서 필요한 프로퍼티 추출
+  const { onChange: onChangeFromRegister, onBlur, name: fieldName, ref } = register;
 
   return (
     <div className={styles.checkboxContainer}>
       <input
         type="checkbox"
-        name={name}
+        name={fieldName}
         defaultChecked={defaultChecked}
-        onChange={onChange}
+        ref={ref}
+        onBlur={onBlur}
+        onChange={(e) => {
+          if (onChangeFromRegister) onChangeFromRegister(e); // react-hook-form 상태 업데이트
+          if (onChange) onChange(e); // custom onChange 핸들러 호출
+        }}
         className={`${styles.checkbox} ${isError ? styles.errorInput : ''}`}
-        {...register}
         {...rest}
       />
       <label className={styles.checkboxLabel}>{label}</label>
@@ -40,7 +47,7 @@ export const Inputbox = (props) => {
     defaultValue,
     value,
     register,
-    isError, // 추가된 prop
+    isError,
     ...rest
   } = props;
 
@@ -69,7 +76,7 @@ export const Inputbox2 = forwardRef((props, ref) => {
     name,
     defaultValue,
     value,
-    isError, // 추가된 prop
+    isError,
     ...rest
   } = props;
 
@@ -83,7 +90,7 @@ export const Inputbox2 = forwardRef((props, ref) => {
       placeholder={placeholder}
       defaultValue={defaultValue}
       value={value}
-      ref={ref} // ref 전달
+      ref={ref}
       {...rest}
     />
   );
@@ -100,7 +107,7 @@ export const InputAreabox = (props) => {
     defaultValue,
     value,
     register,
-    isError, // 추가된 prop
+    isError,
     ...rest
   } = props;
 
@@ -168,7 +175,7 @@ export const Inputbox_M = (props) => {
     defaultValue,
     value,
     register,
-    isError, // 추가된 prop
+    isError,
     ...rest
   } = props;
 
@@ -255,7 +262,7 @@ const iconstyle = {
 export const FileInputbox = (props) => {
   const { handleChange, isupload, value, name, register, isError, ...rest } = props;
 
-  // register에서 제공하는 onChange, onBlur, ref 분리
+  // register에서 제공하는 onChange, onBlur, ref 추출
   const { onChange: registerOnChange, onBlur, ref, ...restRegister } = register || {};
 
   // 두 개의 onChange를 호출하는 함수
@@ -268,12 +275,12 @@ export const FileInputbox = (props) => {
     <label className={styles.Fileinputcontainer} htmlFor={name}>
       <input
         type="file"
-        id={name} // htmlFor과 동일하게 설정
+        id={name}
         onChange={combinedOnChange}
-        className={styles.fileInput} // 필요한 클래스명 추가
+        className={styles.fileInput}
         name={name}
-        ref={ref} // react-hook-form의 ref 전달
-        {...restRegister} // 나머지 register 속성 전달
+        ref={ref}
+        {...restRegister}
         {...rest}
       />
       <p style={{ textAlign: "center", margin: 0 }}>
@@ -289,9 +296,7 @@ export const FileInputbox = (props) => {
       ) : (
         <>
           <p className={styles.filetext}>
-            드래그 드랍 또는{" "}
-            <span className={styles.texthighlight}>업로드 할 파일</span>을
-            선택해주세요
+            드래그 드랍 또는 <span className={styles.texthighlight}>업로드 할 파일</span>을 선택해주세요
           </p>
           <p className={styles.filetypetext}>파일형식 : PDF, PNG, JPEG</p>
         </>

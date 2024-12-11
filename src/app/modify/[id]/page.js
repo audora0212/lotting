@@ -21,13 +21,11 @@ import { useRouter } from "next/navigation";
 
 import {
   banklist,
-  sintacklist,
   classificationlist,
   typeidlist,
   typelist,
   grouplist,
   turnlist,
-  sortlist,
 } from "@/components/droplistdata";
 
 function Modify({ params }) {
@@ -66,10 +64,8 @@ function Modify({ params }) {
       try {
         const customer = await fetchCustomerById(id);
         if (customer) {
-
-          console.log("받아온 데이터")
           console.log(customer)
-          // 미리 주소값 설정
+          // 주소값 설정
           setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
           setInitialLegalAddress(customer.legalAddress.post || "");
           setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
@@ -84,10 +80,8 @@ function Modify({ params }) {
             batch: customer.batch,
             registerdate: customer.registerdate,
             registerprice: customer.registerprice,
-            additional: customer.additional,
             registerpath: customer.registerpath,
             specialnote: customer.specialnote,
-            prizewinning: customer.prizewinning,
             CustomerData: {
               name: customer.customerData.name,
               phone: customer.customerData.phone,
@@ -126,7 +120,6 @@ function Modify({ params }) {
               mgminstitution: customer.mgm.mgminstitution,
               mgmaccount: customer.mgm.mgmaccount,
             },
-            // 필요한 다른 필드들도 추가
           });
 
           // 체크박스 상태 설정
@@ -146,6 +139,7 @@ function Modify({ params }) {
             contract: customer.attachments.contract,
           });
 
+          console.log(isupload)
           setExistingFileInfo(customer.attachments.fileinfo || "");
         }
       } catch (error) {
@@ -157,7 +151,6 @@ function Modify({ params }) {
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-
     setIsupload((prev) => ({
       ...prev,
       [name]: checked,
@@ -175,10 +168,12 @@ function Modify({ params }) {
         { type: selectedFile.type }
       );
       setFile(renamedFile);
+      console.log(file)
       setIsupload((prev) => ({
         ...prev,
-        [name]: true,
+        isuploaded: 1,
       }));
+      console.log(isupload)
     }
   };
 
@@ -245,7 +240,7 @@ function Modify({ params }) {
 
       // 최종 고객 데이터 구성
       const customerData = {
-        id: parseInt(id), // 고객 ID 포함
+        id: parseInt(id),
         customertype: parsedData.customertype,
         registerpath: parsedData.registerpath,
         type: parsedData.type,
@@ -258,29 +253,32 @@ function Modify({ params }) {
         Financial: parsedData.Financial,
         LegalAddress: {
           ...parsedData.LegalAddress,
-          postnumber: parsedData.LegalAddress.postnumber,
-          post: parsedData.LegalAddress.post,
-          detailaddress: parsedData.LegalAddress.detailaddress,
         },
         Postreceive: {
           ...parsedData.Postreceive,
-          postnumberreceive: parsedData.Postreceive.postnumberreceive,
-          postreceive: parsedData.Postreceive.postreceive,
-          detailaddressreceive: parsedData.Postreceive.detailaddressreceive,
         },
         MGM: parsedData.MGM,
         Responsible: parsedData.Responsible,
         deposits: parsedData.Deposit,
         attachments: attachments,
-        // 필요한 다른 필드들도 추가
+        // 추가 필드들도 create 페이지와 동일하게 반영
+        exemption7: parsedData.exemption7,
+        investmentfile: parsedData.investmentfile,
+        contract: parsedData.contract,
+        agreement: parsedData.agreement,
+        preferenceattachment: parsedData.preferenceattachment,
+        prizeattachment: parsedData.prizeattachment,
+        sealcertificateprovided: parsedData.sealcertificateprovided,
+        selfsignatureconfirmationprovided: parsedData.selfsignatureconfirmationprovided,
+        commitmentletterprovided: parsedData.commitmentletterprovided,
+        idcopyprovided: parsedData.idcopyprovided,
+        freeoption: parsedData.freeoption,
+        forfounding: parsedData.forfounding,
+        specialnote: parsedData.specialnote,
       };
 
-      // 고객 수정 API 호출
-      console.log("제출시 데이터")
-      console.log(customerData)
       const updateUserResponse = await updateUser(id, customerData);
 
-      console.log(customerData)
       Swal.fire({
         icon: "success",
         title: "회원정보가 수정되었습니다.",
@@ -409,7 +407,6 @@ function Modify({ params }) {
             />
           </div>
 
-          {/* 기존 PostInputbox 대신 PostInputbox2 사용 */}
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>법정주소 *</div>
             <PostInputbox2
@@ -757,4 +754,4 @@ function Modify({ params }) {
   );
 }
 
-export default withAuth(Modify); // withAuth HOC 적용
+export default withAuth(Modify);
