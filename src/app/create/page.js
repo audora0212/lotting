@@ -1,5 +1,3 @@
-// src/app/create/page.js
-
 "use client";
 
 import styles from "@/styles/Create.module.scss";
@@ -17,7 +15,7 @@ import withAuth from "@/utils/hoc/withAuth";
 
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { createFile, newIdGenerate, createUser } from "@/utils/api";
+import { createFile, newIdGenerate, createUser, checkIdExists } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 import {
@@ -34,21 +32,25 @@ import {
 function Create() {
   const router = useRouter();
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm();
 
   const [newid, setNewid] = useState("");
+  const [idExists, setIdExists] = useState(false);
+  const [checkingId, setCheckingId] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
       try {
         const nextId = await newIdGenerate();
         setNewid(nextId);
+         console.log(nextId)
+        setValue("id", nextId);
       } catch (error) {
         console.error("관리번호를 가져오는데 실패했습니다:", error);
       }
     };
     getData();
-  }, []);
+  }, [setValue]);
 
   const [isupload, setIsupload] = useState({
     isuploaded: false,
@@ -89,7 +91,7 @@ function Create() {
       const extension = selectedFile.name.split(".").pop();
       const renamedFile = new File(
         [selectedFile],
-        `${newid}_${name}.${extension}`,
+        `${watch("id")}_${name}.${extension}`,
         { type: selectedFile.type }
       );
       setFile(renamedFile);
@@ -98,6 +100,28 @@ function Create() {
         [name]: true,
         isuploaded: true,
       }));
+    }
+  };
+
+  // 관리번호 중복 체크
+  const handleIdChange = async (e) => {
+    const enteredId = e.target.value;
+    setValue("id", enteredId);
+
+    if (enteredId) {
+      setCheckingId(true);
+      try {
+        const exists = await checkIdExists(enteredId);
+        setIdExists(exists);
+      } catch (error) {
+        console.error("관리번호 중복 체크 오류:", error);
+        // 에러 발생 시, 중복으로 간주하여 제출 방지
+        setIdExists(true);
+      } finally {
+        setCheckingId(false);
+      }
+    } else {
+      setIdExists(false);
     }
   };
 
@@ -149,16 +173,17 @@ function Create() {
       // 데이터 파싱 및 정리
       const parsedData = {
         ...data,
+        id: parseInt(data.id, 10), // id를 정수로 변환
         CustomerData: {
           ...data.CustomerData,
-          resnumfront: parseInt(data.CustomerData.resnumfront),
-          resnumback: parseInt(data.CustomerData.resnumback),
+          resnumfront: parseInt(data.CustomerData.resnumfront, 10),
+          resnumback: parseInt(data.CustomerData.resnumback, 10),
         },
-        registerprice: parseInt(data.registerprice),
+        registerprice: parseInt(data.registerprice, 10),
         Deposit: {
           ...data.Deposit,
           depositdate: data.Deposit.depositdate,
-          depositammount: parseInt(data.Deposit.depositammount),
+          depositammount: parseInt(data.Deposit.depositammount, 10),
         },
       };
 
@@ -170,6 +195,7 @@ function Create() {
 
       // 최종 고객 데이터 구성
       const customerData = {
+        id: parsedData.id,
         customertype: data.customertype,
         registerpath: data.registerpath,
         type: data.type,
@@ -209,8 +235,8 @@ function Create() {
         specialnote: data.specialnote,
       };
 
-      console.log("파일업로드데이터"+ attachments)
-      console.log("최종ㄷ ㅔ이터 " + customerData)
+      console.log("파일업로드데이터", attachments);
+      console.log("최종 데이터", customerData);
       // 고객 생성 API 호출
       const createUserResponse = await createUser(customerData);
 
@@ -241,16 +267,20 @@ function Create() {
         investmentfile: false,
         contract: false,
       });
+      setIdExists(false);
       if (typeof window !== 'undefined') {
         window.scrollTo(0, 0);
       }
     } catch (error) {
       console.error("Error creating user:", error);
+      let errorMessage = "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
       Swal.fire({
         icon: "error",
         title: "회원정보 입력 실패",
-        text:
-          "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
+        text: errorMessage,
       });
     }
   };
@@ -260,7 +290,23 @@ function Create() {
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <h3>회원 정보</h3>
         <div className={styles.content_container}>
-          <div className={styles.Font}>관리번호 : {newid}</div>
+          <div className={styles.Font}>
+            <label htmlFor="id">관리번호 :</label>
+            <Inputbox
+              type="number"
+              id="id"
+              defaultValue={newid}
+              {...register("id", { required: "관리번호를 입력해주세요." })}
+              onChange={handleIdChange}
+            />
+            {checkingId && <span className={styles.checking}> 확인 중...</span>}
+            {idExists && (
+              <span className={styles.errorText}> 이미 존재하는 관리번호입니다</span>
+            )}
+            {errors.id && (
+              <span className={styles.errorText}>{errors.id.message}</span>
+            )}
+          </div>
           <h1></h1>
           <div>
             <Inputbox
@@ -659,7 +705,7 @@ function Create() {
             isError={!!errors.specialnote}
           />
         </div>
-        <Button_Y type="submit">저장하기</Button_Y>
+        <Button_Y type="submit" disabled={idExists || checkingId}>저장하기</Button_Y>
       </form>
     </div>
   );
