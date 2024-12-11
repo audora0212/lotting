@@ -1,3 +1,5 @@
+// src/components/Inputbox.js
+
 "use client";
 
 import React, { forwardRef, useState } from "react";
@@ -59,6 +61,7 @@ export const Inputbox = (props) => {
     />
   );
 };
+
 export const Inputbox2 = forwardRef((props, ref) => {
   const {
     type,
@@ -87,6 +90,7 @@ export const Inputbox2 = forwardRef((props, ref) => {
     />
   );
 });
+
 // Textarea InputAreabox 컴포넌트
 export const InputAreabox = (props) => {
   const {
@@ -250,7 +254,6 @@ const iconstyle = {
   paddingLeft: "7%",
 };
 
-
 export const FileInputbox = (props) => {
   const { handleChange, isupload, value, name, register, isError, ...rest } = props;
 
@@ -300,21 +303,28 @@ export const FileInputbox = (props) => {
   );
 };
 
-
 // PostInputbox 컴포넌트
-export const PostInputbox = (props) => {
+
+export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, addressName, isError }) => {
   const [postnumber, setPostnumber] = useState("우편번호");
   const [post, setPost] = useState("주소");
-  const [postdetail, setPostdetail] = useState("주소상세");
-  const { placeholder, register, isError, ...rest } = props;
 
   const getpost = () => {
     if (typeof window !== 'undefined' && window.daum) { // daum 객체가 있는지 확인
       new window.daum.Postcode({
         oncomplete: function (data) {
-          setPostnumber(data.zonecode);
-          setPost(data.roadAddress);
-          setPostdetail(data.roadAddress + ",");
+          const zonecode = data.zonecode;
+          const roadAddress = data.roadAddress;
+
+          setPostnumber(zonecode);
+          setPost(roadAddress);
+
+          // react-hook-form의 setValue를 사용하여 우편번호와 주소를 설정
+          const postcodeField = postcodeName || `${namePrefix}.postcode`;
+          const addressField = addressName || `${namePrefix}.address`;
+
+          setValue(postcodeField, zonecode);
+          setValue(addressField, roadAddress);
         },
       }).open();
     } else {
@@ -322,37 +332,31 @@ export const PostInputbox = (props) => {
     }
   };
 
-  const handleChange = (e) => {
-    setPostdetail(e.target.value);
-  };
-
   return (
-    <>
+    <div className={styles.postContainer}>
       <input
-        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
         type="button"
         onClick={getpost}
-        defaultValue={postnumber}
-        placeholder="우편번호"
-        {...rest}
+        value={postnumber}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
       />
       <input
-        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
         type="button"
         onClick={getpost}
-        defaultValue={post}
-        placeholder="주소"
-        {...rest}
+        value={post}
+        className={`${styles.postcontainer} ${isError ? styles.errorInput : ''}`}
+      />
+      {isError && <span className={styles.error}>주소를 입력해주세요.</span>}
+
+      {/* 숨겨진 필드 */}
+      <input
+        type="hidden"
+        {...register(postcodeName || `${namePrefix}.postcode`, { required: "우편번호를 입력해주세요." })}
       />
       <input
-        className={`${styles.inputcontainer} ${isError ? styles.errorInput : ''}`}
-        type="text"
-        onChange={handleChange}
-        defaultValue={postdetail}
-        {...register}
-        {...rest}
+        type="hidden"
+        {...register(addressName || `${namePrefix}.address`, { required: "주소를 입력해주세요." })}
       />
-      {isError && <span className={styles.error}>주소상세를 입력해주세요.</span>}
-    </>
+    </div>
   );
 };
