@@ -512,7 +512,7 @@ function Create() {
             </div>
             <div className={styles.content_body3}>
               <Checkbox
-                label="자산A동 계약서"
+                label="지산A동 계약서"
                 name="contract"
                 onChange={handleCheckboxChange}
                 register={register("contract")}
