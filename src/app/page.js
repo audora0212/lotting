@@ -9,8 +9,6 @@ const testlist = [{
 }]
 
 export default function Home() {
-  const handleChange = e => {
-    console.log(e.target.value)
   }
 
   return (
