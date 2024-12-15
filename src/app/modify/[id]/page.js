@@ -8,7 +8,7 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
-  MGMInputbox // MGM 전용 인풋박스 추가
+  MGMInputbox
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
@@ -346,82 +346,82 @@ function Modify({ params }) {
         <div className={styles.content_container}>
           <div className={styles.Font}>관리번호 : {id}</div>
           <h1></h1>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>이름 *</div>
             <Inputbox
               type="text"
-              placeholder="이름 *"
               register={register("CustomerData.name", { required: "이름을 입력해주세요." })}
               isError={!!errors.CustomerData?.name}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>휴대폰 번호 *</div>
             <Inputbox
               type="phone"
-              placeholder="휴대폰 번호 *"
               register={register("CustomerData.phone", { required: "휴대폰 번호를 입력해주세요." })}
               isError={!!errors.CustomerData?.phone}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>주민번호 앞자리 *</div>
             <Inputbox
               type="number"
-              placeholder="주민번호 앞자리 *"
               register={register("CustomerData.resnumfront", { required: "주민번호 앞자리를 입력해주세요." })}
               isError={!!errors.CustomerData?.resnumfront}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>주민번호 뒷자리 *</div>
             <Inputbox
               type="number"
-              placeholder="주민번호 뒷자리 *"
               register={register("CustomerData.resnumback", { required: "주민번호 뒷자리를 입력해주세요." })}
               isError={!!errors.CustomerData?.resnumback}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>이메일 *</div>
             <Inputbox
               type="email"
-              placeholder="이메일 *"
               register={register("CustomerData.email", { required: "이메일을 입력해주세요." })}
               isError={!!errors.CustomerData?.email}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>분류 *</div>
             <DropInputbox
               list={classificationlist}
               register={register("customertype", { required: "분류를 선택해주세요." })}
-              placeholder="분류 *"
               isError={!!errors.customertype}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>가입경로 *</div>
             <Inputbox
               type="text"
-              placeholder="가입경로 *"
               register={register("registerpath", { required: "가입경로를 입력해주세요." })}
               isError={!!errors.registerpath}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>은행 *</div>
             <DropInputbox
               list={banklist}
               register={register("Financial.bankname", { required: "은행을 선택해주세요." })}
-              placeholder="은행 *"
               isError={!!errors.Financial?.bankname}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>계좌번호 *</div>
             <Inputbox
               type="text"
-              placeholder="계좌번호 *"
               register={register("Financial.accountnum", { required: "계좌번호를 입력해주세요." })}
               isError={!!errors.Financial?.accountnum}
             />
           </div>
-          <div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>예금주 *</div>
             <Inputbox
               type="text"
-              placeholder="예금주 *"
               register={register("Financial.accountholder", { required: "예금주를 입력해주세요." })}
               isError={!!errors.Financial?.accountholder}
             />
@@ -438,12 +438,14 @@ function Modify({ params }) {
               initialAddress={initialLegalAddress}
               isError={!!errors.LegalAddress?.postnumber || !!errors.LegalAddress?.post || !!errors.LegalAddress?.detailaddress}
             />
-            <Inputbox
-              type="text"
-              placeholder="법정주소 상세 *"
-              register={register("LegalAddress.detailaddress", { required: "법정주소를 입력해주세요." })}
-              isError={!!errors.LegalAddress?.detailaddress}
-            />
+            <div className={styles.inputRow}>
+              <div className={styles.inputLabel}>법정주소 상세 *</div>
+              <Inputbox
+                type="text"
+                register={register("LegalAddress.detailaddress", { required: "법정주소를 입력해주세요." })}
+                isError={!!errors.LegalAddress?.detailaddress}
+              />
+            </div>
           </div>
 
           <div className={styles.InputboxField}>
@@ -458,12 +460,14 @@ function Modify({ params }) {
               initialAddress={initialPostreceiveAddress}
               isError={!!errors.Postreceive?.postnumberreceive || !!errors.Postreceive?.postreceive || !!errors.Postreceive?.detailaddressreceive}
             />
-            <Inputbox
-              type="text"
-              placeholder="우편물 주소지 상세 *"
-              register={register("Postreceive.detailaddressreceive", { required: "우편물 주소지를 입력해주세요." })}
-              isError={!!errors.Postreceive?.detailaddressreceive}
-            />
+            <div className={styles.inputRow}>
+              <div className={styles.inputLabel}>우편물 주소지 상세 *</div>
+              <Inputbox
+                type="text"
+                register={register("Postreceive.detailaddressreceive", { required: "우편물 주소지를 입력해주세요." })}
+                isError={!!errors.Postreceive?.detailaddressreceive}
+              />
+            </div>
           </div>
         </div>
 
@@ -471,74 +475,87 @@ function Modify({ params }) {
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
-              <DropInputbox
-                list={typeidlist}
-                register={register("batch", { required: "제출 순번을 선택해주세요." })}
-                placeholder="제출 순번 *"
-                isError={!!errors.batch}
-              />
-              <DropInputbox
-                list={typelist}
-                name="type"
-                register={register("type", { required: "유형을 선택해주세요." })}
-                placeholder="유형 *"
-                isError={!!errors.type}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>제출 순번 *</div>
+                <DropInputbox
+                  list={typeidlist}
+                  register={register("batch", { required: "제출 순번을 선택해주세요." })}
+                  isError={!!errors.batch}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>유형 *</div>
+                <DropInputbox
+                  list={typelist}
+                  register={register("type", { required: "유형을 선택해주세요." })}
+                  isError={!!errors.type}
+                />
+              </div>
             </div>
             <div className={styles.content_body2}>
-              <DropInputbox
-                list={grouplist}
-                name="group"
-                register={register("groupname", { required: "그룹을 선택해주세요." })}
-                placeholder="그룹 *"
-                isError={!!errors.groupname}
-              />
-              <DropInputbox
-                list={turnlist}
-                name="turn"
-                register={register("turn", { required: "순번을 선택해주세요." })}
-                placeholder="순번 *"
-                isError={!!errors.turn}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>그룹 *</div>
+                <DropInputbox
+                  list={grouplist}
+                  register={register("groupname", { required: "그룹을 선택해주세요." })}
+                  isError={!!errors.groupname}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>순번 *</div>
+                <DropInputbox
+                  list={turnlist}
+                  register={register("turn", { required: "순번을 선택해주세요." })}
+                  isError={!!errors.turn}
+                />
+              </div>
             </div>
           </div>
 
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
-              <Inputbox
-                type="date"
-                placeholder="가입일자 *"
-                register={register("registerdate", { required: "가입일자를 입력해주세요." })}
-                isError={!!errors.registerdate}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>가입일자 *</div>
+                <Inputbox
+                  type="date"
+                  register={register("registerdate", { required: "가입일자를 입력해주세요." })}
+                  isError={!!errors.registerdate}
+                />
+              </div>
             </div>
             <div className={styles.content_body2}>
-              <Inputbox
-                type="text"
-                placeholder="가입가 *"
-                value={formattedRegisterPrice}
-                onChange={handleRegisterPriceChange}
-                isError={!!errors.registerprice}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>가입가 *</div>
+                <Inputbox
+                  type="text"
+                  value={formattedRegisterPrice}
+                  onChange={handleRegisterPriceChange}
+                  isError={!!errors.registerprice}
+                />
+              </div>
             </div>
           </div>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
-              <Inputbox
-                type="date"
-                placeholder="예약금 납입일자 *"
-                register={register("Deposit.depositdate", { required: "예약금 납입일자를 입력해주세요." })}
-                isError={!!errors.Deposit?.depositdate}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>예약금 납입일자 *</div>
+                <Inputbox
+                  type="date"
+                  register={register("Deposit.depositdate", { required: "예약금 납입일자를 입력해주세요." })}
+                  isError={!!errors.Deposit?.depositdate}
+                />
+              </div>
             </div>
             <div className={styles.content_body2}>
-              <Inputbox
-                type="text"
-                placeholder="예약금 *"
-                value={formattedDepositAmmount}
-                onChange={handleDepositAmmountChange}
-                isError={!!errors.Deposit?.depositammount}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>예약금 *</div>
+                <Inputbox
+                  type="text"
+                  value={formattedDepositAmmount}
+                  onChange={handleDepositAmmountChange}
+                  isError={!!errors.Deposit?.depositammount}
+                />
+              </div>
             </div>
           </div>
           <div className={styles.content_body}>
@@ -577,30 +594,38 @@ function Modify({ params }) {
 
         <h3>MGM</h3>
         <div className={`${styles.content_container} ${styles.mgmContainer}`}>
-          <MGMInputbox
-            type="text"
-            placeholder="업체명 *"
-            register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
-            isError={!!errors.MGM?.mgmcompanyname}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="이름 *"
-            register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
-            isError={!!errors.MGM?.mgmname}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="기관 *"
-            register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
-            isError={!!errors.MGM?.mgminstitution}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="계좌 *"
-            register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
-            isError={!!errors.MGM?.mgmaccount}
-          />
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>업체명 *</div>
+            <MGMInputbox
+              type="text"
+              register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
+              isError={!!errors.MGM?.mgmcompanyname}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>이름 *</div>
+            <MGMInputbox
+              type="text"
+              register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
+              isError={!!errors.MGM?.mgmname}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>기관 *</div>
+            <MGMInputbox
+              type="text"
+              register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
+              isError={!!errors.MGM?.mgminstitution}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>계좌 *</div>
+            <MGMInputbox
+              type="text"
+              register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
+              isError={!!errors.MGM?.mgmaccount}
+            />
+          </div>
         </div>
 
         <h3>부속서류</h3>
@@ -683,25 +708,29 @@ function Modify({ params }) {
           
           {prizeattachmentChecked && (
             <div className={styles.prizeRow}>
-              <Inputbox
-                type="text"
-                placeholder="사은품명"
-                register={register("prizename")}
-                isError={!!errors.prizename}
-              />
-              <Inputbox
-                type="date"
-                placeholder="지급일자"
-                register={register("prizedate")}
-                isError={!!errors.prizedate}
-              />
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>사은품명</div>
+                <Inputbox
+                  type="text"
+                  register={register("prizename")}
+                  isError={!!errors.prizename}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>지급일자</div>
+                <Inputbox
+                  type="date"
+                  register={register("prizedate")}
+                  isError={!!errors.prizedate}
+                />
+              </div>
             </div>
           )}
         </div>
 
         <div className={styles.content_container}>
-          <div>
-            <span>파일업로드</span>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>파일업로드</div>
             <FileInputbox
               name="fileupload"
               handleChange={handleFileChange}
@@ -710,50 +739,60 @@ function Modify({ params }) {
               value={file ? file.name : ""}
               isError={!!errors.fileupload}
             />
-            {existingFileInfo && (
-              <div className={styles.existingFile}>
-                기존 파일: {existingFileInfo}
-              </div>
-            )}
           </div>
+          {existingFileInfo && (
+            <div className={styles.existingFile}>
+              기존 파일: {existingFileInfo}
+            </div>
+          )}
         </div>
 
         <h3>담당자 정보</h3>
         <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
-          <Inputbox
-            type="text"
-            placeholder="총괄 *"
-            register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
-            isError={!!errors.Responsible?.generalmanagement}
-          />
-          <Inputbox
-            type="text"
-            placeholder="본부 *"
-            register={register("Responsible.division", { required: "본부를 입력해주세요." })}
-            isError={!!errors.Responsible?.division}
-          />
-          <Inputbox
-            type="text"
-            placeholder="팀 *"
-            register={register("Responsible.team", { required: "팀을 입력해주세요." })}
-            isError={!!errors.Responsible?.team}
-          />
-          <Inputbox
-            type="text"
-            placeholder="성명 *"
-            register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
-            isError={!!errors.Responsible?.managername}
-          />
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>총괄 *</div>
+            <Inputbox
+              type="text"
+              register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+              isError={!!errors.Responsible?.generalmanagement}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>본부 *</div>
+            <Inputbox
+              type="text"
+              register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+              isError={!!errors.Responsible?.division}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>팀 *</div>
+            <Inputbox
+              type="text"
+              register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+              isError={!!errors.Responsible?.team}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>성명 *</div>
+            <Inputbox
+              type="text"
+              register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+              isError={!!errors.Responsible?.managername}
+            />
+          </div>
         </div>
 
         <h3>비고</h3>
         <div className={styles.content_container}>
-          <InputAreabox
-            type="text"
-            placeholder="비고"
-            register={register("specialnote")}
-            isError={!!errors.specialnote}
-          />
+          <div className={styles.inputRow}>
+            <div className={styles.inputLabel}>비고</div>
+            <InputAreabox
+              type="text"
+              register={register("specialnote")}
+              isError={!!errors.specialnote}
+            />
+          </div>
         </div>
         <h1></h1>
         <Button_Y type="submit">수정하기</Button_Y>

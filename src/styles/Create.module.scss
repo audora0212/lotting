@@ -81,7 +81,6 @@
     margin-left: 10px;
 }
 
-/* 부속서류 전용 컨테이너 */
 .attachmentContainer {
     display: flex;
     flex-direction: column; 
@@ -110,28 +109,47 @@
     margin-left: 20px;
 }
 
-/* MGM 인풋박스 부분 */
 .mgmContainer {
     width: 70vw;
     max-width: 100%;
     display: flex; 
     flex-direction: row; 
     gap: 20px;
-    align-items: center;
+    align-items: flex-start; 
+    flex-wrap: wrap;
 }
 
-/* 담당자 인풋박스 한 줄로 정렬 */
 .responsibleContainer {
     width: 70vw;
     max-width: 100%;
     display: flex; 
     flex-direction: row; 
     gap: 20px;
-    align-items: center;
+    align-items: flex-start; 
+    flex-wrap: wrap;
 }
 
 .existingFile {
     margin-top: 10px;
     font-size: 14px;
     color: #7152F3;
+}
+
+/* 추가: inputRow, inputLabel 스타일 */
+.inputRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.inputLabel {
+    width: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
