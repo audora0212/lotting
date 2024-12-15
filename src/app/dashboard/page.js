@@ -52,10 +52,9 @@ const Dashboard = () => {
             percentage="5"
             updatedDate="2024년 11월 20일"
           />
-          <div className={styles.Schedule}>
+          {/* <div className={styles.Schedule}>
             <div className={styles.ScheduleTitle}>일정관리</div>
-            {/* 일정관리 내용 추가 예정 */}
-          </div>
+          </div> */}
         </div>
         <div className={styles.Row}>
           <ContractAmount
