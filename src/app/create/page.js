@@ -1,5 +1,4 @@
 "use client";
-
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
 import {
@@ -9,6 +8,7 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
+  MGMInputbox // 추가
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
@@ -20,13 +20,11 @@ import { useRouter } from "next/navigation";
 
 import {
   banklist,
-  sintacklist,
   classificationlist,
   typeidlist,
   typelist,
   grouplist,
   turnlist,
-  sortlist,
 } from "@/components/droplistdata";
 
 function Create() {
@@ -38,7 +36,6 @@ function Create() {
   const [idExists, setIdExists] = useState(false);
   const [checkingId, setCheckingId] = useState(false);
 
-  // 수정 부분: 천 단위 콤마 표시를 위한 로컬 상태
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
 
@@ -47,7 +44,6 @@ function Create() {
       try {
         const nextId = await newIdGenerate();
         setNewid(nextId);
-        console.log(nextId)
         setValue("id", nextId);
       } catch (error) {
         console.error("관리번호를 가져오는데 실패했습니다:", error);
@@ -76,32 +72,24 @@ function Create() {
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-
-    console.log(isupload)
-    
     setIsupload((prev) => ({
       ...prev,
       [name]: checked,
     }));
-
   };
 
   const handleFileChange = (e) => {
-    console.log("file changing");
-    const { name, files } = e.target;
+    const { files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
-      console.log("선택된 파일:", selectedFile);
-      setFile(selectedFile); 
+      setFile(selectedFile);
       setIsupload((prev) => ({
         ...prev,
-        [name]: true,
         isuploaded: true,
       }));
     }
   };
 
-  // 관리번호 중복 체크
   const handleIdChange = async (e) => {
     const enteredId = e.target.value;
     setValue("id", enteredId);
@@ -113,7 +101,6 @@ function Create() {
         setIdExists(exists);
       } catch (error) {
         console.error("관리번호 중복 체크 오류:", error);
-        // 에러 발생 시, 중복으로 간주하여 제출 방지
         setIdExists(true);
       } finally {
         setCheckingId(false);
@@ -123,14 +110,12 @@ function Create() {
     }
   };
 
-  // 수정 부분: 천 단위 콤마 포맷 함수
   const formatNumberWithCommas = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
     if (!numericValue) return "";
     return parseInt(numericValue, 10).toLocaleString();
   };
 
-  // 수정 부분: 가입가 변경 핸들러
   const handleRegisterPriceChange = (e) => {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedRegisterPrice(formattedValue);
@@ -138,7 +123,6 @@ function Create() {
     setValue("registerprice", rawValue ? parseInt(rawValue, 10) : null);
   };
 
-  // 수정 부분: 예약금 변경 핸들러
   const handleDepositAmmountChange = (e) => {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
@@ -146,7 +130,6 @@ function Create() {
     setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
-  // onError 핸들러
   const onError = (errors) => {
     console.log("검증 오류:", errors);
 
@@ -175,27 +158,17 @@ function Create() {
     });
   };
 
-  // onSubmit 핸들러
-  const onSubmit = async (data) => { 
-    console.log("onSubmit 호출됨", data);
+  const onSubmit = async (data) => {
     try {
-      console.log("폼 제출 데이터:", data);
-      console.log("Parsed depositdate:", data.Deposit.depositdate);
-      
-      // 파일 업로드
       let uploadedFileInfo = "";
       if (file) {
-        console.log("업로드할 파일:", file);
-        // 파일명 변경: createFile에 관리번호(id) 전달
-        const uploadResponse = await createFile(file, parseInt(data.id, 10)); 
-        console.log("파일 업로드 응답:", uploadResponse);
+        const uploadResponse = await createFile(file, parseInt(data.id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
 
-      // 데이터 파싱 및 정리
       const parsedData = {
         ...data,
-        id: parseInt(data.id, 10), // id를 정수로 변환
+        id: parseInt(data.id, 10),
         CustomerData: {
           ...data.CustomerData,
           resnumfront: parseInt(data.CustomerData.resnumfront, 10),
@@ -209,13 +182,11 @@ function Create() {
         },
       };
 
-      // Attachments 정보 추가
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
       };
 
-      // 최종 고객 데이터 구성
       const customerData = {
         id: parsedData.id,
         customertype: data.customertype,
@@ -255,11 +226,10 @@ function Create() {
         freeoption: data.freeoption,
         forfounding: data.forfounding,
         specialnote: data.specialnote,
+        prizename: data.prizename || "",
+        prizedate: data.prizedate || "",
       };
 
-      console.log("파일업로드데이터", attachments);
-      console.log("최종 데이터", customerData);
-      // 고객 생성 API 호출
       const createUserResponse = await createUser(customerData);
 
       Swal.fire({
@@ -309,23 +279,29 @@ function Create() {
     }
   };
 
+  const prizeattachmentChecked = watch("prizeattachment", false);
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <h3>회원 정보</h3>
         <div className={styles.content_container}>
-          <div className={styles.Font}>
-            <label htmlFor="id">관리번호 :</label>
+          <div className={styles.Font2}>
+            <label htmlFor="id"></label>
             <Inputbox
               type="number"
               id="id"
               defaultValue={newid}
               {...register("id", { required: "관리번호를 입력해주세요." })}
               onChange={handleIdChange}
+              isError={!!errors.id || idExists}
             />
-            {checkingId && <span className={styles.checking}> 확인 중...</span>}
+            {checkingId && <span className={styles.checking}>확인 중...</span>}
+            {!checkingId && !idExists && watch("id") && (
+              <span className={styles.availableText}> (사용가능)</span>
+            )}
             {idExists && (
-              <span className={styles.errorText}> 이미 존재하는 관리번호입니다</span>
+              <span className={styles.errorText}> (사용중인 관리번호)</span>
             )}
             {errors.id && (
               <span className={styles.errorText}>{errors.id.message}</span>
@@ -420,7 +396,7 @@ function Create() {
               namePrefix="LegalAddress"
               postcodeName="LegalAddress.postnumber"
               addressName="LegalAddress.post"
-              isError={!!errors.LegalAddress?.postcode || !!errors.LegalAddress?.address || !!errors.LegalAddress?.detailaddress}
+              isError={!!errors.LegalAddress?.postnumber || !!errors.LegalAddress?.post || !!errors.LegalAddress?.detailaddress}
             />
             <Inputbox
               type="text"
@@ -437,7 +413,7 @@ function Create() {
               namePrefix="Postreceive"
               postcodeName="Postreceive.postnumberreceive"
               addressName="Postreceive.postreceive"
-              isError={!!errors.Postreceive?.postcode || !!errors.Postreceive?.addressreceive || !!errors.Postreceive?.detailaddressreceive}
+              isError={!!errors.Postreceive?.postnumberreceive || !!errors.Postreceive?.postreceive || !!errors.Postreceive?.detailaddressreceive}
             />
             <Inputbox
               type="text"
@@ -494,7 +470,6 @@ function Create() {
               />
             </div>
             <div className={styles.content_body2}>
-              {/* 수정 부분: 가입가 필드를 천 단위 콤마 표시 */}
               <Inputbox
                 type="text"
                 placeholder="가입가 *"
@@ -514,7 +489,6 @@ function Create() {
               />
             </div>
             <div className={styles.content_body2}>
-              {/* 수정 부분: 예약금 필드를 천 단위 콤마 표시 */}
               <Inputbox
                 type="text"
                 placeholder="예약금 *"
@@ -556,125 +530,119 @@ function Create() {
         </div>
 
         <h3>MGM</h3>
-        <div className={styles.content_container}>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="업체명 *"
-              register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
-              isError={!!errors.MGM?.mgmcompanyname}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="이름 *"
-              register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
-              isError={!!errors.MGM?.mgmname}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="기관 *"
-              register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
-              isError={!!errors.MGM?.mgminstitution}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="계좌 *"
-              register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
-              isError={!!errors.MGM?.mgmaccount}
-            />
-          </div>
+        {/* MGMInputbox 사용 */}
+        <div className={`${styles.content_container} ${styles.mgmContainer}`}>
+          <MGMInputbox
+            type="text"
+            placeholder="업체명 *"
+            register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
+            isError={!!errors.MGM?.mgmcompanyname}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="이름 *"
+            register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
+            isError={!!errors.MGM?.mgmname}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="기관 *"
+            register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
+            isError={!!errors.MGM?.mgminstitution}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="계좌 *"
+            register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
+            isError={!!errors.MGM?.mgmaccount}
+          />
         </div>
 
         <h3>부속서류</h3>
+        <div className={styles.attachmentGrid}>
+          <Checkbox
+            label="인감증명서"
+            name="sealcertificateprovided"
+            onChange={handleCheckboxChange}
+            register={register("sealcertificateprovided")}
+            isError={!!errors.sealcertificateprovided}
+          />
+          <Checkbox
+            label="본인서명확인서"
+            name="selfsignatureconfirmationprovided"
+            onChange={handleCheckboxChange}
+            register={register("selfsignatureconfirmationprovided")}
+            isError={!!errors.selfsignatureconfirmationprovided}
+          />
+          <Checkbox
+            label="확약서"
+            name="commitmentletterprovided"
+            onChange={handleCheckboxChange}
+            register={register("commitmentletterprovided")}
+            isError={!!errors.commitmentletterprovided}
+          />
+          <Checkbox
+            label="신분증"
+            name="idcopyprovided"
+            onChange={handleCheckboxChange}
+            register={register("idcopyprovided")}
+            isError={!!errors.idcopyprovided}
+          />
+          <Checkbox
+            label="무상옵션"
+            name="freeoption"
+            onChange={handleCheckboxChange}
+            register={register("freeoption")}
+            isError={!!errors.freeoption}
+          />
+          <Checkbox
+            label="창준위용"
+            name="forfounding"
+            onChange={handleCheckboxChange}
+            register={register("forfounding")}
+            isError={!!errors.forfounding}
+          />
+          <Checkbox
+            label="총회동의서"
+            name="agreement"
+            onChange={handleCheckboxChange}
+            register={register("agreement")}
+            isError={!!errors.agreement}
+          />
+          <Checkbox
+            label="선호도조사"
+            name="preferenceattachment"
+            onChange={handleCheckboxChange}
+            register={register("preferenceattachment")}
+            isError={!!errors.preferenceattachment}
+          />
+          <Checkbox
+            label="사은품"
+            name="prizeattachment"
+            onChange={handleCheckboxChange}
+            register={register("prizeattachment")}
+            isError={!!errors.prizeattachment}
+          />
+        </div>
+
+        {prizeattachmentChecked && (
+          <div className={styles.content_container}>
+            <Inputbox
+              type="text"
+              placeholder="사은품명"
+              register={register("prizename")}
+              isError={!!errors.prizename}
+            />
+            <Inputbox
+              type="date"
+              placeholder="지급일자"
+              register={register("prizedate")}
+              isError={!!errors.prizedate}
+            />
+          </div>
+        )}
+
         <div className={styles.content_container}>
-          <div>
-            <Checkbox
-              label="인감증명서"
-              name="sealcertificateprovided"
-              onChange={handleCheckboxChange}
-              register={register("sealcertificateprovided")}
-              isError={!!errors.sealcertificateprovided}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="본인서명확인서"
-              name="selfsignatureconfirmationprovided"
-              onChange={handleCheckboxChange}
-              register={register("selfsignatureconfirmationprovided")}
-              isError={!!errors.selfsignatureconfirmationprovided}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="확약서"
-              name="commitmentletterprovided"
-              onChange={handleCheckboxChange}
-              register={register("commitmentletterprovided")}
-              isError={!!errors.commitmentletterprovided}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="신분증"
-              name="idcopyprovided"
-              onChange={handleCheckboxChange}
-              register={register("idcopyprovided")}
-              isError={!!errors.idcopyprovided}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="무상옵션"
-              name="freeoption"
-              onChange={handleCheckboxChange}
-              register={register("freeoption")}
-              isError={!!errors.freeoption}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="창준위용"
-              name="forfounding"
-              onChange={handleCheckboxChange}
-              register={register("forfounding")}
-              isError={!!errors.forfounding}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="총회동의서"
-              name="agreement"
-              onChange={handleCheckboxChange}
-              register={register("agreement")}
-              isError={!!errors.agreement}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="선호도조사"
-              name="preferenceattachment"
-              onChange={handleCheckboxChange}
-              register={register("preferenceattachment")}
-              isError={!!errors.preferenceattachment}
-            />
-          </div>
-          <div>
-            <Checkbox
-              label="사은품"
-              name="prizeattachment"
-              onChange={handleCheckboxChange}
-              register={register("prizeattachment")}
-              isError={!!errors.prizeattachment}
-            />
-          </div>
-          <div></div>
           <div>
             <span>파일업로드</span>
             <FileInputbox 
@@ -724,11 +692,11 @@ function Create() {
           </div>
         </div>
 
-        <h3>비고고</h3>
+        <h3>비고</h3>
         <div className={styles.content_container}>
           <InputAreabox
             type="text"
-            placeholder="비고"
+            placeholder="기타"
             register={register("specialnote")}
             isError={!!errors.specialnote}
           />

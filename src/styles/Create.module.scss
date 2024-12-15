@@ -65,16 +65,45 @@
     line-height: 24px;
 }
 
-  
-  .errorText {
+.errorText {
     color: red;
     font-size: 0.8em;
     margin-left: 10px;
-  }
-  
-  .checking {
+}
+.checking {
     color: blue;
     font-size: 0.8em;
     margin-left: 10px;
-  }
-  
+}
+.availableText {
+    color: green;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+/* 부속서류 체크박스를 3x3 그리드 형태로 */
+.attachmentGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    width: 70vw;
+    margin-left:20px;
+}
+
+/* MGM 인풋박스 부분을 한 줄로 배치 */
+.mgmContainer {
+    width: 70vw;
+    max-width: 100%;
+    display: flex; 
+    flex-direction: row; 
+    gap: 20px;
+    align-items: center;
+    /* 각 MGMInputbox가 flex:1을 가지므로 한줄에 4개 모두 반응형으로 보여짐 */
+}
+
+/* 기존파일 표시 */
+.existingFile {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #7152F3;
+}

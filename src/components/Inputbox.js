@@ -4,15 +4,13 @@ import React, { forwardRef, useState, useEffect } from "react";
 import styles from "@/styles/Inputbox.module.scss";
 import { IoMdCloudUpload } from "react-icons/io";
 
-// Checkbox 컴포넌트
 export const Checkbox = (props) => {
   const { label, name, onChange, defaultChecked, register, isError, ...rest } = props;
   
-  // register에서 필요한 프로퍼티 추출
   const { onChange: onChangeFromRegister, onBlur, name: fieldName, ref } = register;
 
   return (
-    <div className={styles.checkboxContainer}>
+    <label className={`${styles.customCheckbox} ${isError ? styles.errorInput : ''}`}>
       <input
         type="checkbox"
         name={fieldName}
@@ -20,23 +18,20 @@ export const Checkbox = (props) => {
         ref={ref}
         onBlur={onBlur}
         onChange={(e) => {
-          if (onChangeFromRegister) onChangeFromRegister(e); // react-hook-form 상태 업데이트
-          if (onChange) onChange(e); // custom onChange 핸들러 호출
+          if (onChangeFromRegister) onChangeFromRegister(e); 
+          if (onChange) onChange(e);
         }}
-        className={`${styles.checkbox} ${isError ? styles.errorInput : ''}`}
         {...rest}
       />
-      <label className={styles.checkboxLabel}>{label}</label>
-    </div>
+      <span className={styles.checkboxText}>{label}</span>
+    </label>
   );
 };
 
-// Spanbox 컴포넌트
 export const Spanbox = ({ children }) => {
   return <span className={styles.spancontainer}>{children}</span>;
 };
 
-// 일반 Inputbox 컴포넌트
 export const Inputbox = (props) => {
   const {
     type,
@@ -54,6 +49,65 @@ export const Inputbox = (props) => {
   return (
     <input
       className={`${styles.inputcontainer} ${isError ? styles.errorInput : ''}`}
+      data-placeholder={date_placeholder}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      {...register}
+      {...rest}
+    />
+  );
+};
+
+export const MGMInputbox = (props) => {
+  // MGM 전용 인풋박스: 반응형 크기 대응
+  const {
+    type,
+    placeholder,
+    onChange,
+    name,
+    defaultValue,
+    value,
+    register,
+    isError,
+    ...rest
+  } = props;
+
+  return (
+    <input
+      className={`${styles.mgmInputContainer} ${isError ? styles.errorInput : ''}`}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      {...register}
+      {...rest}
+    />
+  );
+};
+
+export const InputboxSmall = (props) => {
+  const {
+    type,
+    placeholder,
+    onChange,
+    date_placeholder,
+    name,
+    defaultValue,
+    value,
+    register,
+    isError,
+    ...rest
+  } = props;
+
+  return (
+    <input
+      className={`${styles.inputcontainerSmall} ${isError ? styles.errorInput : ''}`}
       data-placeholder={date_placeholder}
       type={type}
       name={name}
@@ -96,7 +150,6 @@ export const Inputbox2 = forwardRef((props, ref) => {
   );
 });
 
-// Textarea InputAreabox 컴포넌트
 export const InputAreabox = (props) => {
   const {
     type,
@@ -127,7 +180,6 @@ export const InputAreabox = (props) => {
   );
 };
 
-// Searchbox 컴포넌트
 export const Searchbox = (props) => {
   const { type, placeholder, onChange, date_placeholder, name, register, isError, ...rest } = props;
 
@@ -145,7 +197,6 @@ export const Searchbox = (props) => {
   );
 };
 
-// Inputbox_L 컴포넌트
 export const Inputbox_L = (props) => {
   const { type, placeholder, onChange, date_placeholder, name, defaultValue, register, isError, ...rest } = props;
 
@@ -164,7 +215,6 @@ export const Inputbox_L = (props) => {
   );
 };
 
-// Inputbox_M 컴포넌트
 export const Inputbox_M = (props) => {
   const {
     type,
@@ -197,7 +247,6 @@ export const Inputbox_M = (props) => {
   );
 };
 
-// LoginInputbox 컴포넌트
 export const LoginInputbox = (props) => {
   const { type, placeholder, value, onChange, name, register, isError, ...rest } = props;
 
@@ -215,7 +264,6 @@ export const LoginInputbox = (props) => {
   );
 };
 
-// LongInputbox 컴포넌트
 export const LongInputbox = (props) => {
   const { type, placeholder, register, isError, ...rest } = props;
 
@@ -230,7 +278,6 @@ export const LongInputbox = (props) => {
   );
 };
 
-// DropInputbox 컴포넌트
 export const DropInputbox = (props) => {
   const { list, placeholder, register, isError, ...rest } = props;
 
@@ -261,14 +308,11 @@ const iconstyle = {
 
 export const FileInputbox = (props) => {
   const { handleChange, isupload, value, name, register, isError, ...rest } = props;
-
-  // register에서 제공하는 onChange, onBlur, ref 추출
   const { onChange: registerOnChange, onBlur, ref, ...restRegister } = register || {};
 
-  // 두 개의 onChange를 호출하는 함수
   const combinedOnChange = (e) => {
-    handleChange(e); // 커스텀 핸들러 호출
-    if (registerOnChange) registerOnChange(e); // react-hook-form의 onChange 호출
+    handleChange(e);
+    if (registerOnChange) registerOnChange(e);
   };
 
   return (
@@ -306,7 +350,6 @@ export const FileInputbox = (props) => {
   );
 };
 
-// PostInputbox 컴포넌트 (기존)
 export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, addressName, isError }) => {
   const [postnumber, setPostnumber] = useState("우편번호");
   const [post, setPost] = useState("주소");
@@ -349,7 +392,6 @@ export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, add
       />
       {isError && <span className={styles.error}>주소를 입력해주세요.</span>}
 
-      {/* 숨겨진 필드 */}
       <input
         type="hidden"
         {...register(postcodeName || `${namePrefix}.postnumber`, { required: "우편번호를 입력해주세요." })}
@@ -362,13 +404,11 @@ export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, add
   );
 };
 
-// PostInputbox2 컴포넌트 (추가) 
 export const PostInputbox2 = ({ register, setValue, namePrefix, postcodeName, addressName, isError, initialPostNumber, initialAddress }) => {
   const [postnumber, setPostnumber] = useState(initialPostNumber || "우편번호");
   const [post, setPost] = useState(initialAddress || "주소");
 
   useEffect(() => {
-    // initialPostNumber, initialAddress가 변경될 때 state 업데이트
     setPostnumber(initialPostNumber || "우편번호");
     setPost(initialAddress || "주소");
   }, [initialPostNumber, initialAddress]);
@@ -396,7 +436,7 @@ export const PostInputbox2 = ({ register, setValue, namePrefix, postcodeName, ad
   };
 
   return (
-    <div className={styles.postContainer}>
+    <div className={styles.postContainer2}>
       <input
         type="button"
         onClick={getpost}
@@ -411,7 +451,6 @@ export const PostInputbox2 = ({ register, setValue, namePrefix, postcodeName, ad
       />
       {isError && <span className={styles.error}>주소를 입력해주세요.</span>}
 
-      {/* 숨겨진 필드 */}
       <input
         type="hidden"
         {...register(postcodeName || `${namePrefix}.postnumber`, { required: "우편번호를 입력해주세요." })}

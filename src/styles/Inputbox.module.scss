@@ -11,38 +11,36 @@
     margin-top:13px;
     margin-left:16px;
     color: dark;
-    /* Body-1 Regular */
     font-family: Lexend;
     font-size: 16px;
     font-style: normal;
     font-weight: 300;
-    line-height: 24px; /* 150% */
+    line-height: 24px;
 }
 .errorInput {
-    border: 1px solid red;
-  }
-  
-  .error {
+    border: 1px solid red !important;
+}
+.error {
     color: red;
     font-size: 0.8em;
     margin-top: 5px;
-  }
+}
 .spancontainer {
     border-radius: 10px;
     border: 1px solid rgba(162, 161, 168, 0.20);
     display: flex;
-    height: 30px;   
+    height: 50px;  
     width: 1fr;
-
     padding: 10px 20px 10px 16px;
     line-height: 30px;
     text-align: center;
     font-size: 13px;
+    box-sizing: border-box;
 }
 .searchclient{
     display: flex;
     width: 310px;
-    height:56px;
+    height:50px;  
     box-sizing: border-box;
     padding: 16px;
     flex-direction: column;
@@ -54,43 +52,46 @@
 .inputcontainer_L{
     display: flex;
     width:800px;
-    height:30px;
+    height:50px;  
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
     padding: 10px 20px 10px 16px;
     float: left;
+    box-sizing: border-box;
 }
 .inputcontainer_M{
     display: flex;
     width: 350px;
-    height:30px;
+    height:50px;  
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
     padding: 10px 20px 10px 16px;
     float: left;
     margin-right:10px;
+    box-sizing: border-box;
 }
-
 
 .inputcontainer {
     display: flex;
     width: 25vw;
-    height:30px;
+    height:50px;  
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
     padding: 10px 20px 10px 16px;
     float: left;
     margin-right:10px;
+    box-sizing: border-box;
 }
 .Dropinputcontainer {
     border-radius: 10px;
     border: 1px solid rgba(162, 161, 168, 0.20);
     display: flex;
-    height: 50px;   
+    height: 50px;  
     width: 10vw;
     padding: 10px 20px 10px 16px;
     margin-right: 10px;
     float: left;
+    box-sizing: border-box;
 }
 .postcontainer {
     border-radius: 10px;
@@ -101,32 +102,46 @@
     padding: 10px 20px 10px 16px;
     margin-right: 10px;
     float: left;
+    box-sizing: border-box;
 }
 
 .logininputcontainer {
     border-radius: 10px;
     border: 1px solid #7152F3;
     display: flex;
-    height: 30px;   
+    height: 50px;   
     width: 100%;
     margin-top: 3%;
     padding: 10px 20px 10px 16px;
     float: left;
+    box-sizing: border-box;
 }
-
 
 .Longinputcontainer {
     border-radius: 10px;
     border: 1px solid rgba(162, 161, 168, 0.20);
     display: flex;
-    height: 30px;   
+    height: 50px;   
     width: 100%;
     padding: 10px 20px 10px 16px;
     margin-right: 100px;
     float: left;
     grid-column: span 2;
+    box-sizing: border-box;
 }
 
+.inputcontainerSmall {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 20%;
+    padding: 10px 10px 10px 16px;
+    margin-right: 100px;
+    float: left;
+    grid-column: span 2;
+    box-sizing: border-box;
+}
 
 
 .Fileinputcontainer{
@@ -135,15 +150,23 @@
     height: 133px;
     border: 1px dashed  #7152F3;
     border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }   
-
+.fileInput {
+  display: none;
+}
 .filetext{
     text-align: center;
     font-family: Lexend;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: 22px; /* 157.143% */
+    line-height: 22px; 
     color: #000;
 }
 
@@ -158,27 +181,86 @@
     padding-right: 10px;
 }
 
-
 .filetypetext{
     font-family: Lexend;
     font-size: 11px;
     font-style: normal;
     font-weight: 300;
-    line-height: 16px; /* 145.455% */
+    line-height: 16px;
     color: #A2A1A8;
     text-align: center;
 
 }
-.checkboxContainer {
-    display: flex;
+
+/* 체크박스 스타일 */
+.customCheckbox {
+    display: inline-flex;
     align-items: center;
-  }
-  
-  .checkbox {
-    margin-right: 8px;
-  }
-  
-  .checkboxLabel {
-    font-size: 1em;
-    color: #333;
-  }
+    justify-content: center;
+    border: 1px solid #85db8e; 
+    border-radius: 5px;
+    padding: 2px; 
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 80%;
+    box-sizing: border-box;
+    height: 40px; 
+}
+.customCheckbox:hover {
+    background-color: #ddf7dd;
+}
+.customCheckbox:active {
+    transform: scale(1.02);
+}
+.customCheckbox input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height:0;
+    width:0;
+}
+.customCheckbox input[type=checkbox]:checked + .checkboxText {
+    background-color: #a2dea8;
+    color: #fff;
+}
+.checkboxText {
+    display: inline-block;
+    padding: 10px 10px; 
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: #000;
+}
+
+.postContainer {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: auto;
+    gap: 10px;
+}
+
+/* MGM 전용 인풋박스 스타일 추가 */
+.mgmInputContainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;
+    padding: 10px 20px 10px 16px;
+    box-sizing: border-box;
+    flex: 1;           /* 부모 컨테이너에서 남은 공간을 유연하게 사용 */
+    min-width: 0;      /* flex 아이템이 줄어들 때 overflow 방지 */
+    margin: 0;         /* gap으로 간격 조정 */
+}
+
+.postContainer2 {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: auto;
+    gap: 10px;
+}
