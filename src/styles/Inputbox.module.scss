@@ -146,7 +146,7 @@
 
 .Fileinputcontainer{
     grid-row: span 2;
-    width: 1fr;
+    width: 100%;
     height: 133px;
     border: 1px dashed  #7152F3;
     border-radius: 10px;
@@ -192,27 +192,27 @@
 
 }
 
-/* 체크박스 스타일 */
+/* 체크박스 스타일 수정 - 선택 시 여백 없이 꽉 차게 */
 .customCheckbox {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #85db8e; 
+    border: 1px solid #a2dea8;
     border-radius: 5px;
-    padding: 2px; 
     cursor: pointer;
     position: relative;
     user-select: none;
     transition: background-color 0.3s, transform 0.2s;
     width: 80%;
     box-sizing: border-box;
-    height: 40px; 
+    height: 40px;
+    padding: 0; /* 패딩 제거 */
 }
 .customCheckbox:hover {
     background-color: #ddf7dd;
 }
 .customCheckbox:active {
-    transform: scale(1.02);
+    transform: scale(0.95);
 }
 .customCheckbox input[type=checkbox] {
     position: absolute;
@@ -222,18 +222,22 @@
     width:0;
 }
 .customCheckbox input[type=checkbox]:checked + .checkboxText {
-    background-color: #a2dea8;
+    background-color: #a2dea8; /* 체크 시 전체 배경색 적용 */
     color: #fff;
 }
 .checkboxText {
-    display: inline-block;
-    padding: 10px 10px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 14px;
     text-align: center;
     width: 100%;
+    height: 100%;  
     box-sizing: border-box;
     background-color: transparent;
     color: #000;
+    margin:0;
+    padding:0; /* 패딩 제거 */
 }
 
 .postContainer {
@@ -244,7 +248,15 @@
     gap: 10px;
 }
 
-/* MGM 전용 인풋박스 스타일 추가 */
+.postContainer2 {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: auto;
+    gap: 10px;
+}
+
+/* MGM 전용 인풋박스 스타일 */
 .mgmInputContainer {
     border-radius: 10px;
     border: 1px solid rgba(162, 161, 168, 0.20);
@@ -252,15 +264,7 @@
     height: 50px;
     padding: 10px 20px 10px 16px;
     box-sizing: border-box;
-    flex: 1;           /* 부모 컨테이너에서 남은 공간을 유연하게 사용 */
-    min-width: 0;      /* flex 아이템이 줄어들 때 overflow 방지 */
-    margin: 0;         /* gap으로 간격 조정 */
-}
-
-.postContainer2 {
-    display: flex;
-    flex-direction: column; 
-    align-items: flex-start;
-    width: auto;
-    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
 }

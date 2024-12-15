@@ -6,7 +6,6 @@ import { IoMdCloudUpload } from "react-icons/io";
 
 export const Checkbox = (props) => {
   const { label, name, onChange, defaultChecked, register, isError, ...rest } = props;
-  
   const { onChange: onChangeFromRegister, onBlur, name: fieldName, ref } = register;
 
   return (
@@ -63,7 +62,6 @@ export const Inputbox = (props) => {
 };
 
 export const MGMInputbox = (props) => {
-  // MGM 전용 인풋박스: 반응형 크기 대응
   const {
     type,
     placeholder,

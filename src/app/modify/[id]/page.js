@@ -605,97 +605,100 @@ function Modify({ params }) {
         </div>
 
         <h3>부속서류</h3>
-        <div className={styles.attachmentGrid}>
-          <Checkbox
-            label="인감증명서"
-            name="sealcertificateprovided"
-            checked={isupload.sealcertificateprovided}
-            onChange={handleCheckboxChange}
-            register={register("sealcertificateprovided")}
-            isError={!!errors.sealcertificateprovided}
-          />
-          <Checkbox
-            label="본인서명확인서"
-            name="selfsignatureconfirmationprovided"
-            checked={isupload.selfsignatureconfirmationprovided}
-            onChange={handleCheckboxChange}
-            register={register("selfsignatureconfirmationprovided")}
-            isError={!!errors.selfsignatureconfirmationprovided}
-          />
-          <Checkbox
-            label="확약서"
-            name="commitmentletterprovided"
-            checked={isupload.commitmentletterprovided}
-            onChange={handleCheckboxChange}
-            register={register("commitmentletterprovided")}
-            isError={!!errors.commitmentletterprovided}
-          />
-          <Checkbox
-            label="신분증"
-            name="idcopyprovided"
-            checked={isupload.idcopyprovided}
-            onChange={handleCheckboxChange}
-            register={register("idcopyprovided")}
-            isError={!!errors.idcopyprovided}
-          />
-          <Checkbox
-            label="무상옵션"
-            name="freeoption"
-            checked={isupload.freeoption}
-            onChange={handleCheckboxChange}
-            register={register("freeoption")}
-            isError={!!errors.freeoption}
-          />
-          <Checkbox
-            label="창준위용"
-            name="forfounding"
-            checked={isupload.forfounding}
-            onChange={handleCheckboxChange}
-            register={register("forfounding")}
-            isError={!!errors.forfounding}
-          />
-          <Checkbox
-            label="총회동의서"
-            name="agreement"
-            checked={isupload.agreement}
-            onChange={handleCheckboxChange}
-            register={register("agreement")}
-            isError={!!errors.agreement}
-          />
-          <Checkbox
-            label="선호도조사"
-            name="preferenceattachment"
-            checked={isupload.preferenceattachment}
-            onChange={handleCheckboxChange}
-            register={register("preferenceattachment")}
-            isError={!!errors.preferenceattachment}
-          />
-          <Checkbox
-            label="사은품"
-            name="prizeattachment"
-            checked={isupload.prizeattachment}
-            onChange={handleCheckboxChange}
-            register={register("prizeattachment")}
-            isError={!!errors.prizeattachment}
-          />
-        </div>
-
-        {prizeattachmentChecked && (
-          <div className={styles.content_container}>
-            <Inputbox
-              type="text"
-              placeholder="사은품명"
-              register={register("prizename")}
-              isError={!!errors.prizename}
+        
+        <div className={styles.attachmentContainer}>
+          <div className={styles.attachmentGrid}>
+            <Checkbox
+              label="인감증명서"
+              name="sealcertificateprovided"
+              checked={isupload.sealcertificateprovided}
+              onChange={handleCheckboxChange}
+              register={register("sealcertificateprovided")}
+              isError={!!errors.sealcertificateprovided}
             />
-            <Inputbox
-              type="date"
-              placeholder="지급일자"
-              register={register("prizedate")}
-              isError={!!errors.prizedate}
+            <Checkbox
+              label="본인서명확인서"
+              name="selfsignatureconfirmationprovided"
+              checked={isupload.selfsignatureconfirmationprovided}
+              onChange={handleCheckboxChange}
+              register={register("selfsignatureconfirmationprovided")}
+              isError={!!errors.selfsignatureconfirmationprovided}
+            />
+            <Checkbox
+              label="확약서"
+              name="commitmentletterprovided"
+              checked={isupload.commitmentletterprovided}
+              onChange={handleCheckboxChange}
+              register={register("commitmentletterprovided")}
+              isError={!!errors.commitmentletterprovided}
+            />
+            <Checkbox
+              label="신분증"
+              name="idcopyprovided"
+              checked={isupload.idcopyprovided}
+              onChange={handleCheckboxChange}
+              register={register("idcopyprovided")}
+              isError={!!errors.idcopyprovided}
+            />
+            <Checkbox
+              label="무상옵션"
+              name="freeoption"
+              checked={isupload.freeoption}
+              onChange={handleCheckboxChange}
+              register={register("freeoption")}
+              isError={!!errors.freeoption}
+            />
+            <Checkbox
+              label="창준위용"
+              name="forfounding"
+              checked={isupload.forfounding}
+              onChange={handleCheckboxChange}
+              register={register("forfounding")}
+              isError={!!errors.forfounding}
+            />
+            <Checkbox
+              label="총회동의서"
+              name="agreement"
+              checked={isupload.agreement}
+              onChange={handleCheckboxChange}
+              register={register("agreement")}
+              isError={!!errors.agreement}
+            />
+            <Checkbox
+              label="선호도조사"
+              name="preferenceattachment"
+              checked={isupload.preferenceattachment}
+              onChange={handleCheckboxChange}
+              register={register("preferenceattachment")}
+              isError={!!errors.preferenceattachment}
+            />
+            <Checkbox
+              label="사은품"
+              name="prizeattachment"
+              checked={isupload.prizeattachment}
+              onChange={handleCheckboxChange}
+              register={register("prizeattachment")}
+              isError={!!errors.prizeattachment}
             />
           </div>
-        )}
+          
+          {prizeattachmentChecked && (
+  <div className={styles.prizeRow}>
+    <Inputbox
+      type="text"
+      placeholder="사은품명"
+      register={register("prizename")}
+      isError={!!errors.prizename}
+    />
+    <Inputbox
+      type="date"
+      placeholder="지급일자"
+      register={register("prizedate")}
+      isError={!!errors.prizedate}
+    />
+  </div>
+)}
+        </div>
 
         <div className={styles.content_container}>
           <div>
