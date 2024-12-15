@@ -88,7 +88,7 @@ function Inputmoneypay() {
             setService(formatNumber(phase.service));
             setDiscount(formatNumber(phase.discount));
             setExemption(formatNumber(phase.exemption));
-            setCharged(formatNumber(phase.charged)); // charged 값 설정
+            setCharged(formatNumber(phase.charged));
           } else {
             console.log("해당 차수가 존재하지 않습니다.");
           }
@@ -126,8 +126,8 @@ function Inputmoneypay() {
       exemption: parseNumber(exemption),
       charged: parseNumber(charged),
       move: data.move || "",
-      feesum: feesumValue.toString(), // `feesum` 추가
-      sum: feesumValue - chargedValue, // 남은금액 계산
+      feesum: feesumValue.toString(),
+      sum: feesumValue - chargedValue,
     };
 
     console.log(updatedData);
@@ -135,7 +135,7 @@ function Inputmoneypay() {
     if (phaseId) {
       updatePhaseData(phaseId, updatedData)
         .then(() => {
-          router.back();
+          router.push(`/inputmoney/userinfo/${IdState}`);
         })
         .catch((error) => {
           console.error("Phase 업데이트 중 오류 발생:", error);

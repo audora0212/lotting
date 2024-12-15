@@ -41,7 +41,7 @@ const Dashboard = () => {
             color="#7152F3"
             name="현재 계약건수"
             value={contractedCount}
-            percentage="12"
+            percentage="1"
             updatedDate="2024년 11월 20일"
           />
           <ContractSummary
@@ -49,7 +49,7 @@ const Dashboard = () => {
             color="#7152F3"
             name="완납인원"
             value={fullyPaidCount}
-            percentage="5"
+            percentage="0"
             updatedDate="2024년 11월 20일"
           />
           {/* <div className={styles.Schedule}>
