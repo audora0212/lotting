@@ -73,7 +73,7 @@ export default function Login() {
     <div className={styles.container}>
       <div className={styles.childcontainer}>
         <h1>환영합니다👋</h1>
-        <h3>민간임대주택 분양인관리시스템에 오신것을 환영합니다!</h3>
+        <h3>민간임대주택 회원관리시스템에 오신것을 환영합니다!</h3>
         <form onSubmit={handleSubmit}>
           <LoginInputbox
             name="username"
