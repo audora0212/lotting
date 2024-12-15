@@ -192,7 +192,7 @@
 
 }
 
-/* 체크박스 스타일 수정 - 선택 시 여백 없이 꽉 차게 */
+/* 체크박스 스타일 */
 .customCheckbox {
     display: inline-flex;
     align-items: center;
@@ -206,7 +206,7 @@
     width: 80%;
     box-sizing: border-box;
     height: 40px;
-    padding: 0; /* 패딩 제거 */
+    padding: 0;
 }
 .customCheckbox:hover {
     background-color: #ddf7dd;
@@ -222,7 +222,7 @@
     width:0;
 }
 .customCheckbox input[type=checkbox]:checked + .checkboxText {
-    background-color: #a2dea8; /* 체크 시 전체 배경색 적용 */
+    background-color: #a2dea8;
     color: #fff;
 }
 .checkboxText {
@@ -237,7 +237,7 @@
     background-color: transparent;
     color: #000;
     margin:0;
-    padding:0; /* 패딩 제거 */
+    padding:0;
 }
 
 .postContainer {

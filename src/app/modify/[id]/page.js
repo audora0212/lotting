@@ -576,7 +576,6 @@ function Modify({ params }) {
         </div>
 
         <h3>MGM</h3>
-        {/* MGM 부분에서 MGMInputbox를 사용하여 반응형 사이즈 조절 */}
         <div className={`${styles.content_container} ${styles.mgmContainer}`}>
           <MGMInputbox
             type="text"
@@ -683,21 +682,21 @@ function Modify({ params }) {
           </div>
           
           {prizeattachmentChecked && (
-  <div className={styles.prizeRow}>
-    <Inputbox
-      type="text"
-      placeholder="사은품명"
-      register={register("prizename")}
-      isError={!!errors.prizename}
-    />
-    <Inputbox
-      type="date"
-      placeholder="지급일자"
-      register={register("prizedate")}
-      isError={!!errors.prizedate}
-    />
-  </div>
-)}
+            <div className={styles.prizeRow}>
+              <Inputbox
+                type="text"
+                placeholder="사은품명"
+                register={register("prizename")}
+                isError={!!errors.prizename}
+              />
+              <Inputbox
+                type="date"
+                placeholder="지급일자"
+                register={register("prizedate")}
+                isError={!!errors.prizedate}
+              />
+            </div>
+          )}
         </div>
 
         <div className={styles.content_container}>
@@ -720,39 +719,31 @@ function Modify({ params }) {
         </div>
 
         <h3>담당자 정보</h3>
-        <div className={styles.content_container}>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="총괄 *"
-              register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
-              isError={!!errors.Responsible?.generalmanagement}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="본부 *"
-              register={register("Responsible.division", { required: "본부를 입력해주세요." })}
-              isError={!!errors.Responsible?.division}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="팀 *"
-              register={register("Responsible.team", { required: "팀을 입력해주세요." })}
-              isError={!!errors.Responsible?.team}
-            />
-          </div>
-          <div>
-            <Inputbox
-              type="text"
-              placeholder="성명 *"
-              register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
-              isError={!!errors.Responsible?.managername}
-            />
-          </div>
+        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
+          <Inputbox
+            type="text"
+            placeholder="총괄 *"
+            register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+            isError={!!errors.Responsible?.generalmanagement}
+          />
+          <Inputbox
+            type="text"
+            placeholder="본부 *"
+            register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+            isError={!!errors.Responsible?.division}
+          />
+          <Inputbox
+            type="text"
+            placeholder="팀 *"
+            register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+            isError={!!errors.Responsible?.team}
+          />
+          <Inputbox
+            type="text"
+            placeholder="성명 *"
+            register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+            isError={!!errors.Responsible?.managername}
+          />
         </div>
 
         <h3>비고</h3>

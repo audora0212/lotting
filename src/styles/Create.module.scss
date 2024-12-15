@@ -81,10 +81,10 @@
     margin-left: 10px;
 }
 
-/* 기존 content_container는 다른 곳에서 사용하고 있으므로 부속서류 전용 컨테이너를 새로 정의 */
+/* 부속서류 전용 컨테이너 */
 .attachmentContainer {
     display: flex;
-    flex-direction: column; /* 세로 방향으로 요소 쌓기 */
+    flex-direction: column; 
     gap: 20px;
     padding: 20px;
     width: 70vw;
@@ -102,18 +102,15 @@
     margin-left: 20px;
 }
 
-/* 사은품명, 지급일자를 나란히 배치하기 위한 스타일 */
 .prizeRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     width: 70vw;
     margin-left: 20px;
-    /* 필요하다면 margin-top:20px; 등을 추가 가능 */
 }
 
-
-/* MGM 인풋박스 부분을 한 줄로 배치 */
+/* MGM 인풋박스 부분 */
 .mgmContainer {
     width: 70vw;
     max-width: 100%;
@@ -123,11 +120,18 @@
     align-items: center;
 }
 
-/* 기존파일 표시 */
+/* 담당자 인풋박스 한 줄로 정렬 */
+.responsibleContainer {
+    width: 70vw;
+    max-width: 100%;
+    display: flex; 
+    flex-direction: row; 
+    gap: 20px;
+    align-items: center;
+}
+
 .existingFile {
     margin-top: 10px;
     font-size: 14px;
     color: #7152F3;
 }
-
-
