@@ -9,6 +9,15 @@ export const sortlist = [
 
 export const banklist = [
   {
+    value: "TOSS",
+    item: "토스(TOSS)",
+  },
+  {
+    value: "KAKAOBANK",
+    item: "카카오뱅크",
+  },
+  ,
+  {
     value: "SHINHAN",
     item: "신한은행",
   },

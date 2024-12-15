@@ -774,11 +774,11 @@ function Modify({ params }) {
           </div>
         </div>
 
-        <h3>기타 정보</h3>
+        <h3>비고</h3>
         <div className={styles.content_container}>
           <InputAreabox
             type="text"
-            placeholder="기타"
+            placeholder="비고"
             register={register("specialnote")}
             isError={!!errors.specialnote}
           />
