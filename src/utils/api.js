@@ -1,5 +1,5 @@
 import axios from "axios";
-const path = "http://3.38.181.18:8080"; //aws임시주소
+const path = "http://localhost:8080"; //aws임시주소
 
 //고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => {
@@ -307,4 +307,25 @@ export const deleteFile = (filename) => {
       console.error("파일 삭제 오류:", error);
       throw error;
     });
+};
+
+
+export const fetchContractedCustomers = async () => {
+  try {
+    const response = await axios.get(`${path}/customers/count/contracted`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching contracted customers count:", error);
+    throw error;
+  }
+};
+
+export const fetchFullyPaidCustomers = async () => {
+  try {
+    const response = await axios.get(`${path}/customers/count/fullypaid`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching fully paid customers count:", error);
+    throw error;
+  }
 };

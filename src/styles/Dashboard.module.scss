@@ -1,17 +1,16 @@
-.Container{
-    width: 1079px;
-    height: 1424px;
-    flex-shrink: 0;
+.Container {
+    width: 100%;
     display: flex;
     flex-direction: column;
-}
-.MainTitle{
-    width: 1079px;
-    height: 882px;
-    flex-shrink: 0;
-    display:flex;
-    margin-bottom:20px;
-}
+    align-items: center;
+    gap: 20px;
+  }
+  .MainTitle {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
 .Notice{
     display: inline-flex;
@@ -80,6 +79,15 @@
     height: 50px;
     flex-shrink: 0;
 }
+
+.Row {
+    display: flex;
+    justify-content: flex-start; /* 기존 space-between을 flex-start로 변경 */
+    gap: 20px;
+  }
+  .ContractAmount {
+    flex: 1; /* 모든 항목이 동일한 비율로 크기를 차지하도록 설정 */
+  }
 .Percentage_G{
     display: inline-flex;
     height: 26px;
@@ -178,7 +186,18 @@
 }
 
 // 위에는 4개 덩어리 scss
-
+.Schedule {
+    flex: 2.2;
+    padding: 20px;
+    border: 1px solid rgba(162, 161, 168, 0.2);
+    border-radius: 10px;
+  }
+  
+  .ScheduleTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 .ClientBody{
     width: 563.874px;
     height: 534px;
@@ -398,12 +417,25 @@
 
 // 아래부터 공지사항
 
-.NoticeTitle{
-    width: 1080px;
-    height: 80px;
-    flex-shrink: 0;
-    display:flex;
-}
+.Notice {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid rgba(162, 161, 168, 0.2);
+    border-radius: 10px;
+  }
+  
+  .NoticeTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .NoticeContent {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  
 .NoticeTitle1{
     width: 998px;
     height: 80px;
