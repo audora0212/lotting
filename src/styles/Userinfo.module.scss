@@ -46,6 +46,11 @@
     margin-bottom: 5px;
 }
 
+.narrowColumn {
+    width: 50px; // '이동' 컬럼의 폭을 조정
+    text-align: center; // 텍스트 중앙 정렬
+  }
+  
 .contentbody, .postcontentbody {
     background-color: #f9f9f9;
     padding: 8px;

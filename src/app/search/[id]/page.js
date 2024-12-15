@@ -377,72 +377,65 @@ function Search() {
             <hr />
 
             <h3>납입차수 정보</h3>
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody} style={{ width: "100%" }}>
-                <table className={styles.phase_table}>
-                  <thead>
-                    <tr>
-                      <th>차수</th>
-                      <th>예정일자</th>
-                      <th>완납일자</th>
-                      <th>부담금</th>
-                      <th>업무 대행비</th>
-                      <th>지불한 금액</th>
-                      <th>이동</th>
-                      <th>n차합</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userdata.phases && userdata.phases.length > 0 ? (
-                      userdata.phases.map((phase) => (
-                        <tr key={phase.id}>
-                          <td>{phase.phaseNumber || "N/A"}</td>
-                          <td>{phase.planneddate ? phase.planneddate.slice(0,10) : "N/A"}</td>
-                          <td>{phase.fullpaiddate ? phase.fullpaiddate.slice(0,10) : "N/A"}</td>
-                          <td>
-                            {phase.charge
-                              ? formatNumberWithComma(phase.charge)
-                              : "N/A"}
-                          </td>
-                          <td>
-                            {phase.service
-                              ? formatNumberWithComma(phase.service)
-                              : "N/A"}
-                          </td>
-                          <td>
-                            {phase.charged
-                              ? formatNumberWithComma(phase.charged)
-                              : "N/A"}
-                          </td>
-                          <td>{phase.move || "N/A"}</td>
-                          <td>
-                            {formatNumberWithComma(
-                              userdata.phases
-                                .filter(p => p.phaseNumber === phase.phaseNumber)
-                                .reduce((sum, p) => sum + (p.feesum || 0), 0)
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="8">Phase 정보가 없습니다.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-                <div className={styles.phase_sum}>
-                  <span>
-                    n차합:{" "}
-                    {formatNumberWithComma(
-                      userdata.phases
-                        ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
-                        : 0
-                    )}
-                  </span>
-                </div>
-              </div>
-            </div>
+<div className={styles.rowcontainer}>
+  <div className={styles.unitbody} style={{ width: "100%" }}>
+    <table className={styles.phase_table}>
+      <thead>
+        <tr>
+          <th>차수</th>
+          <th>예정일자</th>
+          <th>완납일자</th>
+          <th>부담금</th>
+          <th>할인액</th>
+          <th>면제액</th>
+          <th>업무 대행비</th>
+          <th>실납부액</th>
+          <th className={styles.narrowColumn}>이동</th>
+          <th>차수별 합계</th>
+        </tr>
+      </thead>
+      <tbody>
+        {[
+          ...userdata.phases,
+          ...Array.from({ length: 10 - (userdata.phases?.length || 0) }, (_, i) => ({
+            phaseNumber: (userdata.phases?.length || 0) + i + 1,
+          })),
+        ].map((phase, index) => (
+          <tr key={index}>
+            <td>{phase.phaseNumber || "없음"}</td>
+            <td>{phase.planneddate ? phase.planneddate.slice(0, 10) : "없음"}</td>
+            <td>{phase.fullpaiddate ? phase.fullpaiddate.slice(0, 10) : "없음"}</td>
+            <td>{phase.charge ? formatNumberWithComma(phase.charge) : "없음"}</td>
+            <td>{phase.discount ? formatNumberWithComma(phase.discount) : "없음"}</td>
+            <td>{phase.exemption ? formatNumberWithComma(phase.exemption) : "없음"}</td>
+            <td>{phase.service ? formatNumberWithComma(phase.service) : "없음"}</td>
+            <td>{phase.charged ? formatNumberWithComma(phase.charged) : "없음"}</td>
+            <td className={styles.narrowColumn}>{phase.move || "없음"}</td>
+            <td>
+              {phase.phaseNumber
+                ? formatNumberWithComma(
+                    userdata.phases
+                      ?.filter((p) => p.phaseNumber === phase.phaseNumber)
+                      .reduce((sum, p) => sum + (p.feesum || 0), 0)
+                  )
+                : "없음"}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <div className={styles.phase_sum}>
+      <span>
+        총합계:{" "}
+        {formatNumberWithComma(
+          userdata.phases
+            ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
+            : 0
+        )}
+      </span>
+    </div>
+  </div>
+</div>
 
             <h3>대출 및 자납 정보</h3>
             <div className={styles.rowcontainer}>
@@ -450,10 +443,10 @@ function Search() {
                 <table className={styles.loan_table}>
                   <thead>
                     <tr>
-                      <th>일자</th>
+                      <th>대출일자</th>
                       <th>은행</th>
                       <th>대출액</th>
-                      <th>자납일</th>
+                      <th>자납일자</th>
                       <th>자납액</th>
                       <th>합계</th>
                     </tr>
@@ -490,7 +483,7 @@ function Search() {
               </div>
             </div>
 
-            <h3>총 면제금액</h3>
+            <h3>합산</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
@@ -506,8 +499,22 @@ function Search() {
                   </span>
                 </div>
               </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>납입 총액</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.phases
+                      ? formatNumberWithComma(
+                          userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
+                        )
+                      : "0"}
+                  </span>
+                </div>
+              </div>
             </div>
-
+            <hr />
             {userdata.customertype === 'x' && (
               <>
                 <h3>해약 고객 정보</h3>
@@ -543,25 +550,7 @@ function Search() {
               </>
             )}
 
-            <h3>납입 총액</h3>
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>납입 총액</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.phases
-                      ? formatNumberWithComma(
-                          userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
-                        )
-                      : "0"}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <h1></h1>
-            <hr />
+
 
             <h3>MGM</h3>
             <div className={styles.rowcontainer}>
@@ -586,7 +575,7 @@ function Search() {
               {/* 기관 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
-                  <span className={styles.title}>기관</span>
+                  <span className={styles.title}>은행명</span>
                 </div>
                 <div className={styles.contentbody}>
                   <span>{userdata.mgm?.mgminstitution || "정보 없음"}</span>
