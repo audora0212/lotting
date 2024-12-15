@@ -89,7 +89,6 @@ export default function Login() {
           <div className={styles.checkcontainer}>
             <CheckButton />
             <span className={styles.remembertext}>아이디 기억하기</span>
-            <span className={styles.forgottext}>계정 분실시 관리자 문의</span>
           </div>
           <Button type="submit">로그인</Button>
         </form>
