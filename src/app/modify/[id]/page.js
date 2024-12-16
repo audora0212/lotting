@@ -1,3 +1,4 @@
+// src/app/modify/[id]/page.js
 "use client";
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
@@ -183,7 +184,7 @@ function Modify({ params }) {
   };
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
+    const { files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
       setFile(selectedFile);
@@ -342,6 +343,7 @@ function Modify({ params }) {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
+        {/* 1. 회원정보 수정 */}
         <h3>회원 정보 수정</h3>
         <div className={styles.content_container}>
           <div className={styles.Font}>관리번호 : {id}</div>
@@ -471,6 +473,7 @@ function Modify({ params }) {
           </div>
         </div>
 
+        {/* 2. 관리 정보 */}
         <h3>관리 정보</h3>
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
@@ -592,44 +595,8 @@ function Modify({ params }) {
           </div>
         </div>
 
-        <h3>MGM</h3>
-        <div className={`${styles.content_container} ${styles.mgmContainer}`}>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>업체명 *</div>
-            <MGMInputbox
-              type="text"
-              register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
-              isError={!!errors.MGM?.mgmcompanyname}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>이름 *</div>
-            <MGMInputbox
-              type="text"
-              register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
-              isError={!!errors.MGM?.mgmname}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>기관 *</div>
-            <MGMInputbox
-              type="text"
-              register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
-              isError={!!errors.MGM?.mgminstitution}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>계좌 *</div>
-            <MGMInputbox
-              type="text"
-              register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
-              isError={!!errors.MGM?.mgmaccount}
-            />
-          </div>
-        </div>
-
+        {/* 3. 부속서류 */}
         <h3>부속서류</h3>
-        
         <div className={styles.attachmentContainer}>
           <div className={styles.attachmentGrid}>
             <Checkbox
@@ -727,10 +694,8 @@ function Modify({ params }) {
             </div>
           )}
         </div>
-
         <div className={styles.content_container}>
           <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>파일업로드</div>
             <FileInputbox
               name="fileupload"
               handleChange={handleFileChange}
@@ -747,46 +712,105 @@ function Modify({ params }) {
           )}
         </div>
 
+        {/* 4. 담당자 정보 */}
         <h3>담당자 정보</h3>
         <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>총괄 *</div>
-            <Inputbox
-              type="text"
-              register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
-              isError={!!errors.Responsible?.generalmanagement}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>본부 *</div>
-            <Inputbox
-              type="text"
-              register={register("Responsible.division", { required: "본부를 입력해주세요." })}
-              isError={!!errors.Responsible?.division}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>팀 *</div>
-            <Inputbox
-              type="text"
-              register={register("Responsible.team", { required: "팀을 입력해주세요." })}
-              isError={!!errors.Responsible?.team}
-            />
-          </div>
-          <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>성명 *</div>
-            <Inputbox
-              type="text"
-              register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
-              isError={!!errors.Responsible?.managername}
-            />
+          <div className={styles.responsibleRow}>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>총괄 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>본부 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+                  isError={!!errors.Responsible?.division}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>팀 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+                  isError={!!errors.Responsible?.team}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>성명 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+                  isError={!!errors.Responsible?.managername}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* 5. MGM */}
+        <h3>MGM</h3>
+        <div className={`${styles.content_container} ${styles.mgmContainer}`}>
+          {/* 한 줄에 업체명, 이름, 기관, 계좌 배치 */}
+          <div className={styles.mgmRow}>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>업체명 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
+                  isError={!!errors.MGM?.mgmcompanyname}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>이름 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
+                  isError={!!errors.MGM?.mgmname}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>기관 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
+                  isError={!!errors.MGM?.mgminstitution}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>계좌 *</div>
+              <div className={styles.mgmInputContainer}>
+                <MGMInputbox
+                  type="text"
+                  register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
+                  isError={!!errors.MGM?.mgmaccount}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 6. 비고 */}
         <h3>비고</h3>
         <div className={styles.content_container}>
           <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>비고</div>
             <InputAreabox
               type="text"
               register={register("specialnote")}

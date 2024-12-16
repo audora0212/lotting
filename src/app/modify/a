@@ -1,0 +1,48 @@
+        {/* 4. 담당자 정보 */}
+        <h3>담당자 정보</h3>
+        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
+          {/* 한 줄에 총괄, 본부, 팀, 성명 배치 */}
+          <div className={styles.responsibleRow}>
+            {/* MGM과 동일한 스타일 적용을 위해 mgmInputContainer 사용 */}
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>총괄 *</div>
+              <div className={styles.mgmInputContainer}>
+                <Inputbox
+                  type="text"
+                  register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>본부 *</div>
+              <div className={styles.mgmInputContainer}>
+                <Inputbox
+                  type="text"
+                  register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+                  isError={!!errors.Responsible?.division}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>팀 *</div>
+              <div className={styles.mgmInputContainer}>
+                <Inputbox
+                  type="text"
+                  register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+                  isError={!!errors.Responsible?.team}
+                />
+              </div>
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>성명 *</div>
+              <div className={styles.mgmInputContainer}>
+                <Inputbox
+                  type="text"
+                  register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+                  isError={!!errors.Responsible?.managername}
+                />
+              </div>
+            </div>
+          </div>
+        </div>

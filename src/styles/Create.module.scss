@@ -1,4 +1,4 @@
-.content_container{
+.content_container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -6,11 +6,12 @@
     width: 70vw;
     height: auto;
     flex-shrink: 0;
-    margin-left:20px;
+    margin-left: 20px;
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
 }
-.mainbody{
+
+.mainbody {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -18,44 +19,51 @@
     width: 70vw;
     height: auto;
     flex-shrink: 0;
-    margin-left:20px;
+    margin-left: 20px;
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
 }
-.content_body{
-    width:70vw;
+
+.content_body {
+    width: 70vw;
     height: auto;
-    display:flex;
+    display: flex;
 }
-.content_body2{
+
+.content_body2 {
     display: block;
     width: 35vw;
     height: auto;
     display: grid;
     grid-template-columns: 2fr 4fr;
 }
-.content_body3{
+
+.content_body3 {
     width: 23vw;
     height: auto;
     display: grid;
 }
-.InputField{
-    width:25vw;
-    height:60px;
-    display:grid;
+
+.InputField {
+    width: 25vw;
+    height: 60px;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     flex-direction: row;
 }
-.InputTextarea{
+
+.InputTextarea {
     width: 30vw;
 }
-.InputFont{
-    font-size:14px;
-    padding-left:10px;
+
+.InputFont {
+    font-size: 14px;
+    padding-left: 10px;
     padding-top: 15px;
-    padding-bottom:10px;
-    color:#A1A2A8;
+    padding-bottom: 10px;
+    color: #A1A2A8;
 }
+
 .Font {
     margin-top: 5px;
     color: dark;
@@ -109,6 +117,7 @@
     margin-left: 20px;
 }
 
+/* 수정: flex-wrap 제거하여 한 줄 배치 */
 .mgmContainer {
     width: 70vw;
     max-width: 100%;
@@ -116,7 +125,7 @@
     flex-direction: row; 
     gap: 20px;
     align-items: flex-start; 
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; 제거 */
 }
 
 .responsibleContainer {
@@ -126,7 +135,7 @@
     flex-direction: row; 
     gap: 20px;
     align-items: flex-start; 
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; 제거 */
 }
 
 .existingFile {
@@ -135,7 +144,6 @@
     color: #7152F3;
 }
 
-/* 추가: inputRow, inputLabel 스타일 */
 .inputRow {
     display: flex;
     align-items: center;
@@ -152,4 +160,331 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* inputColumnRow: 가로 배치를 위해 width:auto 처리 */
+.inputColumnRow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px; 
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.inputColumnLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+/* responsibleRow, mgmRow: flex-wrap 제거하여 한 줄 배치 */
+.responsibleRow, .mgmRow {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; 
+    width: 100%;
+    /* flex-wrap: wrap; 제거 */
+}
+
+.areacontainer{
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 200px;   
+    width: 180%;
+    padding: 10px 20px 10px 16px;
+    float: left;
+}
+.SearchFont{
+    margin-top:13px;
+    margin-left:16px;
+    color: dark;
+    font-family: Lexend;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px;
+}
+.errorInput {
+    border: 1px solid red !important;
+}
+.spancontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;  
+    width: 1fr;
+    padding: 10px 20px 10px 16px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+.searchclient{
+    display: flex;
+    width: 310px;
+    height:50px;  
+    box-sizing: border-box;
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    gap: 10px;
+}
+.inputcontainer_L{
+    display: flex;
+    width:800px;
+    height:50px;  
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+    box-sizing: border-box;
+}
+.inputcontainer_M{
+    display: flex;
+    width: 350px;
+    height:50px;  
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+    margin-right:10px;
+    box-sizing: border-box;
+}
+
+.inputcontainer {
+    display: flex;
+    width: 25vw;
+    height:50px;  
+    border-radius: 10px;
+    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    padding: 10px 20px 10px 16px;
+    float: left;
+    margin-right:10px;
+    box-sizing: border-box;
+}
+.Dropinputcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;  
+    width: 10vw;
+    padding: 10px 20px 10px 16px;
+    margin-right: 10px;
+    float: left;
+    box-sizing: border-box;
+}
+.postcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 20vw;
+    padding: 10px 20px 10px 16px;
+    margin-right: 10px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.logininputcontainer {
+    border-radius: 10px;
+    border: 1px solid #7152F3;
+    display: flex;
+    height: 50px;   
+    width: 110%;
+    margin-top: 3%;
+    padding: 10px 20px 10px 16px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.Longinputcontainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 100%;
+    padding: 10px 20px 10px 16px;
+    margin-right: 100px;
+    float: left;
+    grid-column: span 2;
+    box-sizing: border-box;
+}
+
+.inputcontainerSmall {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;   
+    width: 20%;
+    padding: 10px 10px 10px 16px;
+    margin-right: 100px;
+    float: left;
+    grid-column: span 2;
+    box-sizing: border-box;
+}
+
+
+.Fileinputcontainer{
+    grid-row: span 2;
+    width: 100%;
+    height: 133px;
+    border: 1px dashed  #7152F3;
+    border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}   
+.fileInput {
+  display: none;
+}
+.filetext{
+    text-align: center;
+    font-family: Lexend;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px; 
+    color: #000;
+}
+
+.texthighlight{
+    color: #7152F3;
+}
+
+.successtext{
+    color: #7152F3;
+    font-weight: bold;
+    text-align: center;
+    padding-right: 10px;
+}
+
+.filetypetext{
+    font-family: Lexend;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 16px;
+    color: #A2A1A8;
+    text-align: center;
+
+}
+
+/* 체크박스 스타일 */
+.customCheckbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #a2dea8;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 80%;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 0;
+}
+.customCheckbox:hover {
+    background-color: #ddf7dd;
+}
+.customCheckbox:active {
+    transform: scale(0.95);
+}
+.customCheckbox input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height:0;
+    width:0;
+}
+.customCheckbox input[type=checkbox]:checked + .checkboxText {
+    background-color: #a2dea8;
+    color: #fff;
+}
+.checkboxText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    height: 100%;  
+    box-sizing: border-box;
+    background-color: transparent;
+    color: #000;
+    margin:0;
+    padding:0;
+}
+
+.postContainer {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: auto;
+    gap: 10px;
+}
+
+.postContainer2 {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: auto;
+    gap: 10px;
+}
+
+/* MGM 전용 인풋박스 스타일 */
+.mgmInputContainer {
+    border-radius: 10px;
+    border: 1px solid rgba(162, 161, 168, 0.20);
+    display: flex;
+    height: 50px;
+    padding: 10px 20px 10px 16px;
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+/* 기존 미디어쿼리 유지 */
+@media (max-width: 1200px) {
+    .content_container {
+        grid-template-columns: 1fr; 
+        width: 90vw;
+    }
+    .responsibleRow, .mgmRow {
+        /* 작은 화면에서라도 가능한 가로 유지 위해 wrap 제거 */
+    }
+}
+
+@media (max-width: 768px) {
+    .content_container,
+    .mainbody,
+    .attachmentContainer,
+    .mgmContainer,
+    .responsibleContainer {
+        width: 100vw;
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .responsibleRow, .mgmRow {
+        /* 모바일 환경에서도 가급적 가로 유지 */
+    }
+
+    .inputColumnRow {
+        width: auto;
+    }
+
+    .inputLabel {
+        width: auto;
+    }
 }
