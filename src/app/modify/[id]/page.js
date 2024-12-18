@@ -9,14 +9,19 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
-  MGMInputbox
+  MGMInputbox,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
 
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { updateUser, fetchCustomerById, createFile, deleteFile } from "@/utils/api";
+import {
+  updateUser,
+  fetchCustomerById,
+  createFile,
+  deleteFile,
+} from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 import {
@@ -32,7 +37,14 @@ function Modify({ params }) {
   const router = useRouter();
   const { id } = params;
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   const [isupload, setIsupload] = useState({
     isuploaded: false,
@@ -55,8 +67,10 @@ function Modify({ params }) {
 
   const [initialLegalPostNumber, setInitialLegalPostNumber] = useState("");
   const [initialLegalAddress, setInitialLegalAddress] = useState("");
-  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] = useState("");
-  const [initialPostreceiveAddress, setInitialPostreceiveAddress] = useState("");
+  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] =
+    useState("");
+  const [initialPostreceiveAddress, setInitialPostreceiveAddress] =
+    useState("");
 
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
@@ -78,7 +92,10 @@ function Modify({ params }) {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
+    setValue(
+      "Deposit.depositammount",
+      rawValue ? parseInt(rawValue, 10) : null
+    );
   };
 
   useEffect(() => {
@@ -88,7 +105,9 @@ function Modify({ params }) {
         if (customer) {
           setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
           setInitialLegalAddress(customer.legalAddress.post || "");
-          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
+          setInitialPostreceivePostNumber(
+            customer.postreceive.postnumberreceive || ""
+          );
           setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
 
           reset({
@@ -145,9 +164,12 @@ function Modify({ params }) {
 
           setIsupload({
             isuploaded: customer.attachments.isuploaded,
-            sealcertificateprovided: customer.attachments.sealcertificateprovided,
-            selfsignatureconfirmationprovided: customer.attachments.selfsignatureconfirmationprovided,
-            commitmentletterprovided: customer.attachments.commitmentletterprovided,
+            sealcertificateprovided:
+              customer.attachments.sealcertificateprovided,
+            selfsignatureconfirmationprovided:
+              customer.attachments.selfsignatureconfirmationprovided,
+            commitmentletterprovided:
+              customer.attachments.commitmentletterprovided,
             idcopyprovided: customer.attachments.idcopyprovided,
             freeoption: customer.attachments.freeoption,
             forfounding: customer.attachments.forfounding,
@@ -165,7 +187,9 @@ function Modify({ params }) {
             setFormattedRegisterPrice(customer.registerprice.toLocaleString());
           }
           if (customer.deposits.depositammount) {
-            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
+            setFormattedDepositAmmount(
+              customer.deposits.depositammount.toLocaleString()
+            );
           }
         }
       } catch (error) {
@@ -204,9 +228,15 @@ function Modify({ params }) {
       if (errors.hasOwnProperty(field)) {
         if (errors[field].message) {
           errorMessages.push(errors[field].message);
-        } else if (typeof errors[field] === 'object' && errors[field] !== null) {
+        } else if (
+          typeof errors[field] === "object" &&
+          errors[field] !== null
+        ) {
           for (const subField in errors[field]) {
-            if (errors[field].hasOwnProperty(subField) && errors[field][subField].message) {
+            if (
+              errors[field].hasOwnProperty(subField) &&
+              errors[field][subField].message
+            ) {
               errorMessages.push(errors[field][subField].message);
             }
           }
@@ -214,11 +244,11 @@ function Modify({ params }) {
       }
     }
 
-    const errorMessage = errorMessages.join('\n');
+    const errorMessage = errorMessages.join("\n");
 
     Swal.fire({
-      icon: 'warning',
-      title: '필수 항목 누락',
+      icon: "warning",
+      title: "필수 항목 누락",
       text: errorMessage,
     });
   };
@@ -284,7 +314,8 @@ function Modify({ params }) {
         preferenceattachment: parsedData.preferenceattachment,
         prizeattachment: parsedData.prizeattachment,
         sealcertificateprovided: parsedData.sealcertificateprovided,
-        selfsignatureconfirmationprovided: parsedData.selfsignatureconfirmationprovided,
+        selfsignatureconfirmationprovided:
+          parsedData.selfsignatureconfirmationprovided,
         commitmentletterprovided: parsedData.commitmentletterprovided,
         idcopyprovided: parsedData.idcopyprovided,
         freeoption: parsedData.freeoption,
@@ -332,8 +363,7 @@ function Modify({ params }) {
       Swal.fire({
         icon: "error",
         title: "회원정보 수정 실패",
-        text:
-          "회원 정보를 수정하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
+        text: "회원 정보를 수정하는 동안 오류가 발생했습니다. 다시 시도해주세요.",
       });
     }
   };
@@ -352,7 +382,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>이름 *</div>
             <Inputbox
               type="text"
-              register={register("CustomerData.name", { required: "이름을 입력해주세요." })}
+              register={register("CustomerData.name", {
+                required: "이름을 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.name}
             />
           </div>
@@ -360,7 +392,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>휴대폰 번호 *</div>
             <Inputbox
               type="phone"
-              register={register("CustomerData.phone", { required: "휴대폰 번호를 입력해주세요." })}
+              register={register("CustomerData.phone", {
+                required: "휴대폰 번호를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.phone}
             />
           </div>
@@ -368,7 +402,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>주민번호 앞자리 *</div>
             <Inputbox
               type="number"
-              register={register("CustomerData.resnumfront", { required: "주민번호 앞자리를 입력해주세요." })}
+              register={register("CustomerData.resnumfront", {
+                required: "주민번호 앞자리를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.resnumfront}
             />
           </div>
@@ -376,7 +412,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>주민번호 뒷자리 *</div>
             <Inputbox
               type="number"
-              register={register("CustomerData.resnumback", { required: "주민번호 뒷자리를 입력해주세요." })}
+              register={register("CustomerData.resnumback", {
+                required: "주민번호 뒷자리를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.resnumback}
             />
           </div>
@@ -384,7 +422,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>이메일 *</div>
             <Inputbox
               type="email"
-              register={register("CustomerData.email", { required: "이메일을 입력해주세요." })}
+              register={register("CustomerData.email", {
+                required: "이메일을 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.email}
             />
           </div>
@@ -392,7 +432,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>분류 *</div>
             <DropInputbox
               list={classificationlist}
-              register={register("customertype", { required: "분류를 선택해주세요." })}
+              register={register("customertype", {
+                required: "분류를 선택해주세요.",
+              })}
               isError={!!errors.customertype}
             />
           </div>
@@ -400,7 +442,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>가입경로 *</div>
             <Inputbox
               type="text"
-              register={register("registerpath", { required: "가입경로를 입력해주세요." })}
+              register={register("registerpath", {
+                required: "가입경로를 입력해주세요.",
+              })}
               isError={!!errors.registerpath}
             />
           </div>
@@ -408,7 +452,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>은행 *</div>
             <DropInputbox
               list={banklist}
-              register={register("Financial.bankname", { required: "은행을 선택해주세요." })}
+              register={register("Financial.bankname", {
+                required: "은행을 선택해주세요.",
+              })}
               isError={!!errors.Financial?.bankname}
             />
           </div>
@@ -416,7 +462,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>계좌번호 *</div>
             <Inputbox
               type="text"
-              register={register("Financial.accountnum", { required: "계좌번호를 입력해주세요." })}
+              register={register("Financial.accountnum", {
+                required: "계좌번호를 입력해주세요.",
+              })}
               isError={!!errors.Financial?.accountnum}
             />
           </div>
@@ -424,7 +472,9 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>예금주 *</div>
             <Inputbox
               type="text"
-              register={register("Financial.accountholder", { required: "예금주를 입력해주세요." })}
+              register={register("Financial.accountholder", {
+                required: "예금주를 입력해주세요.",
+              })}
               isError={!!errors.Financial?.accountholder}
             />
           </div>
@@ -438,13 +488,19 @@ function Modify({ params }) {
               addressName="LegalAddress.post"
               initialPostNumber={initialLegalPostNumber}
               initialAddress={initialLegalAddress}
-              isError={!!errors.LegalAddress?.postnumber || !!errors.LegalAddress?.post || !!errors.LegalAddress?.detailaddress}
+              isError={
+                !!errors.LegalAddress?.postnumber ||
+                !!errors.LegalAddress?.post ||
+                !!errors.LegalAddress?.detailaddress
+              }
             />
             <div className={styles.inputRow}>
               <div className={styles.inputLabel}>법정주소 상세 *</div>
               <Inputbox
                 type="text"
-                register={register("LegalAddress.detailaddress", { required: "법정주소를 입력해주세요." })}
+                register={register("LegalAddress.detailaddress", {
+                  required: "법정주소를 입력해주세요.",
+                })}
                 isError={!!errors.LegalAddress?.detailaddress}
               />
             </div>
@@ -460,13 +516,19 @@ function Modify({ params }) {
               addressName="Postreceive.postreceive"
               initialPostNumber={initialPostreceivePostNumber}
               initialAddress={initialPostreceiveAddress}
-              isError={!!errors.Postreceive?.postnumberreceive || !!errors.Postreceive?.postreceive || !!errors.Postreceive?.detailaddressreceive}
+              isError={
+                !!errors.Postreceive?.postnumberreceive ||
+                !!errors.Postreceive?.postreceive ||
+                !!errors.Postreceive?.detailaddressreceive
+              }
             />
             <div className={styles.inputRow}>
               <div className={styles.inputLabel}>우편물 주소지 상세 *</div>
               <Inputbox
                 type="text"
-                register={register("Postreceive.detailaddressreceive", { required: "우편물 주소지를 입력해주세요." })}
+                register={register("Postreceive.detailaddressreceive", {
+                  required: "우편물 주소지를 입력해주세요.",
+                })}
                 isError={!!errors.Postreceive?.detailaddressreceive}
               />
             </div>
@@ -482,7 +544,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>제출 순번 *</div>
                 <DropInputbox
                   list={typeidlist}
-                  register={register("batch", { required: "제출 순번을 선택해주세요." })}
+                  register={register("batch", {
+                    required: "제출 순번을 선택해주세요.",
+                  })}
                   isError={!!errors.batch}
                 />
               </div>
@@ -490,7 +554,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>유형 *</div>
                 <DropInputbox
                   list={typelist}
-                  register={register("type", { required: "유형을 선택해주세요." })}
+                  register={register("type", {
+                    required: "유형을 선택해주세요.",
+                  })}
                   isError={!!errors.type}
                 />
               </div>
@@ -500,7 +566,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>그룹 *</div>
                 <DropInputbox
                   list={grouplist}
-                  register={register("groupname", { required: "그룹을 선택해주세요." })}
+                  register={register("groupname", {
+                    required: "그룹을 선택해주세요.",
+                  })}
                   isError={!!errors.groupname}
                 />
               </div>
@@ -508,7 +576,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>순번 *</div>
                 <DropInputbox
                   list={turnlist}
-                  register={register("turn", { required: "순번을 선택해주세요." })}
+                  register={register("turn", {
+                    required: "순번을 선택해주세요.",
+                  })}
                   isError={!!errors.turn}
                 />
               </div>
@@ -521,7 +591,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>가입일자 *</div>
                 <Inputbox
                   type="date"
-                  register={register("registerdate", { required: "가입일자를 입력해주세요." })}
+                  register={register("registerdate", {
+                    required: "가입일자를 입력해주세요.",
+                  })}
                   isError={!!errors.registerdate}
                 />
               </div>
@@ -544,7 +616,9 @@ function Modify({ params }) {
                 <div className={styles.inputLabel}>예약금 납입일자 *</div>
                 <Inputbox
                   type="date"
-                  register={register("Deposit.depositdate", { required: "예약금 납입일자를 입력해주세요." })}
+                  register={register("Deposit.depositdate", {
+                    required: "예약금 납입일자를 입력해주세요.",
+                  })}
                   isError={!!errors.Deposit?.depositdate}
                 />
               </div>
@@ -672,7 +746,7 @@ function Modify({ params }) {
               isError={!!errors.prizeattachment}
             />
           </div>
-          
+
           {prizeattachmentChecked && (
             <div className={styles.prizeRow}>
               <div className={styles.inputRow}>
@@ -714,47 +788,49 @@ function Modify({ params }) {
 
         {/* 4. 담당자 정보 */}
         <h3>담당자 정보</h3>
-        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
+        <div
+          className={`${styles.content_container} ${styles.responsibleContainer}`}
+        >
           <div className={styles.responsibleRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>총괄 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
-                  isError={!!errors.Responsible?.generalmanagement}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("Responsible.generalmanagement", {
+                  required: "총괄을 입력해주세요.",
+                })}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>본부 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("Responsible.division", { required: "본부를 입력해주세요." })}
-                  isError={!!errors.Responsible?.division}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("Responsible.division", {
+                  required: "본부를 입력해주세요.",
+                })}
+                isError={!!errors.Responsible?.division}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>팀 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("Responsible.team", { required: "팀을 입력해주세요." })}
-                  isError={!!errors.Responsible?.team}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("Responsible.team", {
+                  required: "팀을 입력해주세요.",
+                })}
+                isError={!!errors.Responsible?.team}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>성명 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
-                  isError={!!errors.Responsible?.managername}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("Responsible.managername", {
+                  required: "성명을 입력해주세요.",
+                })}
+                isError={!!errors.Responsible?.managername}
+              />
             </div>
           </div>
         </div>
@@ -766,43 +842,43 @@ function Modify({ params }) {
           <div className={styles.mgmRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>업체명 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
-                  isError={!!errors.MGM?.mgmcompanyname}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("MGM.mgmcompanyname", {
+                  required: "업체명을 입력해주세요.",
+                })}
+                isError={!!errors.MGM?.mgmcompanyname}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>이름 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
-                  isError={!!errors.MGM?.mgmname}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("MGM.mgmname", {
+                  required: "이름을 입력해주세요.",
+                })}
+                isError={!!errors.MGM?.mgmname}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>기관 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
-                  isError={!!errors.MGM?.mgminstitution}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("MGM.mgminstitution", {
+                  required: "기관을 입력해주세요.",
+                })}
+                isError={!!errors.MGM?.mgminstitution}
+              />
             </div>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>계좌 *</div>
-              <div className={styles.mgmInputContainer}>
-                <MGMInputbox
-                  type="text"
-                  register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
-                  isError={!!errors.MGM?.mgmaccount}
-                />
-              </div>
+              <MGMInputbox
+                type="text"
+                register={register("MGM.mgmaccount", {
+                  required: "계좌를 입력해주세요.",
+                })}
+                isError={!!errors.MGM?.mgmaccount}
+              />
             </div>
           </div>
         </div>
