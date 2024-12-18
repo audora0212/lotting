@@ -861,7 +861,7 @@ function Modify({ params }) {
               />
             </div>
             <div className={styles.inputColumnRow}>
-              <div className={styles.inputColumnLabel}>기관 *</div>
+              <div className={styles.inputColumnLabel}>은행명 *</div>
               <MGMInputbox
                 type="text"
                 register={register("MGM.mgminstitution", {

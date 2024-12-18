@@ -8,14 +8,19 @@ import {
   DropInputbox,
   FileInputbox,
   Checkbox,
-  MGMInputbox
+  MGMInputbox,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
 
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { createFile, newIdGenerate, createUser, checkIdExists } from "@/utils/api";
+import {
+  createFile,
+  newIdGenerate,
+  createUser,
+  checkIdExists,
+} from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 import {
@@ -30,7 +35,14 @@ import {
 function Create() {
   const router = useRouter();
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   const [newid, setNewid] = useState("");
   const [idExists, setIdExists] = useState(false);
@@ -127,7 +139,10 @@ function Create() {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
+    setValue(
+      "Deposit.depositammount",
+      rawValue ? parseInt(rawValue, 10) : null
+    );
   };
 
   const onError = (errors) => {
@@ -139,9 +154,15 @@ function Create() {
       if (errors.hasOwnProperty(field)) {
         if (errors[field].message) {
           errorMessages.push(errors[field].message);
-        } else if (typeof errors[field] === 'object' && errors[field] !== null) {
+        } else if (
+          typeof errors[field] === "object" &&
+          errors[field] !== null
+        ) {
           for (const subField in errors[field]) {
-            if (errors[field].hasOwnProperty(subField) && errors[field][subField].message) {
+            if (
+              errors[field].hasOwnProperty(subField) &&
+              errors[field][subField].message
+            ) {
               errorMessages.push(errors[field][subField].message);
             }
           }
@@ -149,11 +170,11 @@ function Create() {
       }
     }
 
-    const errorMessage = errorMessages.join('\n');
+    const errorMessage = errorMessages.join("\n");
 
     Swal.fire({
-      icon: 'warning',
-      title: '필수 항목 누락',
+      icon: "warning",
+      title: "필수 항목 누락",
       text: errorMessage,
     });
   };
@@ -220,7 +241,8 @@ function Create() {
         preferenceattachment: data.preferenceattachment,
         prizeattachment: data.prizeattachment,
         sealcertificateprovided: data.sealcertificateprovided,
-        selfsignatureconfirmationprovided: data.selfsignatureconfirmationprovided,
+        selfsignatureconfirmationprovided:
+          data.selfsignatureconfirmationprovided,
         commitmentletterprovided: data.commitmentletterprovided,
         idcopyprovided: data.idcopyprovided,
         freeoption: data.freeoption,
@@ -262,13 +284,18 @@ function Create() {
       setIdExists(false);
       setFormattedRegisterPrice("");
       setFormattedDepositAmmount("");
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         window.scrollTo(0, 0);
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      let errorMessage = "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.";
-      if (error.response && error.response.data && error.response.data.message) {
+      let errorMessage =
+        "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.";
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         errorMessage = error.response.data.message;
       }
       Swal.fire({
@@ -313,7 +340,9 @@ function Create() {
             <Inputbox
               type="text"
               placeholder="이름 *"
-              register={register("CustomerData.name", { required: "이름을 입력해주세요." })}
+              register={register("CustomerData.name", {
+                required: "이름을 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.name}
             />
           </div>
@@ -321,7 +350,9 @@ function Create() {
             <Inputbox
               type="phone"
               placeholder="휴대폰 번호 *"
-              register={register("CustomerData.phone", { required: "휴대폰 번호를 입력해주세요." })}
+              register={register("CustomerData.phone", {
+                required: "휴대폰 번호를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.phone}
             />
           </div>
@@ -329,7 +360,9 @@ function Create() {
             <Inputbox
               type="number"
               placeholder="주민번호 앞자리 *"
-              register={register("CustomerData.resnumfront", { required: "주민번호 앞자리를 입력해주세요." })}
+              register={register("CustomerData.resnumfront", {
+                required: "주민번호 앞자리를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.resnumfront}
             />
           </div>
@@ -337,7 +370,9 @@ function Create() {
             <Inputbox
               type="number"
               placeholder="주민번호 뒷자리 *"
-              register={register("CustomerData.resnumback", { required: "주민번호 뒷자리를 입력해주세요." })}
+              register={register("CustomerData.resnumback", {
+                required: "주민번호 뒷자리를 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.resnumback}
             />
           </div>
@@ -345,14 +380,18 @@ function Create() {
             <Inputbox
               type="email"
               placeholder="이메일 *"
-              register={register("CustomerData.email", { required: "이메일을 입력해주세요." })}
+              register={register("CustomerData.email", {
+                required: "이메일을 입력해주세요.",
+              })}
               isError={!!errors.CustomerData?.email}
             />
           </div>
           <div>
             <DropInputbox
               list={classificationlist}
-              register={register("customertype", { required: "분류를 선택해주세요." })}
+              register={register("customertype", {
+                required: "분류를 선택해주세요.",
+              })}
               placeholder="분류 *"
               isError={!!errors.customertype}
             />
@@ -361,14 +400,18 @@ function Create() {
             <Inputbox
               type="text"
               placeholder="가입경로 *"
-              register={register("registerpath", { required: "가입경로를 입력해주세요." })}
+              register={register("registerpath", {
+                required: "가입경로를 입력해주세요.",
+              })}
               isError={!!errors.registerpath}
             />
           </div>
           <div>
             <DropInputbox
               list={banklist}
-              register={register("Financial.bankname", { required: "은행을 선택해주세요." })}
+              register={register("Financial.bankname", {
+                required: "은행을 선택해주세요.",
+              })}
               placeholder="은행 *"
               isError={!!errors.Financial?.bankname}
             />
@@ -377,7 +420,9 @@ function Create() {
             <Inputbox
               type="text"
               placeholder="계좌번호 *"
-              register={register("Financial.accountnum", { required: "계좌번호를 입력해주세요." })}
+              register={register("Financial.accountnum", {
+                required: "계좌번호를 입력해주세요.",
+              })}
               isError={!!errors.Financial?.accountnum}
             />
           </div>
@@ -385,7 +430,9 @@ function Create() {
             <Inputbox
               type="text"
               placeholder="예금주 *"
-              register={register("Financial.accountholder", { required: "예금주를 입력해주세요." })}
+              register={register("Financial.accountholder", {
+                required: "예금주를 입력해주세요.",
+              })}
               isError={!!errors.Financial?.accountholder}
             />
           </div>
@@ -397,12 +444,18 @@ function Create() {
               namePrefix="LegalAddress"
               postcodeName="LegalAddress.postnumber"
               addressName="LegalAddress.post"
-              isError={!!errors.LegalAddress?.postnumber || !!errors.LegalAddress?.post || !!errors.LegalAddress?.detailaddress}
+              isError={
+                !!errors.LegalAddress?.postnumber ||
+                !!errors.LegalAddress?.post ||
+                !!errors.LegalAddress?.detailaddress
+              }
             />
             <Inputbox
               type="text"
               placeholder="법정주소 상세 *"
-              register={register("LegalAddress.detailaddress", { required: "법정주소를 입력해주세요." })}
+              register={register("LegalAddress.detailaddress", {
+                required: "법정주소를 입력해주세요.",
+              })}
               isError={!!errors.LegalAddress?.detailaddress}
             />
           </div>
@@ -414,12 +467,18 @@ function Create() {
               namePrefix="Postreceive"
               postcodeName="Postreceive.postnumberreceive"
               addressName="Postreceive.postreceive"
-              isError={!!errors.Postreceive?.postnumberreceive || !!errors.Postreceive?.postreceive || !!errors.Postreceive?.detailaddressreceive}
+              isError={
+                !!errors.Postreceive?.postnumberreceive ||
+                !!errors.Postreceive?.postreceive ||
+                !!errors.Postreceive?.detailaddressreceive
+              }
             />
             <Inputbox
               type="text"
               placeholder="우편물 주소지 상세 *"
-              register={register("Postreceive.detailaddressreceive", { required: "우편물 주소지를 입력해주세요." })}
+              register={register("Postreceive.detailaddressreceive", {
+                required: "우편물 주소지를 입력해주세요.",
+              })}
               isError={!!errors.Postreceive?.detailaddressreceive}
             />
           </div>
@@ -432,14 +491,18 @@ function Create() {
             <div className={styles.content_body2}>
               <DropInputbox
                 list={typeidlist}
-                register={register("batch", { required: "제출 순번을 선택해주세요." })}
+                register={register("batch", {
+                  required: "제출 순번을 선택해주세요.",
+                })}
                 placeholder="제출 순번 *"
                 isError={!!errors.batch}
               />
               <DropInputbox
                 list={typelist}
                 name="type"
-                register={register("type", { required: "유형을 선택해주세요." })}
+                register={register("type", {
+                  required: "유형을 선택해주세요.",
+                })}
                 placeholder="유형 *"
                 isError={!!errors.type}
               />
@@ -448,14 +511,18 @@ function Create() {
               <DropInputbox
                 list={grouplist}
                 name="group"
-                register={register("groupname", { required: "그룹을 선택해주세요." })}
+                register={register("groupname", {
+                  required: "그룹을 선택해주세요.",
+                })}
                 placeholder="그룹 *"
                 isError={!!errors.groupname}
               />
               <DropInputbox
                 list={turnlist}
                 name="turn"
-                register={register("turn", { required: "순번을 선택해주세요." })}
+                register={register("turn", {
+                  required: "순번을 선택해주세요.",
+                })}
                 placeholder="순번 *"
                 isError={!!errors.turn}
               />
@@ -467,7 +534,9 @@ function Create() {
               <Inputbox
                 type="date"
                 placeholder="가입일자 *"
-                register={register("registerdate", { required: "가입일자를 입력해주세요." })}
+                register={register("registerdate", {
+                  required: "가입일자를 입력해주세요.",
+                })}
                 isError={!!errors.registerdate}
               />
             </div>
@@ -486,7 +555,9 @@ function Create() {
               <Inputbox
                 type="date"
                 placeholder="예약금 납입일자 *"
-                register={register("Deposit.depositdate", { required: "예약금 납입일자를 입력해주세요." })}
+                register={register("Deposit.depositdate", {
+                  required: "예약금 납입일자를 입력해주세요.",
+                })}
                 isError={!!errors.Deposit?.depositdate}
               />
             </div>
@@ -533,7 +604,7 @@ function Create() {
 
         {/* 3. 부속서류 */}
         <h3>부속서류</h3>
-        
+
         <div className={styles.attachmentContainer}>
           <div className={styles.attachmentGrid}>
             <Checkbox
@@ -600,7 +671,7 @@ function Create() {
               isError={!!errors.prizeattachment}
             />
           </div>
-          
+
           {prizeattachmentChecked && (
             <div className={styles.prizeRow}>
               <Inputbox
@@ -622,12 +693,12 @@ function Create() {
         <div className={styles.content_container}>
           <div>
             <span>파일업로드</span>
-            <FileInputbox 
-              name="fileupload" 
-              handleChange={handleFileChange} 
-              register={register("fileupload")} 
-              isupload={isupload.isuploaded} 
-              value={file ? file.name : ""} 
+            <FileInputbox
+              name="fileupload"
+              handleChange={handleFileChange}
+              register={register("fileupload")}
+              isupload={isupload.isuploaded}
+              value={file ? file.name : ""}
               isError={!!errors.fileupload}
             />
           </div>
@@ -635,29 +706,39 @@ function Create() {
 
         {/* 4. 담당자 */}
         <h3>담당자</h3>
-        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
+        <div
+          className={`${styles.content_container} ${styles.responsibleContainer}`}
+        >
           <Inputbox
             type="text"
             placeholder="총괄 *"
-            register={register("Responsible.generalmanagement", { required: "총괄을 입력해주세요." })}
+            register={register("Responsible.generalmanagement", {
+              required: "총괄을 입력해주세요.",
+            })}
             isError={!!errors.Responsible?.generalmanagement}
           />
           <Inputbox
             type="text"
             placeholder="본부 *"
-            register={register("Responsible.division", { required: "본부를 입력해주세요." })}
+            register={register("Responsible.division", {
+              required: "본부를 입력해주세요.",
+            })}
             isError={!!errors.Responsible?.division}
           />
           <Inputbox
             type="text"
             placeholder="팀 *"
-            register={register("Responsible.team", { required: "팀을 입력해주세요." })}
+            register={register("Responsible.team", {
+              required: "팀을 입력해주세요.",
+            })}
             isError={!!errors.Responsible?.team}
           />
           <Inputbox
             type="text"
             placeholder="성명 *"
-            register={register("Responsible.managername", { required: "성명을 입력해주세요." })}
+            register={register("Responsible.managername", {
+              required: "성명을 입력해주세요.",
+            })}
             isError={!!errors.Responsible?.managername}
           />
         </div>
@@ -668,25 +749,33 @@ function Create() {
           <MGMInputbox
             type="text"
             placeholder="업체명 *"
-            register={register("MGM.mgmcompanyname", { required: "업체명을 입력해주세요." })}
+            register={register("MGM.mgmcompanyname", {
+              required: "업체명을 입력해주세요.",
+            })}
             isError={!!errors.MGM?.mgmcompanyname}
           />
           <MGMInputbox
             type="text"
             placeholder="이름 *"
-            register={register("MGM.mgmname", { required: "이름을 입력해주세요." })}
+            register={register("MGM.mgmname", {
+              required: "이름을 입력해주세요.",
+            })}
             isError={!!errors.MGM?.mgmname}
           />
           <MGMInputbox
             type="text"
-            placeholder="기관 *"
-            register={register("MGM.mgminstitution", { required: "기관을 입력해주세요." })}
+            placeholder="은행명 *"
+            register={register("MGM.mgminstitution", {
+              required: "은행명을 입력해주세요.",
+            })}
             isError={!!errors.MGM?.mgminstitution}
           />
           <MGMInputbox
             type="text"
             placeholder="계좌 *"
-            register={register("MGM.mgmaccount", { required: "계좌를 입력해주세요." })}
+            register={register("MGM.mgmaccount", {
+              required: "계좌를 입력해주세요.",
+            })}
             isError={!!errors.MGM?.mgmaccount}
           />
         </div>
@@ -701,7 +790,9 @@ function Create() {
             isError={!!errors.specialnote}
           />
         </div>
-        <Button_Y type="submit" disabled={idExists || checkingId}>저장하기</Button_Y>
+        <Button_Y type="submit" disabled={idExists || checkingId}>
+          저장하기
+        </Button_Y>
       </form>
     </div>
   );
