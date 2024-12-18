@@ -1,7 +1,11 @@
 "use client";
 import styles from "@/styles/Userinfo.module.scss";
 import { useParams, usePathname } from "next/navigation";
-import { useRecoilValueLoadable, useSetRecoilState, useRecoilRefresher_UNSTABLE } from "recoil";
+import {
+  useRecoilValueLoadable,
+  useSetRecoilState,
+  useRecoilRefresher_UNSTABLE,
+} from "recoil";
 import { userinfoSelector } from "@/utils/selector";
 import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
@@ -61,15 +65,25 @@ function Search() {
             </Link>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>관리번호</span></div>
-                <div className={styles.contentbody}><span>{userdata.id || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>관리번호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.id || "정보 없음"}</span>
+                </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>성명</span></div>
-                <div className={styles.contentbody}><span>{userdata.customerData?.name || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>성명</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.customerData?.name || "정보 없음"}</span>
+                </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>주민번호</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>주민번호</span>
+                </div>
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.customerData?.resnumfront || "정보 없음"}-
@@ -78,55 +92,97 @@ function Search() {
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>이메일</span></div>
-                <div className={styles.contentbody}><span>{userdata.customerData?.email || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>휴대전화</span></div>
-                <div className={styles.contentbody}><span>{userdata.customerData?.phone || "정보 없음"}</span></div>
-              </div>
-            </div>
-
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>타입</span></div>
-                <div className={styles.contentbody}><span>{userdata.type || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>군</span></div>
-                <div className={styles.contentbody}><span>{userdata.groupname || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>순번</span></div>
-                <div className={styles.contentbody}><span>{userdata.turn || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>가입차순</span></div>
-                <div className={styles.contentbody}><span>{userdata.batch || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>분류</span></div>
-                <div className={styles.contentbody}><span>{sortMapping[userdata.customertype] || "정보 없음"}</span></div>
-              </div>
-            </div>
-
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>가입일자</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>이메일</span>
+                </div>
                 <div className={styles.contentbody}>
-                  <span>{userdata.registerdate ? userdata.registerdate.slice(0, 10) : "정보 없음"}</span>
+                  <span>{userdata.customerData?.email || "정보 없음"}</span>
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>가입가</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>휴대전화</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.customerData?.phone || "정보 없음"}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>타입</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.type || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>군</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.groupname || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>순번</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.turn || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>가입차순</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.batch || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>분류</span>
+                </div>
                 <div className={styles.contentbody}>
                   <span>
-                    {userdata.registerprice ? formatNumberWithComma(userdata.registerprice) : "정보 없음"}
+                    {sortMapping[userdata.customertype] || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>가입일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.registerdate
+                      ? userdata.registerdate.slice(0, 10)
+                      : "정보 없음"}
                   </span>
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>예약금 납입일자</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>가입가</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.registerprice
+                      ? formatNumberWithComma(userdata.registerprice)
+                      : "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>예약금 납입일자</span>
+                </div>
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.deposits?.depositdate
@@ -136,7 +192,9 @@ function Search() {
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>예약금</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>예약금</span>
+                </div>
                 <div className={styles.contentbody}>
                   <span>
                     {userdata.deposits?.depositammount
@@ -149,78 +207,143 @@ function Search() {
 
             <div className={styles.rowcontainer}>
               <div className={styles.postunitbody}>
-                <div className={styles.posttitlebody}><span className={styles.title}>법정주소</span></div>
+                <div className={styles.posttitlebody}>
+                  <span className={styles.title}>법정주소</span>
+                </div>
                 <div className={styles.postcontentbody}>
-                  <span>우편번호: {userdata.legalAddress?.postnumber || "정보 없음"}</span><br />
+                  <span>
+                    우편번호: {userdata.legalAddress?.postnumber || "정보 없음"}
+                  </span>
+                  <br />
                   <span>{userdata.legalAddress?.post || "정보 없음"}, </span>
-                  <span>{userdata.legalAddress?.detailaddress || "정보 없음"}</span>
+                  <span>
+                    {userdata.legalAddress?.detailaddress || "정보 없음"}
+                  </span>
                 </div>
               </div>
               <div className={styles.postunitbody}>
-                <div className={styles.posttitlebody}><span className={styles.title}>우편물 수령주소</span></div>
+                <div className={styles.posttitlebody}>
+                  <span className={styles.title}>우편물 수령주소</span>
+                </div>
                 <div className={styles.postcontentbody}>
-                  <span>우편번호: {userdata.postreceive?.postnumberreceive || "정보 없음"}</span><br />
-                  <span>{userdata.postreceive?.postreceive || "정보 없음"}, </span>
-                  <span>{userdata.postreceive?.detailaddressreceive || "정보 없음"}</span>
+                  <span>
+                    우편번호:{" "}
+                    {userdata.postreceive?.postnumberreceive || "정보 없음"}
+                  </span>
+                  <br />
+                  <span>
+                    {userdata.postreceive?.postreceive || "정보 없음"},{" "}
+                  </span>
+                  <span>
+                    {userdata.postreceive?.detailaddressreceive || "정보 없음"}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>은행명</span></div>
-                <div className={styles.contentbody}><span>{userdata.financial?.bankname || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>계좌번호</span></div>
-                <div className={styles.contentbody}><span>{userdata.financial?.accountnum || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>예금주</span></div>
-                <div className={styles.contentbody}><span>{userdata.financial?.accountholder || "정보 없음"}</span></div>
-              </div>
-            </div>
-
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>7차 면제</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>은행명</span>
+                </div>
                 <div className={styles.contentbody}>
-                  {userdata.attachments?.exemption7 ? <span>✔️</span> : <span>❌</span>}
+                  <span>{userdata.financial?.bankname || "정보 없음"}</span>
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>출자금</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>계좌번호</span>
+                </div>
                 <div className={styles.contentbody}>
-                  {userdata.attachments?.investmentfile ? <span>✔️</span> : <span>❌</span>}
+                  <span>{userdata.financial?.accountnum || "정보 없음"}</span>
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>지산A동 계약서</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>예금주</span>
+                </div>
                 <div className={styles.contentbody}>
-                  {userdata.attachments?.contract ? <span>✔️</span> : <span>❌</span>}
+                  <span>
+                    {userdata.financial?.accountholder || "정보 없음"}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>총괄</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>7차 면제</span>
+                </div>
                 <div className={styles.contentbody}>
-                  <span>{userdata.responsible?.generalmanagement || "정보 없음"}</span>
+                  {userdata.attachments?.exemption7 ? (
+                    <span>✔️</span>
+                  ) : (
+                    <span>❌</span>
+                  )}
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>본부</span></div>
-                <div className={styles.contentbody}><span>{userdata.responsible?.division || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>팀</span></div>
-                <div className={styles.contentbody}><span>{userdata.responsible?.team || "정보 없음"}</span></div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>담당자</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>출자금</span>
+                </div>
                 <div className={styles.contentbody}>
-                  <span>{userdata.responsible?.managername || "정보 없음"}</span>
+                  {userdata.attachments?.investmentfile ? (
+                    <span>✔️</span>
+                  ) : (
+                    <span>❌</span>
+                  )}
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>지산A동 계약서</span>
+                </div>
+                <div className={styles.contentbody}>
+                  {userdata.attachments?.contract ? (
+                    <span>✔️</span>
+                  ) : (
+                    <span>❌</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>총괄</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.responsible?.generalmanagement || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>본부</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.responsible?.division || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>팀</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.responsible?.team || "정보 없음"}</span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>담당자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.responsible?.managername || "정보 없음"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -231,7 +354,9 @@ function Search() {
             <div className={styles.rowcontainer}>
               <div className={styles.linkbutton}>
                 <Link href={`/inputmoney/userinfo/${splitpath[2]}`}>
-                  <Button><h3>바로가기</h3></Button>
+                  <Button>
+                    <h3>바로가기</h3>
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -244,7 +369,7 @@ function Search() {
                 <table className={styles.phase_table}>
                   <thead>
                     <tr>
-                      <th>차수</th>
+                      <th className={styles.narrowColumn2}>차수</th>
                       <th>예정일자</th>
                       <th>완납일자</th>
                       <th>부담금</th>
@@ -259,33 +384,62 @@ function Search() {
                   <tbody>
                     {[
                       ...userdata.phases,
-                      ...Array.from({ length: 10 - (userdata.phases?.length || 0) }, (_, i) => ({
-                        phaseNumber: (userdata.phases?.length || 0) + i + 1,
-                      })),
+                      ...Array.from(
+                        { length: 10 - (userdata.phases?.length || 0) },
+                        (_, i) => ({
+                          phaseNumber: (userdata.phases?.length || 0) + i + 1,
+                        })
+                      ),
                     ].map((phase, index) => (
                       <tr key={index}>
                         <td>{phase.phaseNumber || "없음"}</td>
                         <td>
-                          {phase.planneddate ? (
-                            parseInt(phase.planneddate.slice(0,4), 10) > 2100
+                          {phase.planneddate
+                            ? parseInt(phase.planneddate.slice(0, 4), 10) > 2100
                               ? "예정"
                               : phase.planneddate.slice(0, 10)
-                          ) : (
-                            "없음"
-                          )}
+                            : "없음"}
                         </td>
-                        <td>{phase.fullpaiddate ? phase.fullpaiddate.slice(0, 10) : "없음"}</td>
-                        <td>{phase.charge ? formatNumberWithComma(phase.charge) : "없음"}</td>
-                        <td>{phase.discount ? formatNumberWithComma(phase.discount) : "없음"}</td>
-                        <td>{phase.exemption ? formatNumberWithComma(phase.exemption) : "없음"}</td>
-                        <td>{phase.service ? formatNumberWithComma(phase.service) : "없음"}</td>
-                        <td>{phase.charged ? formatNumberWithComma(phase.charged) : "없음"}</td>
-                        <td className={styles.narrowColumn}>{phase.move || "없음"}</td>
+                        <td>
+                          {phase.fullpaiddate
+                            ? phase.fullpaiddate.slice(0, 10)
+                            : "없음"}
+                        </td>
+                        <td>
+                          {phase.charge
+                            ? formatNumberWithComma(phase.charge)
+                            : "없음"}
+                        </td>
+                        <td>
+                          {phase.discount
+                            ? formatNumberWithComma(phase.discount)
+                            : "없음"}
+                        </td>
+                        <td>
+                          {phase.exemption
+                            ? formatNumberWithComma(phase.exemption)
+                            : "없음"}
+                        </td>
+                        <td>
+                          {phase.service
+                            ? formatNumberWithComma(phase.service)
+                            : "없음"}
+                        </td>
+                        <td>
+                          {phase.charged
+                            ? formatNumberWithComma(phase.charged)
+                            : "없음"}
+                        </td>
+                        <td className={styles.narrowColumn}>
+                          {phase.move || "없음"}
+                        </td>
                         <td>
                           {phase.phaseNumber
                             ? formatNumberWithComma(
                                 userdata.phases
-                                  ?.filter((p) => p.phaseNumber === phase.phaseNumber)
+                                  ?.filter(
+                                    (p) => p.phaseNumber === phase.phaseNumber
+                                  )
                                   .reduce((sum, p) => sum + (p.feesum || 0), 0)
                               )
                             : "없음"}
@@ -299,7 +453,10 @@ function Search() {
                     총합계:{" "}
                     {formatNumberWithComma(
                       userdata.phases
-                        ? userdata.phases.reduce((sum, phase) => sum + (phase.feesum || 0), 0)
+                        ? userdata.phases.reduce(
+                            (sum, phase) => sum + (phase.feesum || 0),
+                            0
+                          )
                         : 0
                     )}
                   </span>
@@ -326,14 +483,22 @@ function Search() {
                   <tbody>
                     {userdata.loan ? (
                       <tr>
-                        <td>{userdata.loan.loandate ? userdata.loan.loandate.slice(0, 10) : "N/A"}</td>
+                        <td>
+                          {userdata.loan.loandate
+                            ? userdata.loan.loandate.slice(0, 10)
+                            : "N/A"}
+                        </td>
                         <td>{userdata.loan.loanbank || "정보 없음"}</td>
                         <td>
                           {userdata.loan.loanammount
                             ? formatNumberWithComma(userdata.loan.loanammount)
                             : "N/A"}
                         </td>
-                        <td>{userdata.loan.selfdate ? userdata.loan.selfdate.slice(0, 10) : "N/A"}</td>
+                        <td>
+                          {userdata.loan.selfdate
+                            ? userdata.loan.selfdate.slice(0, 10)
+                            : "N/A"}
+                        </td>
                         <td>
                           {userdata.loan.selfammount
                             ? formatNumberWithComma(userdata.loan.selfammount)
@@ -368,7 +533,10 @@ function Search() {
                   <span>
                     {userdata.phases
                       ? formatNumberWithComma(
-                          userdata.phases.reduce((sum, phase) => sum + (phase.exemption || 0), 0)
+                          userdata.phases.reduce(
+                            (sum, phase) => sum + (phase.exemption || 0),
+                            0
+                          )
                         )
                       : "0"}
                   </span>
@@ -384,7 +552,10 @@ function Search() {
                   <span>
                     {userdata.phases
                       ? formatNumberWithComma(
-                          userdata.phases.reduce((sum, phase) => sum + (phase.charged || 0), 0)
+                          userdata.phases.reduce(
+                            (sum, phase) => sum + (phase.charged || 0),
+                            0
+                          )
                         )
                       : "0"}
                   </span>
@@ -397,10 +568,16 @@ function Search() {
             <h3>부속서류</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>부속 서류</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>부속 서류</span>
+                </div>
                 <div className={styles.contentbody}>
-                  {userdata.attachments?.isuploaded && userdata.attachments?.fileinfo ? (
-                    <DownloadButton userid={userdata.id} filename={getFileName(userdata.attachments.fileinfo)}>
+                  {userdata.attachments?.isuploaded &&
+                  userdata.attachments?.fileinfo ? (
+                    <DownloadButton
+                      userid={userdata.id}
+                      filename={getFileName(userdata.attachments.fileinfo)}
+                    >
                       다운로드
                     </DownloadButton>
                   ) : (
@@ -409,44 +586,83 @@ function Search() {
                 </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>부속 서류 상태</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>부속 서류 상태</span>
+                </div>
                 <div className={styles.contentbody}>
                   <div className={styles.attachmentsGrid}>
                     <div>
                       <span>인감증명서</span>
-                      {userdata.attachments?.sealcertificateprovided ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.sealcertificateprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>본인서명확인서</span>
-                      {userdata.attachments?.selfsignatureconfirmationprovided ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments
+                        ?.selfsignatureconfirmationprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>신분증</span>
-                      {userdata.attachments?.idcopyprovided ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.idcopyprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>확약서</span>
-                      {userdata.attachments?.commitmentletterprovided ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.commitmentletterprovided ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>창준위용</span>
-                      {userdata.attachments?.forfounding ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.forfounding ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>무상옵션</span>
-                      {userdata.attachments?.freeoption ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.freeoption ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>선호도조사</span>
-                      {userdata.attachments?.preferenceattachment ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.preferenceattachment ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>총회동의서</span>
-                      {userdata.attachments?.agreement ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.agreement ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                     <div>
                       <span>사은품</span>
-                      {userdata.attachments?.prizeattachment ? <span>✔️</span> : <span>❌</span>}
+                      {userdata.attachments?.prizeattachment ? (
+                        <span>✔️</span>
+                      ) : (
+                        <span>❌</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -458,20 +674,36 @@ function Search() {
             <h3>MGM</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>업체명</span></div>
-                <div className={styles.contentbody}><span>{userdata.mgm?.mgmcompanyname || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>업체명</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.mgm?.mgmcompanyname || "정보 없음"}</span>
+                </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>이름</span></div>
-                <div className={styles.contentbody}><span>{userdata.mgm?.mgmname || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>이름</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.mgm?.mgmname || "정보 없음"}</span>
+                </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>은행명</span></div>
-                <div className={styles.contentbody}><span>{userdata.mgm?.mgminstitution || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>은행명</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.mgm?.mgminstitution || "정보 없음"}</span>
+                </div>
               </div>
               <div className={styles.unitbody}>
-                <div className={styles.titlebody}><span className={styles.title}>계좌</span></div>
-                <div className={styles.contentbody}><span>{userdata.mgm?.mgmaccount || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>계좌</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.mgm?.mgmaccount || "정보 없음"}</span>
+                </div>
               </div>
             </div>
             <hr />
@@ -480,8 +712,12 @@ function Search() {
             <h3>비고</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
-                <div className={styles.titlebody}><span className={styles.title}>기타</span></div>
-                <div className={styles.contentbody}><span>{userdata.specialnote || "정보 없음"}</span></div>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>기타</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.specialnote || "정보 없음"}</span>
+                </div>
               </div>
             </div>
           </>
