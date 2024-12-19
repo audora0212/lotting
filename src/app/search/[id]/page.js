@@ -668,6 +668,33 @@ function Search() {
                 </div>
               </div>
             </div>
+
+            {/* 사은품명 / 지급일자 표시 */}
+            {userdata.attachments?.prizeattachment && (
+              <div className={styles.rowcontainer}>
+                <div className={styles.unitbody}>
+                  <div className={styles.titlebody}>
+                    <span className={styles.title}>사은품명</span>
+                  </div>
+                  <div className={styles.contentbody}>
+                    <span>{userdata.attachments?.prizename || "정보 없음"}</span>
+                  </div>
+                </div>
+                <div className={styles.unitbody}>
+                  <div className={styles.titlebody}>
+                    <span className={styles.title}>사은품 지급일자</span>
+                  </div>
+                  <div className={styles.contentbody}>
+                    <span>
+                      {userdata.attachments?.prizedate
+                        ? userdata.attachments.prizedate.slice(0, 10)
+                        : "정보 없음"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <hr />
 
             {/* 8. MGM */}

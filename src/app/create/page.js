@@ -1,3 +1,4 @@
+// create/page.js
 "use client";
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
@@ -206,6 +207,8 @@ function Create() {
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
+        prizename: data.prizename,
+        prizedate: data.prizedate,
       };
 
       const customerData = {
@@ -248,8 +251,6 @@ function Create() {
         freeoption: data.freeoption,
         forfounding: data.forfounding,
         specialnote: data.specialnote,
-        prizename: data.prizename || "",
-        prizedate: data.prizedate || "",
       };
 
       const createUserResponse = await createUser(customerData);
@@ -709,7 +710,7 @@ function Create() {
         <div
           className={`${styles.content_container} ${styles.responsibleContainer}`}
         >
-          <Inputbox
+          <MGMInputbox
             type="text"
             placeholder="총괄 *"
             register={register("Responsible.generalmanagement", {
@@ -717,7 +718,7 @@ function Create() {
             })}
             isError={!!errors.Responsible?.generalmanagement}
           />
-          <Inputbox
+          <MGMInputbox
             type="text"
             placeholder="본부 *"
             register={register("Responsible.division", {
@@ -725,7 +726,7 @@ function Create() {
             })}
             isError={!!errors.Responsible?.division}
           />
-          <Inputbox
+          <MGMInputbox
             type="text"
             placeholder="팀 *"
             register={register("Responsible.team", {
@@ -733,7 +734,7 @@ function Create() {
             })}
             isError={!!errors.Responsible?.team}
           />
-          <Inputbox
+          <MGMInputbox
             type="text"
             placeholder="성명 *"
             register={register("Responsible.managername", {

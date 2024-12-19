@@ -158,8 +158,8 @@ function Modify({ params }) {
               mgminstitution: customer.mgm.mgminstitution,
               mgmaccount: customer.mgm.mgmaccount,
             },
-            prizename: customer.prizename || "",
-            prizedate: customer.prizedate || "",
+            prizename: customer.attachments.prizename || "",
+            prizedate: customer.attachments.prizedate || "",
           });
 
           setIsupload({
@@ -283,6 +283,8 @@ function Modify({ params }) {
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
+        prizename: data.prizename,
+        prizedate: data.prizedate,
       };
 
       const customerData = {
@@ -321,9 +323,8 @@ function Modify({ params }) {
         freeoption: parsedData.freeoption,
         forfounding: parsedData.forfounding,
         specialnote: parsedData.specialnote,
-        prizename: parsedData.prizename || "",
-        prizedate: parsedData.prizedate || "",
       };
+      console.log(customerData)
 
       const updateUserResponse = await updateUser(id, customerData);
 
@@ -838,7 +839,6 @@ function Modify({ params }) {
         {/* 5. MGM */}
         <h3>MGM</h3>
         <div className={`${styles.content_container} ${styles.mgmContainer}`}>
-          {/* 한 줄에 업체명, 이름, 기관, 계좌 배치 */}
           <div className={styles.mgmRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>업체명 *</div>
