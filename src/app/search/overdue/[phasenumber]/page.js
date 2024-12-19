@@ -32,7 +32,7 @@ export default function OverduePage() {
     let previousOverdueFee = overdueAmount * lateRate; // 첫 날(30일 후) 연체료
     const result = [];
     // 첫 날(가장 먼 날짜): overdueFee = overdueAmount * lateRate
-    // 둘째 날부터: overdueFee = previousOverdueFee * lateRate
+    // 둘째 날부터: overdueFee = previousOverdueFee * (1 + lateRate)
     for (let i = 0; i < daysArray.length; i++) {
       const day = daysArray[i];
       const date = new Date(today);
@@ -43,8 +43,8 @@ export default function OverduePage() {
         // 첫 날
         overdueFee = previousOverdueFee;
       } else {
-        // 두 번째 날부터 전날 연체료 * lateRate
-        overdueFee = previousOverdueFee * (1+lateRate);
+        // 두 번째 날부터 전날 연체료 * (1 + lateRate)
+        overdueFee = previousOverdueFee * (1 + lateRate);
         previousOverdueFee = overdueFee; // 다음날 계산을 위해 업데이트
       }
 
@@ -64,8 +64,8 @@ export default function OverduePage() {
   }, [overdueAmount, lateRate, today]);
 
   const handleExport = () => {
-    // CSV 생성
-    let csvContent = "data:text/csv;charset=utf-8,";
+    // CSV 생성 시 BOM 추가
+    let csvContent = "\uFEFF"; // BOM 추가
     csvContent += "날짜,일수,연체율,연체료,납부금액\n";
     data.forEach((row) => {
       csvContent += [
@@ -77,7 +77,7 @@ export default function OverduePage() {
       ].join(",") + "\n";
     });
 
-    const blob = new Blob([decodeURIComponent(encodeURIComponent(csvContent))], {
+    const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
     });
     const url = URL.createObjectURL(blob);
@@ -99,7 +99,7 @@ export default function OverduePage() {
       <p>이름: {name}</p>
       <p>연체금액: {formatNumberWithComma(overdueAmount)}원</p>
 
-      <button
+      {/* <button
         style={{
           backgroundColor: "#5c9ef5",
           borderRadius: "4px",
@@ -112,7 +112,7 @@ export default function OverduePage() {
         onClick={handleExport}
       >
         엑셀(CSV)로 내보내기
-      </button>
+      </button> */}
 
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
