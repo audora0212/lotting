@@ -287,7 +287,7 @@ const LateFeeList = ({
       {/* 테이블 바디 */}
       {sortedLateFees.map((fee) => (
         <div className={styles.maincontainer} key={fee.id}>
-          <Link href={`${linkBase}${fee.id}`} className={styles.link}>
+          <Link href={`/search/${fee.id}`} className={styles.link}>
             <div className={styles.rowContainer}>
               <div className={styles.unitContainer}>{fee.id}</div>
               <div className={styles.unitContainer}>
