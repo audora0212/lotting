@@ -1,6 +1,7 @@
 "use client";
+
 import styles from "@/styles/Userinfo.module.scss";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   useRecoilValueLoadable,
   useSetRecoilState,
@@ -10,16 +11,20 @@ import { userinfoSelector } from "@/utils/selector";
 import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
 import { DownloadButton, Button } from "@/components/Button";
-import Link from "next/link";
 import withAuth from "@/utils/hoc/withAuth";
 import { FaEdit } from "react-icons/fa";
 import categoryMapping from "@/utils/categoryMapping";
+import Link from "next/link";
 
 function Search() {
   const params = useParams();
   const userid = params.id;
   const setIdState = useSetRecoilState(useridState);
   const refreshUserInfo = useRecoilRefresher_UNSTABLE(userinfoSelector);
+  const pathname = usePathname();
+  const splitpath = pathname.split("/");
+  const sortMapping = categoryMapping;
+  const router = useRouter();
 
   useEffect(() => {
     if (userid) {
@@ -31,9 +36,6 @@ function Search() {
   }, [userid, setIdState, refreshUserInfo]);
 
   const userselectordata = useRecoilValueLoadable(userinfoSelector);
-  const pathname = usePathname();
-  const splitpath = pathname.split("/");
-  const sortMapping = categoryMapping;
 
   const getFileName = (filePath) => {
     if (!filePath) return "";
@@ -390,62 +392,84 @@ function Search() {
                           phaseNumber: (userdata.phases?.length || 0) + i + 1,
                         })
                       ),
-                    ].map((phase, index) => (
-                      <tr key={index}>
-                        <td>{phase.phaseNumber || "없음"}</td>
-                        <td>
-                          {phase.planneddate
-                            ? parseInt(phase.planneddate.slice(0, 4), 10) > 2100
-                              ? "예정"
-                              : phase.planneddate.slice(0, 10)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.fullpaiddate
-                            ? phase.fullpaiddate.slice(0, 10)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.charge
-                            ? formatNumberWithComma(phase.charge)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.discount
-                            ? formatNumberWithComma(phase.discount)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.exemption
-                            ? formatNumberWithComma(phase.exemption)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.service
-                            ? formatNumberWithComma(phase.service)
-                            : "없음"}
-                        </td>
-                        <td>
-                          {phase.charged
-                            ? formatNumberWithComma(phase.charged)
-                            : "없음"}
-                        </td>
-                        <td className={styles.narrowColumn}>
-                          {phase.move || "없음"}
-                        </td>
-                        <td>
-                          {phase.phaseNumber
-                            ? formatNumberWithComma(
-                                userdata.phases
-                                  ?.filter(
-                                    (p) => p.phaseNumber === phase.phaseNumber
-                                  )
-                                  .reduce((sum, p) => sum + (p.feesum || 0), 0)
-                              )
-                            : "없음"}
-                        </td>
-                      </tr>
-                    ))}
+                    ].map((phase, index) => {
+                      // 연체 판단 로직
+                      const isOverdue =
+                        phase.planneddate &&
+                        new Date(phase.planneddate) < new Date() &&
+                        !phase.fullpaiddate;
+
+                      const overdueAmount = phase.feesum || 0;
+
+                      const handleRowClick = () => {
+                        if (isOverdue) {
+                          const url = `/search/overdue/${phase.phaseNumber}?amount=${overdueAmount}&userid=${userdata.id}&name=${encodeURIComponent(userdata.customerData?.name || "")}`;
+                          router.push(url);
+                        }
+                      };
+
+                      return (
+                        <tr
+                          key={index}
+                          className={isOverdue ? styles.overduePhase : ""}
+                          style={{ cursor: isOverdue ? "pointer" : "default" }}
+                          onClick={handleRowClick}
+                        >
+                          <td>{phase.phaseNumber || "없음"}</td>
+                          <td>
+                            {phase.planneddate
+                              ? parseInt(phase.planneddate.slice(0, 4), 10) > 2100
+                                ? "예정"
+                                : phase.planneddate.slice(0, 10)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.fullpaiddate
+                              ? phase.fullpaiddate.slice(0, 10)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.charge
+                              ? formatNumberWithComma(phase.charge)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.discount
+                              ? formatNumberWithComma(phase.discount)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.exemption
+                              ? formatNumberWithComma(phase.exemption)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.service
+                              ? formatNumberWithComma(phase.service)
+                              : "없음"}
+                          </td>
+                          <td>
+                            {phase.charged
+                              ? formatNumberWithComma(phase.charged)
+                              : "없음"}
+                          </td>
+                          <td className={styles.narrowColumn}>
+                            {phase.move || "없음"}
+                          </td>
+                          <td>
+                            {phase.phaseNumber
+                              ? formatNumberWithComma(
+                                  userdata.phases
+                                    ?.filter(
+                                      (p) => p.phaseNumber === phase.phaseNumber
+                                    )
+                                    .reduce((sum, p) => sum + (p.feesum || 0), 0)
+                                )
+                              : "없음"}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
                 <div className={styles.phase_sum}>
