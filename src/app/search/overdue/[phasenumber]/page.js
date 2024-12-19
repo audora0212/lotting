@@ -2,6 +2,8 @@
 
 import { useSearchParams, useParams } from "next/navigation";
 import { useMemo } from "react";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 // 숫자 천단위 콤마 처리 함수
 function formatNumberWithComma(num) {
@@ -52,67 +54,62 @@ export default function OverduePage() {
       const totalPayment = overdueAmount + overdueFee;
 
       result.push({
-        date: date.toISOString().slice(0, 10),
-        day,
-        lateRate: (lateRate * 100).toFixed(2) + "%",
-        overdueFee: Math.round(overdueFee),
-        totalPayment: Math.round(totalPayment),
+        날짜: date.toISOString().slice(0, 10),
+        일수: `${day}일`,
+        연체율: `${(lateRate * 100).toFixed(2)}%`,
+        연체료: Math.round(overdueFee),
+        납부금액: Math.round(totalPayment),
       });
     }
 
     return result;
   }, [overdueAmount, lateRate, today]);
 
+  // 엑셀 내보내기 핸들러
   const handleExport = () => {
-    // CSV 생성 시 BOM 추가
-    let csvContent = "\uFEFF"; // BOM 추가
-    csvContent += "날짜,일수,연체율,연체료,납부금액\n";
-    data.forEach((row) => {
-      csvContent += [
-        row.date,
-        row.day + "일",
-        row.lateRate,
-        row.overdueFee,
-        row.totalPayment,
-      ].join(",") + "\n";
+    if (data.length === 0) {
+      alert("내보낼 데이터가 없습니다.");
+      return;
+    }
+
+    // 엑셀에 넣을 데이터 포맷팅
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "OverdueFees");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
 
-    const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `Overdue_${userid}_${phasenumber}.csv`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // 현재 날짜를 "YYYYMMDD" 형식으로 포맷팅
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}${month}${day}`;
+
+    saveAs(blob, `Overdue_${userid}_${phasenumber}_${formattedDate}.xlsx`);
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>일자별 연체료 ({phasenumber}차)</h1>
+      <div style={headerContainerStyle}>
+        <h1>일자별 연체료 ({phasenumber}차)</h1>
+        <button
+          style={exportButtonStyle}
+          onClick={handleExport}
+          title="엑셀로 출력"
+        >
+          엑셀로 출력
+        </button>
+      </div>
       <p>관리번호: {userid}</p>
       <p>이름: {name}</p>
       <p>연체금액: {formatNumberWithComma(overdueAmount)}원</p>
-
-      {/* <button
-        style={{
-          backgroundColor: "#5c9ef5",
-          borderRadius: "4px",
-          padding: "8px 12px",
-          cursor: "pointer",
-          color: "#fff",
-          border: "none",
-          marginBottom: "20px",
-        }}
-        onClick={handleExport}
-      >
-        엑셀(CSV)로 내보내기
-      </button> */}
 
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
@@ -127,11 +124,11 @@ export default function OverduePage() {
         <tbody>
           {data.map((row, i) => (
             <tr key={i}>
-              <td style={tdStyle}>{row.date}</td>
-              <td style={tdStyle}>{row.day}일</td>
-              <td style={tdStyle}>{row.lateRate}</td>
-              <td style={tdStyle}>{formatNumberWithComma(row.overdueFee)}원</td>
-              <td style={tdStyle}>{formatNumberWithComma(row.totalPayment)}원</td>
+              <td style={tdStyle}>{row.날짜}</td>
+              <td style={tdStyle}>{row.일수}</td>
+              <td style={tdStyle}>{row.연체율}</td>
+              <td style={tdStyle}>{formatNumberWithComma(row.연체료)}원</td>
+              <td style={tdStyle}>{formatNumberWithComma(row.납부금액)}원</td>
             </tr>
           ))}
         </tbody>
@@ -139,6 +136,23 @@ export default function OverduePage() {
     </div>
   );
 }
+
+// 스타일 객체
+const headerContainerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "20px",
+};
+
+const exportButtonStyle = {
+  backgroundColor: "#5c9ef5",
+  borderRadius: "4px",
+  padding: "8px 12px",
+  cursor: "pointer",
+  color: "#fff",
+  border: "none",
+};
 
 const thStyle = {
   border: "1px solid #ccc",
