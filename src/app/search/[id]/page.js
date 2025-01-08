@@ -1,3 +1,4 @@
+// src/app/search/[id]/page.js
 "use client";
 
 import styles from "@/styles/Userinfo.module.scss";
@@ -12,7 +13,7 @@ import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
 import { DownloadButton, Button } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit,FaFileInvoice  } from "react-icons/fa";
 import categoryMapping from "@/utils/categoryMapping";
 import Link from "next/link";
 
@@ -58,13 +59,28 @@ function Search() {
         return (
           <>
             {/* 1. 회원정보 */}
-            <h3>회원 정보</h3>
-            <Link href={`/modify/${userid}`} passHref>
-              <button className={styles.editButton}>
-                <FaEdit className={styles.editIcon} />
-                수정
+            <h3></h3>
+
+            <div className={styles.buttonContainer}>
+              {/* 계약서 다운로드 버튼 */}
+              <button className={styles.contractButton}>
+                <FaFileInvoice className={styles.editIcon} />
+                일반 신청서
               </button>
-            </Link>
+              {/* 계약서 다운로드 버튼 */}
+              <button className={styles.contractButton}>
+                <FaFileInvoice className={styles.editIcon} />
+                일반 부속 서류
+              </button>
+              {/* 수정 버튼 */}
+              <Link href={`/modify/${userid}`} passHref>
+                <button className={styles.editButton}>
+                  <FaEdit className={styles.editIcon} />
+                  수정
+                </button>
+              </Link>
+            </div>
+
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
@@ -403,7 +419,9 @@ function Search() {
 
                       const handleRowClick = () => {
                         if (isOverdue) {
-                          const url = `/search/overdue/${phase.phaseNumber}?amount=${overdueAmount}&userid=${userdata.id}&name=${encodeURIComponent(userdata.customerData?.name || "")}`;
+                          const url = `/search/overdue/${phase.phaseNumber}?amount=${overdueAmount}&userid=${userdata.id}&name=${encodeURIComponent(
+                            userdata.customerData?.name || ""
+                          )}`;
                           router.push(url);
                         }
                       };

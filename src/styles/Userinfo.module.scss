@@ -116,9 +116,16 @@
   color: #333;
 }
 
-/* 버튼 스타일 */
+/* 두 개의 버튼(계약서 다운로드, 수정)을 좌우로 배치하기 위한 컨테이너 */
+.buttonContainer {
+  display: flex;
+  justify-content:left;
+  align-items: center; /* 버튼 수직 정렬 */
+  margin-bottom: 20px; 
+}
+
 .editButton {
-  background-color: #aa88e0;
+  background-color: #e070e4;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -126,11 +133,29 @@
   cursor: pointer;
   margin-bottom: 20px;
   display: flex;
+  margin-right:50px;
   align-items: center;
 }
 
 .editButton:hover {
-  background-color: #c5b0e6;
+  background-color: #e38de6;
+}
+
+.contractButton {
+  background-color: #7152F3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: flex;
+  margin-right:50px;
+  align-items: center;
+}
+
+.contractButton:hover {
+  background-color: #8b70f7;
 }
 
 .editIcon {
