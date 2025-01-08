@@ -343,7 +343,7 @@ export const downloadFormat1 = async (id) => {
     });
 
     // 서버에서 내려주는 Content-Disposition 헤더에서 파일명을 추출
-    let fileName = "format1.xlsx";
+    let fileName = "일반신청서.xlsx";
     const disposition = response.headers["content-disposition"];
     if (disposition && disposition.indexOf("filename=") !== -1) {
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
@@ -380,7 +380,7 @@ export const downloadFormat2 = async (id) => {
       responseType: "blob",
     });
 
-    let fileName = "format2.xlsx";
+    let fileName = "일반부속서류.xlsx";
     const disposition = response.headers["content-disposition"];
     if (disposition && disposition.indexOf("filename=") !== -1) {
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
