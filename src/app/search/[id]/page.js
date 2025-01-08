@@ -16,6 +16,7 @@ import withAuth from "@/utils/hoc/withAuth";
 import { FaEdit,FaFileInvoice  } from "react-icons/fa";
 import categoryMapping from "@/utils/categoryMapping";
 import Link from "next/link";
+import { downloadFormat1, downloadFormat2 } from "@/utils/api";
 
 function Search() {
   const params = useParams();
@@ -26,6 +27,17 @@ function Search() {
   const splitpath = pathname.split("/");
   const sortMapping = categoryMapping;
   const router = useRouter();
+
+    const handleDownloadFormat1 = () => {
+      console.log(1)
+      if (!userid) return;
+      downloadFormat1(userid);
+    };
+  
+    const handleDownloadFormat2 = () => {
+      if (!userid) return;
+      downloadFormat2(userid);
+    };
 
   useEffect(() => {
     if (userid) {
@@ -63,12 +75,12 @@ function Search() {
 
             <div className={styles.buttonContainer}>
               {/* 계약서 다운로드 버튼 */}
-              <button className={styles.contractButton}>
+              <button className={styles.contractButton} onClick={handleDownloadFormat1}>
                 <FaFileInvoice className={styles.editIcon} />
                 일반 신청서
               </button>
               {/* 계약서 다운로드 버튼 */}
-              <button className={styles.contractButton}>
+              <button className={styles.contractButton} onClick={handleDownloadFormat2}>
                 <FaFileInvoice className={styles.editIcon} />
                 일반 부속 서류
               </button>

@@ -331,3 +331,78 @@ export const fetchFullyPaidCustomers = async () => {
     throw error;
   }
 };
+
+
+/**
+ * [추가] format1 다운로드
+ */
+export const downloadFormat1 = async (id) => {
+  try {
+    const response = await axios.get(`${path}/files/format1/${id}`, {
+      responseType: "blob", // 바이너리 형태로 응답 받기
+    });
+
+    // 서버에서 내려주는 Content-Disposition 헤더에서 파일명을 추출
+    let fileName = "format1.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition && disposition.indexOf("filename=") !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+    }
+
+    // blob 생성 후 클릭 다운로드
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading format1:", error);
+    throw error;
+  }
+};
+
+/**
+ * [추가] format2 다운로드
+ */
+export const downloadFormat2 = async (id) => {
+  try {
+    const response = await axios.get(`${path}/files/format2/${id}`, {
+      responseType: "blob",
+    });
+
+    let fileName = "format2.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition && disposition.indexOf("filename=") !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+    }
+
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading format2:", error);
+    throw error;
+  }
+};
