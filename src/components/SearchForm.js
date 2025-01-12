@@ -1,10 +1,10 @@
 // components/SearchForm.js
 "use client";
 
-import { Inputbox, DropInputbox } from "@/components/Inputbox";
-import styles from "@/styles/Search.module.scss";
+import { Inputbox } from "@/components/Inputbox";
+import styles from "@/styles/Latefees.module.scss";
 
-const SearchForm = ({ name, setName, number, setNumber, dropdownLists }) => {
+const SearchForm = ({ name, setName, number, setNumber }) => {
   const onNameChange = (e) => {
     const text = e.target.value;
     setName(text.replace(/ /g, ""));
@@ -29,7 +29,7 @@ const SearchForm = ({ name, setName, number, setNumber, dropdownLists }) => {
         value={name}
         onChange={onNameChange}
       />
-      {/* 드롭다운 리스트를 활용하여 필터 기능을 추가할 수 있습니다 */}
+      {/* 필요하다면 다른 필터 드롭다운 등을 추가 */}
     </div>
   );
 };

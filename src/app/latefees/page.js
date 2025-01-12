@@ -7,7 +7,7 @@ import withAuth from "@/utils/hoc/withAuth";
 import LateFeeList from "@/components/LateFeeList";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import styles from "@/styles/Search.module.scss"; // 스타일 임포트
+import styles from "@/styles/Latefees.module.scss"; // 스타일 임포트
 import categoryMapping from "@/utils/categoryMapping";
 import { FaPrint } from "react-icons/fa6"; // FaPrint 아이콘 임포트
 
@@ -97,12 +97,12 @@ function LateFees() {
   return (
     <>
       <div className={styles.headerContainer}>
-        <h3>연체료 조회</h3>
+        <h3> </h3>
         <div className={styles.exportContainer}>
           <FaPrint
             onClick={handleExport}
             className={styles.printIcon}
-            title="엑셀로 출력"
+            title="엑셀로 출력" 
           />
           <button onClick={handleExport} className={styles.exportButton}>
             엑셀로 출력

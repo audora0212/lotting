@@ -1,0 +1,155 @@
+/* styles/Deposit.module.scss */
+
+/* 공통 레이아웃 스타일 */
+.flexContainer {
+    width: 550px; /* 기존 1100px의 50% */
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px; /* 기존 10px의 50% */
+  }
+  
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 550px; /* 기존 1100px의 50% */
+    margin-top: 10px; /* 기존 20px의 50% */
+    font-size: 12px; /* 글자 크기 절반 */
+  }
+  
+  .exportContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 기존 10px의 50% */
+  }
+  
+  .printIcon {
+    font-size: 12px; /* 기존 18px의 50% */
+    cursor: pointer;
+  }
+  
+  .exportButton {
+    background-color: #7152f3;
+    color: #fff;
+    padding: 4px 8px; /* 기존 8px 12px의 50% */
+    border: none;
+    border-radius: 4px;
+    font-size: 13px; /* 버튼 텍스트 절반 */
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #5c41c2;
+    }
+  }
+  
+/* 테이블 전체를 감싸는 래퍼: 가로 스크롤 가능하게 설정 */
+.tableWrapper {
+    margin: 15px 0; /* 기존 30px의 50% */
+    overflow-x: auto;
+  
+    /* 스크롤바 스타일링 */
+    
+    /* Firefox용 스크롤바 색상 */
+    scrollbar-width: thin; /* 스크롤바 너비를 얇게 설정 */
+    scrollbar-color: #beb2f1 transparent; /* 스크롤바 thumb 색상과 track 색상 설정 */
+  
+    /* WebKit 기반 브라우저용 스크롤바 스타일 */
+    &::-webkit-scrollbar {
+      height: 8px; /* 가로 스크롤바 높이 설정 */
+      background: transparent; /* 스크롤바 트랙 배경색 */
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: #7152f3; /* 스크롤바 thumb 색상 */
+      border-radius: 4px; /* 스크롤바 thumb 모서리 둥글게 */
+      border: 2px solid transparent; /* thumb과 track 사이 여백 */
+      background-clip: content-box; /* thumb 내부 내용 클리핑 */
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: transparent; /* 스크롤바 트랙 배경색 */
+    }
+  }
+  
+  /* ===== 테이블 헤더 ===== */
+  .tablecontainer {
+    display: flex;
+    width: fit-content; /* 칸 폭에 맞춰 확장되도록 */
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    background-color: #f5f5f5; /* 헤더 배경색 */
+    font-weight: 600; /* 헤더 텍스트 굵게 */
+    font-size: 12px; /* 헤더 폰트 크기 절반 */
+  }
+  
+  /* 헤더 각 칸(열) 스타일 */
+  .unitContainer {
+    width: 75px; /* 기존 150px의 50% */
+    padding: 4px; /* 기존 8px의 50% */
+    text-align: center;
+    border-right: 1px solid #000; /* 열 경계선 추가 */
+    font-size: 12px; /* 본문 폰트 크기 절반 */
+  
+    /* New Styles for Consistent Row Height */
+    min-height: 40px; /* Adjust as needed to fit two lines */
+    white-space: normal; /* Allow text to wrap */
+    display: flex;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+  }
+  
+  .tablecontainer .unitContainer:last-child {
+    border-right: none; /* 마지막 열은 오른쪽 경계선 제거 */
+  }
+  
+  /* ===== 테이블 바디 ===== */
+  .maincontainer {
+    display: flex;
+    width: fit-content;
+    border-bottom: 1px solid #000; /* 각 행 사이 구분선 */
+    background-color: #fff; /* 행 배경색 */
+  }
+  
+  .rowContainer {
+    display: flex;
+  }
+  
+  .rowContainer .unitContainer {
+    width: 75px; /* 헤더와 동일한 폭 */
+    padding: 4px; /* 기존 8px의 50% */
+    text-align: center;
+    border-right: 1px solid #000;
+    font-size: 12px; /* 본문 폰트 크기 절반 */
+  
+    /* New Styles for Consistent Row Height */
+    min-height: 40px; /* Ensure consistency with header */
+    white-space: normal; /* Allow text to wrap */
+    display: flex;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+  }
+  
+  .rowContainer .unitContainer:last-child {
+    border-right: none;
+  }
+  
+  /* 링크 스타일 */
+  .link {
+    color: #000;
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  /* 정렬 아이콘 스타일 */
+  .sortIcon {
+    margin-left: 2px; /* 기존 5px의 절반 */
+    cursor: pointer;
+    font-size: 10px; /* 기존 12px의 절반 */
+    display: inline-flex;
+    align-items: center;
+    color: #000;
+  }
+  

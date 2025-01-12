@@ -1,148 +1,132 @@
-/* src/styles/Search.module.scss */
+/* styles/Latefees.module.scss */
 
-.tablecontainer {
-  display: flex;
-  width: 100%;
-  margin: 30px 0;
-  border-bottom: 2px solid #ccc;
-}
-
-.unitContainer {
-  width: 125px; /* 필요에 따라 조정 가능 */
-  font-size: 14px;
-  color: #000;
-  padding: 10px;
-  margin-right: 20px;
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.maincontainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.rowContainer {
-  display: flex;
-  width: 100%;
-}
-
-.actionButtonsContainer {
-  display: flex;
-  gap: 10px;
-}
-
-.editButton {
-  background-color: #f1c40f; /* 노란색 */
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  text-align: center;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.editButton:hover {
-  background-color: #d4ac0d; /* 더 진한 노란색 */
-}
-
-.deleteButton {
-  background-color: #ff4d4f; /* 빨간색 */
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  text-align: center;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.deleteButton:hover {
-  background-color: #ff7875; /* 더 진한 빨간색 */
-}
-
-.sortIcon {
-  margin-left: 5px;
-  cursor: pointer;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  color: #7152f3;
-}
-
-.dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 1000;
-  width: 150px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
-
-.dropdown div {
-  padding: 5px 0;
-}
-
-.dropdown label {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #333;
-}
-
-.dropdown input[type="checkbox"] {
-  margin-right: 5px;
-}
-
-.dropdown label:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
-}
-
-.link {
-  text-decoration: none;
-  color: inherit;
-  width: 100%;
-  display: flex;
-}
-
-
-/* src/styles/Search.module.scss */
-
-/* 기존 스타일 유지 */
-
-/* 헤더 컨테이너 스타일 */
-.headerContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-/* Export 버튼 스타일 */
-.exportButton {
-  padding: 8px 16px;
-  background-color: #4CAF50; /* 초록색 */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.exportButton:hover {
-  background-color: #45a049; /* 더 진한 초록색 */
-}
+/* 공통 레이아웃 (폭·폰트 크기 등 절반 정도 축소) */
+.flexContainer {
+    width: 550px;       /* 기존 1100px -> 550px */
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;           /* 기존 10px -> 5px */
+  }
+  
+  .link {
+    color: #000;
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  /* 헤더 영역 (상단 제목, 엑셀 출력 버튼 등) */
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 550px;              /* 기존 1100px -> 550px */
+    margin-top: 10px;          /* 전체 마진 절반 축소 (기존 20px->10px) */
+    font-size: 12px;           /* 글자 크기 조금 더 작게 */
+  }
+  
+  .exportContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;                  /* 기존 10px -> 5px */
+  }
+  
+  .printIcon {
+    font-size: 12px;           /* 기존 18px -> 12px */
+    cursor: pointer;
+  }
+  
+  .exportButton {
+    background-color: #7152f3;
+    color: #fff;
+    padding: 4px 8px;          /* 기존 8px 12px -> 4px 8px */
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;           /* 버튼 텍스트 작게 */
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #5c41c2;
+    }
+  }
+  
+  /* 테이블 전체 감싸는 래퍼:
+     - 가로 스크롤 가능한 상태에서 스크롤바만 안 보이도록 설정 */
+  .tableWrapper {
+    margin: 15px 0;          /* 기존 30px -> 15px */
+    overflow-x: auto;
+    -ms-overflow-style: none;  /* IE, Edge */
+    scrollbar-width: none;     /* Firefox */
+  
+    &::-webkit-scrollbar {
+      display: none;           /* Chrome, Safari, Opera */
+    }
+  }
+  
+  /* ===== 테이블 헤더 ===== */
+  .tablecontainer {
+    display: flex;
+    width: fit-content;      
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    background-color: #f5f5f5;
+    font-weight: 600;
+    font-size: 12px;         /* 절반 크기 정도로 축소 (기존 14px -> 12px) */
+  }
+  
+  /* 헤더 각 열 */
+  .tablecontainer .unitContainer {
+    width: 75px;             /* 기존 150px -> 75px (50% 축소) */
+    padding: 4px;            /* 기존 8px -> 4px */
+    text-align: center;
+    border-right: 1px solid #000;
+    font-size: 12px; /* 본문 폰트 크기 절반 */
+  }
+  
+  .tablecontainer .unitContainer:last-child {
+    border-right: none;
+  }
+  
+  /* ===== 테이블 바디 ===== */
+  .maincontainer {
+    display: flex;
+    width: fit-content;
+    border-bottom: 1px solid #000;
+    background-color: #fff;
+  }
+  
+  .rowContainer {
+    display: flex;
+  }
+  
+  /* 데이터 셀(각 열) */
+  .rowContainer .unitContainer {
+    width: 75px;           /* 헤더와 동일하게 75px */
+    padding: 4px;
+    text-align: center;
+    border-right: 1px solid #000;
+    font-size: 12px;       /* 본문 폰트 크기도 축소 */
+    
+    min-height: 40px; /* Ensure consistency with header */
+    white-space: normal; /* Allow text to wrap */
+    display: flex;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+  }
+  
+  .rowContainer .unitContainer:last-child {
+    border-right: none;
+  }
+  
+  /* 정렬 아이콘 */
+  .sortIcon {
+    margin-left: 2px;      /* 조금 더 작게 */
+    cursor: pointer;
+    font-size: 10px;       /* 기존 12px -> 10px */
+    display: inline-flex;
+    align-items: center;
+    color: #000;
+  }
+  

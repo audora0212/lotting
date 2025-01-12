@@ -313,7 +313,7 @@ function Create() {
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         {/* 1. 회원정보 */}
-        <h3>회원정보</h3>
+        <h3> </h3>
         <div className={styles.content_container}>
           <div className={styles.Font}>
             <label htmlFor="id"></label>

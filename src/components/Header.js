@@ -19,6 +19,8 @@ const Header = () => {
     createwithdraw: "해약 회원 정보 입력",
     modify: "회원 정보 수정",
     inputmoney: "납입금 관리",
+    deposit: "회원 입금 내역",
+    latefees: "전체 회원 연체료",
     control: "차수 관리",
   };
   const subtitle = {
@@ -28,6 +30,8 @@ const Header = () => {
     createwithdraw: "해약 회원정보를 생성할 수 있는 페이지입니다.",
     modify: "기존 회원정보를 수정할 수 있는 페이지입니다.",
     inputmoney: "회원의 납입금을 한번에 관리할 수 있는 페이지입니다.",
+    deposit: "회원들의 입금 내역을 확인할 수 있는 페이지입니다.(임시)",
+    latefees: "회원들의 연체료를 조회할 수 있는 페이지입니다.",
     control:
       "차수별 납입금을 한번에 확인하고 수정,생성,삭제를 진행할 수 있습니다. [개발중]",
   };

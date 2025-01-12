@@ -14,7 +14,7 @@ function Search() {
 
   return (
     <>
-      <h3>회원 검색</h3>
+      <h3> </h3>
       <SearchForm
         name={name}
         setName={setName}

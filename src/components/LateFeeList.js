@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchLateFees, cancelCustomer } from "@/utils/api";
-import styles from "@/styles/Search.module.scss"; // Search.module.scss 재사용
+import styles from "@/styles/Latefees.module.scss"; // Search.module.scss
 import categoryMapping from "@/utils/categoryMapping";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Swal from "sweetalert2";
@@ -30,19 +30,16 @@ const LateFeeList = ({
     const fetchData = async () => {
       try {
         const data = await fetchLateFees(name, number);
-        // 요청 당시의 name/number와 응답 도착 시점 name/number가 동일하고 컴포넌트가 여전히 마운트 상태인지 확인
         if (isMounted && currentName === name && currentNumber === number) {
           setLocalLateFees(data);
-          setLateFees(data); // 상위 상태 업데이트
+          setLateFees(data);
         }
       } catch (error) {
         console.error("Error fetching late fees:", error);
-        // 필요 시 에러 처리 (예: 로그인 페이지로 리다이렉트)
       }
     };
 
     fetchData();
-
     return () => {
       isMounted = false;
     };
@@ -57,19 +54,20 @@ const LateFeeList = ({
     setSortConfig({ key, direction });
   };
 
-  // 정렬 아이콘 반환 함수
+  // 정렬 아이콘
   const getSortIcon = (key) => {
     if (sortConfig.key === key) {
       return sortConfig.direction === "ascending" ? (
-        <AiOutlineArrowUp size={12} color="#7152F3" />
+        <AiOutlineArrowUp size={10} color="#7152F3" />
       ) : (
-        <AiOutlineArrowDown size={12} color="#7152F3" />
+        <AiOutlineArrowDown size={10} color="#7152F3" />
       );
     }
-    return <AiOutlineArrowDown size={12} />;
+    // 기본 아이콘
+    return <AiOutlineArrowDown size={10} />;
   };
 
-  // 정렬된 데이터 계산
+  // 정렬된 데이터
   const sortedLateFees = React.useMemo(() => {
     let sortableFees = [...localLateFees];
     if (sortConfig.key !== null) {
@@ -77,7 +75,6 @@ const LateFeeList = ({
         let aValue = a[sortConfig.key];
         let bValue = b[sortConfig.key];
 
-        // null 또는 undefined 처리
         if (aValue === null || aValue === undefined) return 1;
         if (bValue === null || bValue === undefined) return -1;
 
@@ -98,12 +95,12 @@ const LateFeeList = ({
     return sortableFees;
   }, [localLateFees, sortConfig]);
 
-  // 상위 상태 업데이트
+  // 상위 컴포넌트 상태 업데이트
   useEffect(() => {
     setLateFees(sortedLateFees);
   }, [sortedLateFees, setLateFees]);
 
-  // 고객 해지 핸들러
+  // 회원 해지
   const handleDelete = async (id) => {
     try {
       await cancelCustomer(id);
@@ -113,7 +110,6 @@ const LateFeeList = ({
         text: "회원이 성공적으로 해지되었습니다.",
         confirmButtonText: "확인",
       }).then(() => {
-        // 리스트 갱신
         const updatedFees = localLateFees.filter((fee) => fee.id !== id);
         setLocalLateFees(updatedFees);
         setLateFees(updatedFees);
@@ -129,13 +125,13 @@ const LateFeeList = ({
     }
   };
 
-  // 확인 모달 열기
+  // 모달 열기
   const openConfirmation = (id) => {
     setSelectedCustomerId(id);
     setIsModalOpen(true);
   };
 
-  // 삭제 확인
+  // 모달 확인 -> 해지 진행
   const confirmDelete = () => {
     if (selectedCustomerId !== null) {
       handleDelete(selectedCustomerId);
@@ -144,16 +140,16 @@ const LateFeeList = ({
     }
   };
 
-  // 삭제 취소
+  // 모달 취소
   const cancelDelete = () => {
     setSelectedCustomerId(null);
     setIsModalOpen(false);
   };
 
   return (
-    <div>
+    <div className={styles.tableWrapper}>
+      {/* 테이블 헤더 */}
       <div className={styles.tablecontainer}>
-        {/* 테이블 헤더 */}
         <div className={styles.unitContainer} onClick={() => handleSort("id")}>
           <span>
             ID
