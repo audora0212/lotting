@@ -92,10 +92,7 @@ function Modify({ params }) {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue(
-      "Deposit.depositammount",
-      rawValue ? parseInt(rawValue, 10) : null
-    );
+    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
   useEffect(() => {
@@ -108,7 +105,9 @@ function Modify({ params }) {
           setInitialPostreceivePostNumber(
             customer.postreceive.postnumberreceive || ""
           );
-          setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
+          setInitialPostreceiveAddress(
+            customer.postreceive.postreceive || ""
+          );
 
           reset({
             customertype: customer.customertype,
@@ -228,10 +227,7 @@ function Modify({ params }) {
       if (errors.hasOwnProperty(field)) {
         if (errors[field].message) {
           errorMessages.push(errors[field].message);
-        } else if (
-          typeof errors[field] === "object" &&
-          errors[field] !== null
-        ) {
+        } else if (typeof errors[field] === "object" && errors[field] !== null) {
           for (const subField in errors[field]) {
             if (
               errors[field].hasOwnProperty(subField) &&
@@ -273,6 +269,7 @@ function Modify({ params }) {
       let uploadedFileInfo = existingFileInfo;
 
       if (file) {
+        // 기존 파일이 있었다면 먼저 삭제
         if (existingFileInfo) {
           await deleteFile(existingFileInfo);
         }
@@ -305,7 +302,7 @@ function Modify({ params }) {
         Postreceive: {
           ...parsedData.Postreceive,
         },
-        MGM: parsedData.MGM,
+        MGM: parsedData.MGM, // ====> MGM 필수 입력 제거됨
         Responsible: parsedData.Responsible,
         deposits: parsedData.Deposit,
         attachments: attachments,
@@ -324,7 +321,8 @@ function Modify({ params }) {
         forfounding: parsedData.forfounding,
         specialnote: parsedData.specialnote,
       };
-      console.log(customerData)
+
+      console.log(customerData); // 확인용 콘솔
 
       const updateUserResponse = await updateUser(id, customerData);
 
@@ -538,6 +536,7 @@ function Modify({ params }) {
 
         {/* 2. 관리 정보 */}
         <h3>관리 정보</h3>
+        <h5>*현재 납입일정이 추가되어있지 않아 기본 설정만 가능합니다.</h5>
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
@@ -840,43 +839,38 @@ function Modify({ params }) {
         <h3>MGM</h3>
         <div className={`${styles.content_container} ${styles.mgmContainer}`}>
           <div className={styles.mgmRow}>
+            {/* 
+                *** MGM은 '필수' 입력 항목이 아니므로 required가 제거되었습니다. ***
+            */}
             <div className={styles.inputColumnRow}>
-              <div className={styles.inputColumnLabel}>업체명 *</div>
+              <div className={styles.inputColumnLabel}>업체명</div>
               <MGMInputbox
                 type="text"
-                register={register("MGM.mgmcompanyname", {
-                  required: "업체명을 입력해주세요.",
-                })}
+                register={register("MGM.mgmcompanyname")}
                 isError={!!errors.MGM?.mgmcompanyname}
               />
             </div>
             <div className={styles.inputColumnRow}>
-              <div className={styles.inputColumnLabel}>이름 *</div>
+              <div className={styles.inputColumnLabel}>이름</div>
               <MGMInputbox
                 type="text"
-                register={register("MGM.mgmname", {
-                  required: "이름을 입력해주세요.",
-                })}
+                register={register("MGM.mgmname")}
                 isError={!!errors.MGM?.mgmname}
               />
             </div>
             <div className={styles.inputColumnRow}>
-              <div className={styles.inputColumnLabel}>은행명 *</div>
+              <div className={styles.inputColumnLabel}>은행명</div>
               <MGMInputbox
                 type="text"
-                register={register("MGM.mgminstitution", {
-                  required: "기관을 입력해주세요.",
-                })}
+                register={register("MGM.mgminstitution")}
                 isError={!!errors.MGM?.mgminstitution}
               />
             </div>
             <div className={styles.inputColumnRow}>
-              <div className={styles.inputColumnLabel}>계좌 *</div>
+              <div className={styles.inputColumnLabel}>계좌</div>
               <MGMInputbox
                 type="text"
-                register={register("MGM.mgmaccount", {
-                  required: "계좌를 입력해주세요.",
-                })}
+                register={register("MGM.mgmaccount")}
                 isError={!!errors.MGM?.mgmaccount}
               />
             </div>

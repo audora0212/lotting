@@ -140,10 +140,7 @@ function Create() {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue(
-      "Deposit.depositammount",
-      rawValue ? parseInt(rawValue, 10) : null
-    );
+    setValue("Deposit.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
   const onError = (errors) => {
@@ -155,10 +152,7 @@ function Create() {
       if (errors.hasOwnProperty(field)) {
         if (errors[field].message) {
           errorMessages.push(errors[field].message);
-        } else if (
-          typeof errors[field] === "object" &&
-          errors[field] !== null
-        ) {
+        } else if (typeof errors[field] === "object" && errors[field] !== null) {
           for (const subField in errors[field]) {
             if (
               errors[field].hasOwnProperty(subField) &&
@@ -233,7 +227,7 @@ function Create() {
           postnumberreceive: data.Postreceive.postnumberreceive,
           postreceive: data.Postreceive.postreceive,
         },
-        MGM: data.MGM,
+        MGM: data.MGM, // ====> MGM 필수 입력 제거됨
         Responsible: data.Responsible,
         deposits: parsedData.Deposit,
         attachments: attachments,
@@ -244,8 +238,7 @@ function Create() {
         preferenceattachment: data.preferenceattachment,
         prizeattachment: data.prizeattachment,
         sealcertificateprovided: data.sealcertificateprovided,
-        selfsignatureconfirmationprovided:
-          data.selfsignatureconfirmationprovided,
+        selfsignatureconfirmationprovided: data.selfsignatureconfirmationprovided,
         commitmentletterprovided: data.commitmentletterprovided,
         idcopyprovided: data.idcopyprovided,
         freeoption: data.freeoption,
@@ -292,11 +285,7 @@ function Create() {
       console.error("Error creating user:", error);
       let errorMessage =
         "회원 정보를 입력하는 동안 오류가 발생했습니다. 다시 시도해주세요.";
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }
       Swal.fire({
@@ -487,6 +476,7 @@ function Create() {
 
         {/* 2. 관리정보 */}
         <h3>관리정보</h3>
+        <h5>*현재 납입일정이 추가되어있지 않아 기본 설정만 가능합니다.</h5>
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
@@ -747,36 +737,31 @@ function Create() {
         {/* 5. MGM */}
         <h3>MGM</h3>
         <div className={`${styles.content_container} ${styles.mgmContainer}`}>
+          {/* 
+              *** MGM은 '필수' 입력 항목이 아니므로 required가 제거되었습니다. ***
+          */}
           <MGMInputbox
             type="text"
-            placeholder="업체명 *"
-            register={register("MGM.mgmcompanyname", {
-              required: "업체명을 입력해주세요.",
-            })}
+            placeholder="업체명"
+            register={register("MGM.mgmcompanyname")}
             isError={!!errors.MGM?.mgmcompanyname}
           />
           <MGMInputbox
             type="text"
-            placeholder="이름 *"
-            register={register("MGM.mgmname", {
-              required: "이름을 입력해주세요.",
-            })}
+            placeholder="이름"
+            register={register("MGM.mgmname")}
             isError={!!errors.MGM?.mgmname}
           />
           <MGMInputbox
             type="text"
-            placeholder="은행명 *"
-            register={register("MGM.mgminstitution", {
-              required: "은행명을 입력해주세요.",
-            })}
+            placeholder="은행명"
+            register={register("MGM.mgminstitution")}
             isError={!!errors.MGM?.mgminstitution}
           />
           <MGMInputbox
             type="text"
-            placeholder="계좌 *"
-            register={register("MGM.mgmaccount", {
-              required: "계좌를 입력해주세요.",
-            })}
+            placeholder="계좌"
+            register={register("MGM.mgmaccount")}
             isError={!!errors.MGM?.mgmaccount}
           />
         </div>

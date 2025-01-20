@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchLateFees, cancelCustomer } from "@/utils/api";
-import styles from "@/styles/Latefees.module.scss"; // Search.module.scss
+import styles from "@/styles/Latefees.module.scss";
 import categoryMapping from "@/utils/categoryMapping";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import Swal from "sweetalert2";
