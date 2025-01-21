@@ -75,19 +75,22 @@
   .tablecontainer {
     display: flex;
     width: fit-content; /* 칸 폭에 맞춰 확장되도록 */
-    border-top: 2px solid #000;
-    border-bottom: 2px solid #000;
-    background-color: #f5f5f5; /* 헤더 배경색 */
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background-color: #a48ff8; /* 헤더 배경색 */
     font-weight: 600; /* 헤더 텍스트 굵게 */
     font-size: 12px; /* 헤더 폰트 크기 절반 */
+    border-radius: 8px; /* 곡률 추가 */
+    overflow: hidden; /* 곡률 안쪽 내용 잘리게 설정 */
   }
+  
   
   /* 헤더 각 칸(열) 스타일 */
   .unitContainer {
     width: 75px; /* 기존 150px의 50% */
     padding: 4px; /* 기존 8px의 50% */
     text-align: center;
-    border-right: 1px solid #000; /* 열 경계선 추가 */
+    border-right: 2px solid #ffffff; /* 열 경계선 추가 */
     font-size: 12px; /* 본문 폰트 크기 절반 */
   
     /* New Styles for Consistent Row Height */
@@ -102,36 +105,46 @@
     border-right: none; /* 마지막 열은 오른쪽 경계선 제거 */
   }
   
+  .tablecontainer .unitContainer{
+    color : #fff;
+  }
   /* ===== 테이블 바디 ===== */
-  .maincontainer {
-    display: flex;
-    width: fit-content;
-    border-bottom: 1px solid #000; /* 각 행 사이 구분선 */
-    background-color: #fff; /* 행 배경색 */
-  }
-  
-  .rowContainer {
-    display: flex;
-  }
-  
-  .rowContainer .unitContainer {
-    width: 75px; /* 헤더와 동일한 폭 */
-    padding: 4px; /* 기존 8px의 50% */
-    text-align: center;
-    border-right: 1px solid #000;
-    font-size: 12px; /* 본문 폰트 크기 절반 */
-  
-    /* New Styles for Consistent Row Height */
-    min-height: 40px; /* Ensure consistency with header */
-    white-space: normal; /* Allow text to wrap */
-    display: flex;
-    align-items: center; /* Vertically center content */
-    justify-content: center; /* Horizontally center content */
-  }
-  
-  .rowContainer .unitContainer:last-child {
-    border-right: none;
-  }
+
+.maincontainer {
+  display: flex;
+  width: fit-content;
+  border-bottom: 1px solid #e2e2e2; /* 각 행 사이 구분선 */
+}
+.maincontainer:nth-child(odd) {
+  background-color: #f5f5f5; /* 홀수 행 배경색 */
+}
+
+.maincontainer:nth-child(even) {
+  background-color: #ffffff; /* 짝수 행 배경색 */
+}
+/* ===== 테이블 바디 ===== */
+.rowContainer {
+  display: flex;
+}
+
+/* 데이터 셀(각 열) */
+.rowContainer .unitContainer {
+  width: 75px; /* 헤더와 동일하게 75px */
+  padding: 4px;
+  text-align: center;
+  border-right: 1px solid #e2e2e2;
+  font-size: 12px; /* 본문 폰트 크기 */
+  white-space: normal; /* Allow text to wrap */
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+
+.rowContainer .unitContainer:last-child {
+  border-right: none;
+}
+
   
   /* 링크 스타일 */
   .link {
@@ -145,11 +158,10 @@
   
   /* 정렬 아이콘 스타일 */
   .sortIcon {
-    margin-left: 2px; /* 기존 5px의 절반 */
+    margin-left: 2px; /* 약간의 간격 */
     cursor: pointer;
-    font-size: 10px; /* 기존 12px의 절반 */
+    font-size: 10px; /* 크기 조정 */
     display: inline-flex;
     align-items: center;
-    color: #000;
+    color: #ffffff; /* 아이콘 색상을 흰색으로 설정 */
   }
-  

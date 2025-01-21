@@ -2,131 +2,143 @@
 
 /* 공통 레이아웃 (폭·폰트 크기 등 절반 정도 축소) */
 .flexContainer {
-    width: 550px;       /* 기존 1100px -> 550px */
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 5px;           /* 기존 10px -> 5px */
+  width: 550px; /* 기존 1100px -> 550px */
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px; /* 기존 10px -> 5px */
+}
+
+.link {
+  color: #000;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
-  
-  .link {
-    color: #000;
-    text-decoration: none;
-  
-    &:hover {
-      text-decoration: underline;
-    }
+}
+
+/* 헤더 영역 (상단 제목, 엑셀 출력 버튼 등) */
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 550px; /* 기존 1100px -> 550px */
+  margin-top: 10px; /* 전체 마진 절반 축소 (기존 20px->10px) */
+  font-size: 12px; /* 글자 크기 조금 더 작게 */
+}
+
+.exportContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 아이콘과 버튼 간격 */
+  top: 10px; /* 상단에서 약간 떨어짐 */
+  right: 20px; /* 오른쪽 끝에서 여백 */
+}
+
+
+.printIcon {
+  font-size: 15px; /* 기존 18px -> 12px */
+  cursor: pointer;
+}
+
+.exportButton {
+  background-color: #7152f3;
+  color: #fff;
+  padding: 4px 8px; /* 기존 8px 12px -> 4px 8px */
+  border: none;
+  border-radius: 4px;
+  font-size: 13px; /* 버튼 텍스트 작게 */
+  cursor: pointer;
+
+  &:hover {
+    background-color: #5c41c2;
   }
-  
-  /* 헤더 영역 (상단 제목, 엑셀 출력 버튼 등) */
-  .headerContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 550px;              /* 기존 1100px -> 550px */
-    margin-top: 10px;          /* 전체 마진 절반 축소 (기존 20px->10px) */
-    font-size: 12px;           /* 글자 크기 조금 더 작게 */
+}
+
+/* 테이블 전체 감싸는 래퍼 */
+.tableWrapper {
+  margin: 15px 0; /* 기존 30px -> 15px */
+  overflow-x: auto;
+
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
-  
-  .exportContainer {
-    display: flex;
-    align-items: center;
-    gap: 5px;                  /* 기존 10px -> 5px */
-  }
-  
-  .printIcon {
-    font-size: 12px;           /* 기존 18px -> 12px */
-    cursor: pointer;
-  }
-  
-  .exportButton {
-    background-color: #7152f3;
-    color: #fff;
-    padding: 4px 8px;          /* 기존 8px 12px -> 4px 8px */
-    border: none;
-    border-radius: 4px;
-    font-size: 13px;           /* 버튼 텍스트 작게 */
-    cursor: pointer;
-  
-    &:hover {
-      background-color: #5c41c2;
-    }
-  }
-  
-  /* 테이블 전체 감싸는 래퍼:
-     - 가로 스크롤 가능한 상태에서 스크롤바만 안 보이도록 설정 */
-  .tableWrapper {
-    margin: 15px 0;          /* 기존 30px -> 15px */
-    overflow-x: auto;
-    -ms-overflow-style: none;  /* IE, Edge */
-    scrollbar-width: none;     /* Firefox */
-  
-    &::-webkit-scrollbar {
-      display: none;           /* Chrome, Safari, Opera */
-    }
-  }
-  
-  /* ===== 테이블 헤더 ===== */
-  .tablecontainer {
-    display: flex;
-    width: fit-content;      
-    border-top: 2px solid #000;
-    border-bottom: 2px solid #000;
-    background-color: #f5f5f5;
-    font-weight: 600;
-    font-size: 12px;         /* 절반 크기 정도로 축소 (기존 14px -> 12px) */
-  }
-  
-  /* 헤더 각 열 */
-  .tablecontainer .unitContainer {
-    width: 75px;             /* 기존 150px -> 75px (50% 축소) */
-    padding: 4px;            /* 기존 8px -> 4px */
-    text-align: center;
-    border-right: 1px solid #000;
-    font-size: 12px; /* 본문 폰트 크기 절반 */
-  }
-  
-  .tablecontainer .unitContainer:last-child {
-    border-right: none;
-  }
-  
-  /* ===== 테이블 바디 ===== */
-  .maincontainer {
-    display: flex;
-    width: fit-content;
-    border-bottom: 1px solid #000;
-    background-color: #fff;
-  }
-  
-  .rowContainer {
-    display: flex;
-  }
-  
-  /* 데이터 셀(각 열) */
-  .rowContainer .unitContainer {
-    width: 75px;           /* 헤더와 동일하게 75px */
-    padding: 4px;
-    text-align: center;
-    border-right: 1px solid #000;
-    font-size: 12px;       /* 본문 폰트 크기도 축소 */
-    
-    min-height: 40px; /* Ensure consistency with header */
-    white-space: normal; /* Allow text to wrap */
-    display: flex;
-    align-items: center; /* Vertically center content */
-    justify-content: center; /* Horizontally center content */
-  }
-  
-  .rowContainer .unitContainer:last-child {
-    border-right: none;
-  }
-  
-  /* 정렬 아이콘 */
-  .sortIcon {
-    margin-left: 2px;      /* 조금 더 작게 */
-    cursor: pointer;
-    font-size: 10px;       /* 기존 12px -> 10px */
-    display: inline-flex;
-    align-items: center;
-    color: #000;
-  }
-  
+}
+
+/* ===== 테이블 헤더 ===== */
+.tablecontainer {
+  display: flex;
+  width: fit-content;
+  border-top: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  background-color: #a48ff8; /* 헤더 배경색 */
+  font-weight: 600;
+  font-size: 12px; /* 절반 크기 정도로 축소 (기존 14px -> 12px) */
+  border-radius: 8px; /* 곡률 추가 */
+  overflow: hidden; /* 곡률 안쪽 내용 잘리게 설정 */
+}
+
+/* 헤더 각 열 */
+.tablecontainer .unitContainer {
+  width: 75px; /* 기존 150px -> 75px (50% 축소) */
+  padding: 4px; /* 기존 8px -> 4px */
+  text-align: center;
+  border-right: 1px solid #ffffff; /* 경계선 색상 변경 */
+  font-size: 12px; /* 본문 폰트 크기 */
+  color: #ffffff; /* 헤더 텍스트 색상 흰색으로 변경 */
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+
+.tablecontainer .unitContainer:last-child {
+  border-right: none;
+}
+
+.maincontainer {
+  display: flex;
+  width: fit-content;
+  border-bottom: 1px solid #e2e2e2; /* 각 행 사이 구분선 */
+}
+.maincontainer:nth-child(odd) {
+  background-color: #f5f5f5; /* 홀수 행 배경색 */
+}
+
+.maincontainer:nth-child(even) {
+  background-color: #ffffff; /* 짝수 행 배경색 */
+}
+
+.rowContainer {
+  display: flex;
+}
+
+/* 데이터 셀(각 열) */
+.rowContainer .unitContainer {
+  width: 75px; /* 헤더와 동일하게 75px */
+  padding: 4px;
+  text-align: center;
+  border-right: 1px solid #e2e2e2;
+  font-size: 12px; /* 본문 폰트 크기도 축소 */
+  min-height: 40px; /* Ensure consistency with header */
+  white-space: normal; /* Allow text to wrap */
+  display: flex;
+  align-items: center; /* 수직 정렬 */
+  justify-content: center; /* 수평 정렬 */
+}
+
+.rowContainer .unitContainer:last-child {
+  border-right: none;
+}
+
+/* 정렬 아이콘 */
+.sortIcon {
+  margin-left: 2px; /* 약간의 간격 */
+  cursor: pointer;
+  font-size: 10px; /* 크기 조정 */
+  display: inline-flex;
+  align-items: center;
+  color: #ffffff; /* 아이콘 색상을 흰색으로 설정 */
+}
