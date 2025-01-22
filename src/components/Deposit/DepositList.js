@@ -117,6 +117,7 @@ const DepositList = ({
   };
 
   return (
+
     <div className={depositStyles.tableWrapper}>
       {/* 테이블 헤더 */}
       <div className={depositStyles.tablecontainer}>

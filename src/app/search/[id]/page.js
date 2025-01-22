@@ -11,7 +11,7 @@ import {
 import { userinfoSelector } from "@/utils/selector";
 import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
-import { DownloadButton, Button } from "@/components/Button";
+import { DownloadButton, LinkButton } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
 import { FaEdit,FaFileInvoice  } from "react-icons/fa";
 import categoryMapping from "@/utils/categoryMapping";
@@ -384,9 +384,9 @@ function Search() {
             <div className={styles.rowcontainer}>
               <div className={styles.linkbutton}>
                 <Link href={`/inputmoney/userinfo/${splitpath[2]}`}>
-                  <Button>
-                    <h3>바로가기</h3>
-                  </Button>
+                  <LinkButton>
+                    바로가기
+                  </LinkButton>
                 </Link>
               </div>
             </div>

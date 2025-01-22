@@ -1,19 +1,17 @@
-// components/DepositForm.js
 "use client";
 
 import { Inputbox } from "@/components/Inputbox";
 import depositStyles from "@/styles/Deposit.module.scss";
+import { FaPrint } from "react-icons/fa6"; // 아이콘 추가
+import { useCallback } from "react";
 
-/**
- * 입금 내역 페이지에서 검색할 때 사용할 폼:
- * - contractor (계약자 이름)
- * - memberNumber (회원번호)
- */
+
 const DepositForm = ({
   contractor,
   setContractor,
   memberNumber,
   setMemberNumber,
+  onExport, // 엑셀 출력 버튼 핸들러를 상위 컴포넌트에서 전달받음
 }) => {
   const onContractorChange = (e) => {
     const text = e.target.value;
@@ -27,18 +25,36 @@ const DepositForm = ({
 
   return (
     <div className={depositStyles.flexContainer}>
+      {/* 회원번호 검색 Inputbox */}
       <Inputbox
         type="text"
         placeholder="관리번호"
         value={memberNumber}
         onChange={onMemberNumberChange}
       />
+      {/* 회원성함 검색 Inputbox */}
       <Inputbox
         type="text"
         placeholder="회원 성함"
         value={contractor}
         onChange={onContractorChange}
       />
+      {/* 엑셀 출력 버튼 */}
+      <div className={depositStyles.exportContainer}>
+        <FaPrint
+          onClick={onExport}
+          style={{color:"#5c41c2",fontSize: "14px" }}
+          className={depositStyles.printIcon}
+          title="엑셀로 출력"
+        />
+        <button
+          onClick={onExport}
+          className={depositStyles.exportButton}
+        >
+          엑셀로 출력
+        </button>
+      </div>
+      
     </div>
   );
 };

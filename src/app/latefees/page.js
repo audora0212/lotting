@@ -98,16 +98,6 @@ function LateFees() {
     <>
       <div className={styles.headerContainer}>
         <h3> </h3>
-        <div className={styles.exportContainer}>
-          <FaPrint
-            onClick={handleExport}
-            className={styles.printIcon}
-            title="엑셀로 출력" 
-          />
-          <button onClick={handleExport} className={styles.exportButton}>
-            엑셀로 출력
-          </button>
-        </div>
       </div>
       <SearchForm
         name={name}
@@ -115,6 +105,18 @@ function LateFees() {
         number={number}
         setNumber={setNumber}
       />
+      <h3></h3>
+      <div className={styles.exportContainer}>
+          <FaPrint
+            onClick={handleExport}
+            style={{color:"#5c41c2"}}
+            className={styles.printIcon}
+            title="엑셀로 출력" 
+          />
+          <button onClick={handleExport} className={styles.exportButton}>
+            엑셀로 출력
+          </button>
+        </div>
       <LateFeeList
         name={name}
         number={number}

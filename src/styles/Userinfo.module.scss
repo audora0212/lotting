@@ -48,10 +48,15 @@
 
 .titlebody {
   font-size: 14px;
-  color: #a2a1a8;
+  color: #565559;
+  font-weight: 700px;
   margin-bottom: 5px;
 }
-
+.title {
+  font-size: 14px;
+  color: #565559;
+  font-weight: 1000px;
+}
 .contentbody,
 .postcontentbody {
   background-color: #f9f9f9;
@@ -121,7 +126,6 @@
   display: flex;
   justify-content:left;
   align-items: center; /* 버튼 수직 정렬 */
-  margin-bottom: 20px; 
 }
 
 .editButton {
@@ -129,7 +133,7 @@
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 15px;
   cursor: pointer;
   margin-bottom: 20px;
   display: flex;
@@ -142,20 +146,20 @@
 }
 
 .contractButton {
-  background-color: #7152F3;
+  background-color: #8b70f7;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 15px; /* 둥근 모서리로 변경 */
   cursor: pointer;
   margin-bottom: 20px;
   display: flex;
-  margin-right:50px;
+  margin-right:10px;
   align-items: center;
 }
 
 .contractButton:hover {
-  background-color: #8b70f7;
+  background-color: #7152F3;
 }
 
 .editIcon {
@@ -164,6 +168,10 @@
 
 .linkbutton {
   width: 10vw;
+}
+.buttonstyle{
+  width:100px;
+  height:30px;
 }
 
 /* 부속서류 상태 그리드 */
