@@ -13,6 +13,13 @@ export const Button = (props) => {
         </button>
     )
 }
+export const LinkButton = (props) => {
+    return (
+        <button className={styles.linkbuttonstyle}>
+            {props.children}
+        </button>
+    )
+}
 
 const iconstyle = { fontSize: "1.5em", marginLeft: "10px", marginTop: "10px" };
 

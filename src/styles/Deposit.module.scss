@@ -2,7 +2,7 @@
 
 /* 공통 레이아웃 스타일 */
 .flexContainer {
-    width: 550px; /* 기존 1100px의 50% */
+    width: 100%; /* 기존 1100px의 50% */
     display: flex;
     flex-wrap: nowrap;
     gap: 5px; /* 기존 10px의 50% */
@@ -29,7 +29,7 @@
   }
   
   .exportButton {
-    background-color: #7152f3;
+    background-color: #a48ff8;
     color: #fff;
     padding: 4px 8px; /* 기존 8px 12px의 50% */
     border: none;
@@ -107,6 +107,9 @@
   
   .tablecontainer .unitContainer{
     color : #fff;
+    flex:1;
+    min-width:75px;
+    box-sizing: border-box;
   }
   /* ===== 테이블 바디 ===== */
 
@@ -129,7 +132,8 @@
 
 /* 데이터 셀(각 열) */
 .rowContainer .unitContainer {
-  width: 75px; /* 헤더와 동일하게 75px */
+  min-width: 75px; /* 헤더와 동일하게 75px */
+  flex:1;
   padding: 4px;
   text-align: center;
   border-right: 1px solid #e2e2e2;
@@ -138,6 +142,7 @@
   display: flex;
   align-items: center; /* 수직 가운데 정렬 */
   justify-content: center; /* 수평 가운데 정렬 */
+  box-sizing:border-box;
 }
 
 

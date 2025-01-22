@@ -130,26 +130,15 @@ function DepositPage() {
 
   return (
     <>
-      <div className={depositStyles.headerContainer}>
-        <h3> </h3>
-        <div className={depositStyles.exportContainer}>
-          <FaPrint
-            onClick={handleExport}
-            className={depositStyles.printIcon}
-            title="엑셀로 출력"
-          />
-          <button onClick={handleExport} className={depositStyles.exportButton}>
-            엑셀로 출력
-          </button>
-        </div>
-      </div>
+
 
       <DepositForm
-        contractor={contractor}
-        setContractor={setContractor}
-        memberNumber={memberNumber}
-        setMemberNumber={setMemberNumber}
-      />
+  contractor={contractor}
+  setContractor={setContractor}
+  memberNumber={memberNumber}
+  setMemberNumber={setMemberNumber}
+  onExport={handleExport} // 엑셀 출력 버튼 핸들러 전달
+/>
 
       <DepositList
         contractor={contractor}
