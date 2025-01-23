@@ -60,7 +60,7 @@ function DepositPage() {
     const exportData = sortedData.map((item) => ({
       회원번호: item.memberNumber || "N/A",
       "마지막 거래 일시": item.lastTransactionDateTime
-        ? new Date(item.lastTransactionDateTime).toLocaleString()
+        ? new Date(item.lastTransactionDateTime).toLocaleDateString()
         : "N/A",
       적요: item.remarks || "",
       기재내용: item.memo || "",
