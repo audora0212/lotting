@@ -1,6 +1,6 @@
 // src/components/Button.js
 "use client";
-import styles from "@/styles/Button.module.scss";
+import styles from "@/img/Button.module.scss";
 import { useState } from 'react';
 import { CgSearch } from "react-icons/cg";
 import { FaFileDownload } from "react-icons/fa";

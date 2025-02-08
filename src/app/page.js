@@ -1,7 +1,7 @@
 "use client"
 
 import { Inputbox,PostInputbox,LongInputbox,DropInputbox,FileInputbox } from "@/components/Inputbox"
-import styles from "@/app/Home.module.scss"
+import styles from "@/styles/Home.module.scss"
 
 const testlist = [{
   "value" : "여기에 벨류를 입력하세요",
