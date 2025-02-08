@@ -15,12 +15,11 @@
 ## 🤵팀원
 
 - `최영찬`
-- `오준서`
 - `이승준`
 
 ## 😸개발환경
 
 - **frontend** : `Next` `ContextApi`
-- **backend** : `express` `restApi`
+- **backend** : `JAVA` `SpringBoot`
 
-  - **Database** : `nosql` `MongoDB`
+  - **Database** : `RDB` `MySQL`
