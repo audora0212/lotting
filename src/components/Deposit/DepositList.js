@@ -253,7 +253,7 @@ const DepositList = ({
               </div>
               <div className={depositStyles.unitContainer}>
                 {item.lastTransactionDateTime
-                  ? new Date(item.lastTransactionDateTime).toLocaleString()
+                  ? new Date(item.lastTransactionDateTime).toLocaleDateString()
                   : "N/A"}
               </div>
               <div className={depositStyles.unitContainer}>
