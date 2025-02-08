@@ -268,3 +268,39 @@
     min-width: 0;
     margin: 0;
 }
+
+.grayInputWrapper {
+    background-color: #f9f9f9; /* 회색 배경 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px; /* 내부 여백 */
+    width: 100%; /* 부모 요소 너비 채우기 */
+    height: 100%; /* 부모 요소 높이 채우기 */
+  }
+  
+  .grayInput {
+    width: 100%; /* 입력창이 부모 너비를 채우도록 */
+    height: 100%; /* 입력창이 부모 높이를 채우도록 */
+    background-color: transparent; /* 입력창 배경 투명 */
+    border: none; /* 테두리 제거 */
+    color: #333; /* 입력 텍스트 색상 */
+    font-size: 14px; /* 텍스트 크기 */
+    outline: none; /* 포커스 시 외곽선 제거 */
+    padding: 0; /* 내부 여백 제거 */
+  }
+  
+  
+  .grayInput::placeholder {
+    color: #aaa; /* 플레이스홀더 색상 */
+  }
+  
+  .errorInputWrapper {
+    border: 1px solid red; /* 에러 발생 시 외곽선 강조 */
+  }
+  
+  .errorInput {
+    color: red; /* 에러 발생 시 텍스트 색상 변경 */
+  }
+  

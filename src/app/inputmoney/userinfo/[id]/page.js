@@ -15,7 +15,7 @@ import {
 import { userinfoSelector } from "@/utils/selector";
 
 import { BsBagDash, BsDatabase } from "react-icons/bs";
-
+import { FaEdit,FaFileInvoice  } from "react-icons/fa";
 import ChasuPreBody from "@/components/ChasuPreBody";
 import ChasuFinBody from "@/components/ChasuFinBody";
 import { SearchButton, ModifyButton } from "@/components/Button";
@@ -125,7 +125,21 @@ function Inputmoney() {
                 <div className={styles.SearchFont2}>{userData.type}</div>
               </div>
             </div>
+            <div className={styles.buttonContainer}>
+            <Link href={`/inputmoney/deposit/${userData.id}`}>
+              <button className={styles.contractButton}>
+                <FaFileInvoice className={styles.editIcon} />
+                입금내역 추가
+              </button>
+              </Link>
+
+              <button className={styles.contractButton}>
+                <FaFileInvoice className={styles.editIcon} />
+                 대출/자납 추가
+              </button>
+            </div>
             <div className={styles.MainContent}>
+        
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}

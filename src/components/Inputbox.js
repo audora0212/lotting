@@ -460,3 +460,32 @@ export const PostInputbox2 = ({ register, setValue, namePrefix, postcodeName, ad
     </div>
   );
 };
+
+
+export const InputboxGray = (props) => {
+  const {
+    type,
+    placeholder,
+    onChange,
+    name,
+    value,
+    register,
+    isError,
+    ...rest
+  } = props;
+
+  return (
+    <div className={`${styles.grayInputWrapper} ${isError ? styles.errorInputWrapper : ''}`}>
+      <input
+        className={`${styles.grayInput} ${isError ? styles.errorInput : ''}`}
+        type={type}
+        name={name}
+        onChange={onChange}
+        value={value}
+        placeholder={placeholder}
+        {...register}
+        {...rest}
+      />
+    </div>
+  );
+};

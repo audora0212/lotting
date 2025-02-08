@@ -46,7 +46,7 @@
 .tableWrapper {
     margin: 15px 0; /* 기존 30px의 50% */
     overflow-x: auto;
-  
+    width: 100%; /* 추가: 부모 요소에 맞추기 */
     /* 스크롤바 스타일링 */
     
     /* Firefox용 스크롤바 색상 */
@@ -73,8 +73,8 @@
   
   /* ===== 테이블 헤더 ===== */
   .tablecontainer {
-    display: flex;
-    width: fit-content; /* 칸 폭에 맞춰 확장되도록 */
+    width: 100%; /* 추가: 테이블 최대 너비 지정 */
+    display: table;
     border-top: 2px solid #ffffff;
     border-bottom: 2px solid #ffffff;
     background-color: #a48ff8; /* 헤더 배경색 */
@@ -87,16 +87,15 @@
   
   /* 헤더 각 칸(열) 스타일 */
   .unitContainer {
-    width: 75px; /* 기존 150px의 50% */
+    width: auto; /* 기존 150px의 50% */
     padding: 4px; /* 기존 8px의 50% */
     text-align: center;
     border-right: 2px solid #ffffff; /* 열 경계선 추가 */
     font-size: 12px; /* 본문 폰트 크기 절반 */
-  
     /* New Styles for Consistent Row Height */
     min-height: 40px; /* Adjust as needed to fit two lines */
     white-space: normal; /* Allow text to wrap */
-    display: flex;
+    display: table-cell;
     align-items: center; /* Vertically center content */
     justify-content: center; /* Horizontally center content */
   }
@@ -114,8 +113,8 @@
   /* ===== 테이블 바디 ===== */
 
 .maincontainer {
-  display: flex;
-  width: fit-content;
+  display: table-row;
+  width:100%;
   border-bottom: 1px solid #e2e2e2; /* 각 행 사이 구분선 */
 }
 .maincontainer:nth-child(odd) {
@@ -170,3 +169,61 @@
     align-items: center;
     color: #ffffff; /* 아이콘 색상을 흰색으로 설정 */
   }
+
+
+  .container {
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .input {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .submitButton {
+    padding: 10px 20px;
+    background-color: #7152f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  
+    &:hover {
+      background-color: #5c41c2;
+    }
+  }
+  

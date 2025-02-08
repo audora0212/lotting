@@ -83,6 +83,29 @@
     margin-top:20px;
     margin-left:18px;
 }
+.buttonContainer {
+    margin-left : 20px;
+    display: flex;
+    justify-content:left;
+    align-items: center; /* 버튼 수직 정렬 */
+  }
+  .contractButton {
+    background-color: #8b70f7;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px; /* 둥근 모서리로 변경 */
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    margin-right:10px;
+    align-items: center;
+  }
+
+  .editIcon {
+    margin-right: 8px;
+  }
+  
 .Botton{
     display: inline-flex;
     width:133px;
@@ -118,7 +141,7 @@
 }
 
 .Content{
-    width: 333px;
+    width: 350px;
     height: 100vh;
     flex-shrink: 0;
     margin-left:20px;
