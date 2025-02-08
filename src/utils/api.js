@@ -1,7 +1,7 @@
 //api.js
 import axios from "axios";
-//const path = "http://localhost:8080";
-const path="http://3.38.181.18:8080";
+const path = "http://localhost:8080";
+//const path="http://3.38.181.18:8080";
 
 //고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => {
@@ -409,7 +409,7 @@ export const downloadFormat2 = async (id) => {
 
 export async function fetchDepositData() {
   try {
-    const response = await axios.get(`${path}/deposithistory`);
+    const response = await axios.get(`${path}/depositlist`);
     // 응답 전체를 로그
     console.log("Full Response:", response);
     // 데이터 배열을 개별적으로 로그
