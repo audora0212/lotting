@@ -213,12 +213,15 @@ export const fetchLoanUpdate = (userid, data, callback) => {
   axios
     .put(`${path}/customers/${userid}/loan`, data)
     .then(() => {
-      callback();
+      if (typeof callback === "function") {
+        callback();  // ✅ 콜백이 존재할 때만 실행
+      }
     })
     .catch((error) => {
       console.error("Error updating loan data:", error);
     });
 };
+
 
 // JWT 토큰을 포함한 요청을 위해 Axios 인터셉터 설정
 axios.interceptors.request.use(

@@ -228,12 +228,7 @@ function Inputmoneypay() {
                   <div className={styles.IBTText}>{ChasuState}차 납입</div>
                 </div>
                 <div className={styles.Line}></div>
-                <div className={styles.IBBottonLayer}>
-                  <PaymentScheduleButton
-                    isclear={userChasuData.sum === 0}
-                    setValue={setValue}
-                  />
-                </div>
+
                 <div className={styles.SIBLayer}>
                   <div className={styles.SearchFont}>완납일자</div>
                   <Inputbox2
