@@ -11,12 +11,14 @@ import { userinfoSelector } from "@/utils/selector";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchLoanInit, fetchLoanUpdate } from "@/utils/api";
 import withAuth from "@/utils/hoc/withAuth";
+import Link from "next/link";
 
 function Inputmoneyloan() {
   const router = useRouter();
   const [loandate, setLoandate] = useState("");
   const [loanbank, setLoanbank] = useState("");
   const [loanammount, setLoanammount] = useState("");
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
   const [selfdate, setSelfdate] = useState("");
   const [selfammount, setSelfammount] = useState("");
@@ -112,30 +114,46 @@ function Inputmoneyloan() {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const loanValue = parseInt(loanammount, 10) || 0;
-    const selfValue = parseInt(selfammount, 10) || 0;
-    const sumValue = loanValue + selfValue;
-
-    const updatedData = {
-      loandate: loandate || null,
-      loanbank: loanbank || null,
-      loanammount: loanValue || 0,
-      selfdate: selfdate || null,
-      selfammount: selfValue || 0,
-      loanselfsum: sumValue || 0,
-      loanselfcurrent: sumValue || 0,
-    };
-    console.log(loandate);
-    console.log(loanbank);
-    console.log(loanValue);
-
-    fetchLoanUpdate(IdState, updatedData, () => {
-      router.back();
-    });
+  
+    try {
+      const loanValue = parseInt(loanammount, 10) || 0;
+      const selfValue = parseInt(selfammount, 10) || 0;
+      const sumValue = loanValue + selfValue;
+  
+      const updatedData = {
+        loandate: loandate || null,
+        loanbank: loanbank || null,
+        loanammount: loanValue || 0,
+        selfdate: selfdate || null,
+        selfammount: selfValue || 0,
+        loanselfsum: sumValue || 0,
+        loanselfcurrent: sumValue || 0,
+      };
+  
+      console.log("📌 저장 요청 데이터:", updatedData);
+  
+      // 🔹 백엔드 요청 실행 (에러 나도 이동)
+      try {
+        await fetchLoanUpdate(IdState, updatedData);
+        console.log("✅ 대출/자납액 업데이트 완료!");
+      } catch (error) {
+        console.error("❌ 백엔드 오류 발생, 하지만 이동 진행:", error);
+      }
+  
+      // 🔹 백엔드 응답과 관계없이 페이지 이동
+      router.push(`/inputmoney/loan/apply/${IdState}`);
+  
+    } catch (error) {
+      console.error("❌ 오류 발생:", error);
+    }
   };
-
+  
+    
+  
+  
+  
   return (
     <>
       {userselectordata.state === "hasValue" &&
@@ -242,9 +260,13 @@ function Inputmoneyloan() {
                     <Button_N type="button" onClick={() => router.back()}>
                       <div className={styles.BottonFont2}>취소</div>
                     </Button_N>
-                    <Button_Y type="submit">
-                      <div className={styles.BottonFont}>확인</div>
-                    </Button_Y>
+                    <Button_Y type="submit" disabled={loading}>
+  <div className={styles.BottonFont}>
+    {loading ? "처리 중..." : "확인"}
+  </div>
+</Button_Y>
+
+
                   </div>
                 </div>
               </div>

@@ -176,6 +176,37 @@
   overflow: hidden;
   word-wrap: break-word;
 }
+.contentbody2 {
+  padding: 8px;
+  border: 2px solid #98cfa3; /* 기본 테두리 */
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.contentbody2:hover {
+  background-color: #d4edda;
+}
+
+.selected {
+  background-color: #98cfa3; /* 선택된 경우 */
+  color: white;
+  border-color: #4CAF50;
+}
+
+.phaseTitle {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.phaseAmount {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 
 .buttonContainer {
   display: flex;
@@ -216,3 +247,9 @@
 }
 
 
+.disabledPhase {
+  background-color: #ffcccc !important; // 연한 빨간색
+  color: #d80000 !important; // 빨간색 글씨
+  pointer-events: none; // 클릭 비활성화
+  opacity: 0.6; // 반투명 효과
+}
