@@ -129,7 +129,7 @@ function Inputmoney() {
             <Link href={`/inputmoney/deposit/${userData.id}`}>
               <button className={styles.contractButton}>
                 <FaFileInvoice className={styles.editIcon} />
-                입금내역 추가
+                입금내역 확인/추가
               </button>
               </Link>
 
