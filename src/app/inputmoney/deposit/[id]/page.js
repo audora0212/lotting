@@ -1,5 +1,5 @@
 "use client";
-
+// src/app/inputmoney/deposit/[id]/page.js
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 function DepositAddPage() {
   const pathname = usePathname();
-  const userId = pathname.split("/")[4]; // URL에서 ID 추출
+  const userId = pathname.split("/")[3]; // URL에서 ID 추출
 
   const [formData, setFormData] = useState({
     lastTransactionDateTime: "",

@@ -1,4 +1,4 @@
-//api.js
+//src/utils/api.js
 import axios from "axios";
 const path = "http://localhost:8080";
 //const path="http://3.38.181.18:8080";
