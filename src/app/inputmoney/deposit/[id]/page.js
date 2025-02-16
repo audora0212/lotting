@@ -5,72 +5,72 @@ import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
 import { InputboxGray } from "@/components/Inputbox";
 import Link from "next/link";
+import {
+  fetchDepositHistoriesByCustomerId,
+  createDepositHistory,
+} from "@/utils/api";
 
 function DepositAddPage() {
   const pathname = usePathname();
-  const userId = pathname.split("/")[3]; // URL에서 ID 추출
+  const userId = pathname.split("/")[3]; // URL에서 고객 ID 추출
 
+  // 백엔드 DepositHistory 엔티티와 일치하는 필드명을 사용합니다.
+  // 필드: transactionDateTime, remarks, details, contractor, withdrawnAmount,
+  // depositAmount, balanceAfter, branch, account, loanStatus
   const [formData, setFormData] = useState({
-    lastTransactionDateTime: "",
+    transactionDateTime: "",
     remarks: "",
-    memo: "",
+    details: "",
     contractor: "",
     withdrawnAmount: "",
     depositAmount: "",
-    balanceAfterTransaction: "",
-    bankBranch: "",
+    balanceAfter: "",
+    branch: "",
     account: "",
+    customer: { id: userId },
   });
 
   const [depositData, setDepositData] = useState([]);
 
-  // 데이터 페칭
+  // 고객별 입금내역을 백엔드 API (GET /deposit/customer/{userId})로 페칭합니다.
   useEffect(() => {
-    const fetchDepositData = async (userId) => {
+    const loadDeposits = async () => {
       try {
-        const response = await fetch(`/api/deposit/${userId}`);
-        if (!response.ok) throw new Error("Failed to fetch data.");
-        return await response.json(); // JSON 응답 파싱
+        const data = await fetchDepositHistoriesByCustomerId(userId);
+        setDepositData(data);
       } catch (error) {
-        console.error("데이터 가져오는 중 오류 발생:", error);
-        return [];
+        console.error("Error fetching deposits:", error);
+        setDepositData([]);
       }
     };
-    
 
-    fetchDepositData();
+    if (userId) {
+      loadDeposits();
+    }
   }, [userId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("입력된 데이터:", formData);
+    try {
+      await createDepositHistory(formData);
+      alert("데이터가 성공적으로 저장되었습니다.");
+      // 저장 후 최신 입금내역 다시 페칭
+      const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
+      setDepositData(updatedDeposits);
+    } catch (error) {
+      console.error("Error creating deposit history:", error);
+      alert("데이터 저장에 실패했습니다.");
+    }
+  };
 
-    const saveData = async () => {
-      try {
-        const response = await fetch(`/api/deposit/${userId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          alert("데이터가 성공적으로 저장되었습니다.");
-        } else {
-          alert("데이터 저장에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("데이터 저장 중 오류 발생:", error);
-      }
-    };
-
-    saveData();
+  const handleLoanAlert = () => {
+    alert("대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.");
   };
 
   return (
@@ -108,15 +108,16 @@ function DepositAddPage() {
           <div className={styles.unitContainer}>거래 후 잔액</div>
           <div className={styles.unitContainer}>취급점</div>
           <div className={styles.unitContainer}>계좌</div>
+          <div className={styles.unitContainer}>수정</div>
         </div>
 
         {depositData.map((item, index) => (
           <div className={styles.maincontainer} key={index}>
             <div className={styles.unitContainer}>
-              {item.lastTransactionDateTime || "."}
+              {item.transactionDateTime || "."}
             </div>
             <div className={styles.unitContainer}>{item.remarks || "."}</div>
-            <div className={styles.unitContainer}>{item.memo || "."}</div>
+            <div className={styles.unitContainer}>{item.details || "."}</div>
             <div className={styles.unitContainer}>
               {item.contractor || "."}
             </div>
@@ -127,19 +128,26 @@ function DepositAddPage() {
               {item.depositAmount || "."}
             </div>
             <div className={styles.unitContainer}>
-              {item.balanceAfterTransaction || "."}
+              {item.balanceAfter || "."}
             </div>
-            <div className={styles.unitContainer}>{item.bankBranch || "."}</div>
+            <div className={styles.unitContainer}>{item.branch || "."}</div>
             <div className={styles.unitContainer}>{item.account || "."}</div>
+            <div className={styles.unitContainer}>
+              {item.loanStatus === "o" ? (
+                <button
+                  className={styles.contractButton}
+                  onClick={handleLoanAlert}
+                >
+                  수정불가
+                </button>
+              ) : (
+                <Link href={`/inputmoney/deposit/modify/${item.id}`}>
+                  <button className={styles.contractButton}>수정하기</button>
+                </Link>
+              )}
+            </div>
           </div>
         ))}
-      </div>
-      <p></p>
-      <div className={styles.buttonContainer}>
-        {/* 수정하기 버튼에 Link 추가 */}
-        <Link href={`/inputmoney/deposit/modify/${userId}`}>
-          <button className={styles.contractButton}>수정하기</button>
-        </Link>
       </div>
       <p></p>
 
@@ -147,6 +155,7 @@ function DepositAddPage() {
       <p></p>
       <form onSubmit={handleSubmit}>
         <div className={styles.infoContainer}>
+          {/* 거래일시 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>거래일시</label>
@@ -154,12 +163,13 @@ function DepositAddPage() {
             <div className={styles.contentbody}>
               <InputboxGray
                 type="datetime-local"
-                name="lastTransactionDateTime"
-                value={formData.lastTransactionDateTime}
+                name="transactionDateTime"
+                value={formData.transactionDateTime}
                 onChange={handleInputChange}
               />
             </div>
           </div>
+          {/* 적요 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>적요</label>
@@ -173,6 +183,7 @@ function DepositAddPage() {
               />
             </div>
           </div>
+          {/* 기재내용 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>기재내용</label>
@@ -180,8 +191,8 @@ function DepositAddPage() {
             <div className={styles.contentbody}>
               <InputboxGray
                 type="text"
-                name="memo"
-                value={formData.memo}
+                name="details"
+                value={formData.details}
                 onChange={handleInputChange}
               />
             </div>
@@ -189,6 +200,7 @@ function DepositAddPage() {
         </div>
 
         <div className={styles.infoContainer}>
+          {/* 계약자 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>계약자</label>
@@ -202,6 +214,7 @@ function DepositAddPage() {
               />
             </div>
           </div>
+          {/* 찾으신 금액 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>찾으신 금액</label>
@@ -215,6 +228,7 @@ function DepositAddPage() {
               />
             </div>
           </div>
+          {/* 맡기신 금액 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>맡기신 금액</label>
@@ -231,6 +245,7 @@ function DepositAddPage() {
         </div>
 
         <div className={styles.infoContainer}>
+          {/* 거래 후 잔액 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>거래 후 잔액</label>
@@ -238,12 +253,13 @@ function DepositAddPage() {
             <div className={styles.contentbody}>
               <InputboxGray
                 type="number"
-                name="balanceAfterTransaction"
-                value={formData.balanceAfterTransaction}
+                name="balanceAfter"
+                value={formData.balanceAfter}
                 onChange={handleInputChange}
               />
             </div>
           </div>
+          {/* 취급점 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>취급점</label>
@@ -251,12 +267,13 @@ function DepositAddPage() {
             <div className={styles.contentbody}>
               <InputboxGray
                 type="text"
-                name="bankBranch"
-                value={formData.bankBranch}
+                name="branch"
+                value={formData.branch}
                 onChange={handleInputChange}
               />
             </div>
           </div>
+          {/* 계좌 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>계좌</label>
