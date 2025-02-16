@@ -416,3 +416,13 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+// 특정 차수 데이터 부분 업데이트 (부담금, 업무대행비, 할인액, 면제액, 이동만)
+export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
+  return axios
+    .put(`${path}/phases/customer/${customerId}/phase/${phaseNumber}/modify`, data)
+    .then((result) => result.data)
+    .catch((error) => {
+      console.error("Error updating phase partial data:", error);
+      throw error;
+    });
+};

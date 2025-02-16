@@ -8,17 +8,14 @@ import { useForm } from "react-hook-form";
 import { userinfoSelector } from "@/utils/selector";
 import { useridState, chasuState } from "@/utils/atom";
 import { useRecoilValueLoadable, useRecoilState } from "recoil";
-import { updatePhaseData, fetchPhaseData } from "@/utils/api";
+import { fetchPhaseData, updatePhaseDataPartial } from "@/utils/api";
 import { Inputbox2, Inputbox_M } from "@/components/Inputbox";
-import {
-  PaymentScheduleButton,
-  Button_Y,
-  Button_N,
-} from "@/components/Button";
+import { Button_Y, Button_N } from "@/components/Button";
 import styles from "@/styles/Inputmoneypay.module.scss";
 import { BsDatabase } from "react-icons/bs";
 import withAuth from "@/utils/hoc/withAuth";
 
+// 숫자 포맷 함수
 const formatNumber = (value) => {
   if (!value) return "0";
   const numberString = value.toString().replace(/[^0-9]/g, "");
@@ -32,13 +29,18 @@ const parseNumber = (value) => {
 
 function Inputmoneypay() {
   const { register, handleSubmit, setValue, watch } = useForm();
+  // 수정 가능한 필드들
   const [charge, setCharge] = useState("0");       // 부담금
   const [service, setService] = useState("0");     // 업무대행비
   const [discount, setDiscount] = useState("0");   // 할인액
   const [exemption, setExemption] = useState("0"); // 면제액
-  const [charged, setCharged] = useState("0");     // 납입금액
-  const [feesum, setFeesum] = useState(0);         // 총액
-  const [total, setTotal] = useState(0);           // 남은금액
+  const [move, setMove] = useState("");            // 이동
+
+  // 읽기 전용 필드
+  const [charged, setCharged] = useState("0");     // 납입금액 (수정 불가)
+  const [feesum, setFeesum] = useState(0);         // 총액 (계산용)
+  const [total, setTotal] = useState(0);           // 남은금액 (계산용)
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -88,6 +90,7 @@ function Inputmoneypay() {
             setService(formatNumber(phase.service));
             setDiscount(formatNumber(phase.discount));
             setExemption(formatNumber(phase.exemption));
+            setMove(phase.move || "");
             setCharged(formatNumber(phase.charged));
           } else {
             console.log("해당 차수가 존재하지 않습니다.");
@@ -99,53 +102,7 @@ function Inputmoneypay() {
     }
   }, [IdState, ChasuState]);
 
-  const isValidDateString = (dateString) => {
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!regex.test(dateString)) return false;
-    const date = new Date(dateString);
-    const timestamp = date.getTime();
-    if (typeof timestamp !== "number" || Number.isNaN(timestamp)) return false;
-    return dateString === date.toISOString().substring(0, 10);
-  };
-
-  const onSubmit = (data) => {
-    const chargeValue = parseInt(parseNumber(charge)) || 0;
-    const serviceValue = parseInt(parseNumber(service)) || 0;
-    const discountValue = parseInt(parseNumber(discount)) || 0;
-    const exemptionValue = parseInt(parseNumber(exemption)) || 0;
-    const chargedValue = parseInt(parseNumber(charged)) || 0;
-
-    const feesumValue = chargeValue + serviceValue - discountValue - exemptionValue;
-
-    const updatedData = {
-      planneddate: data.planneddate,
-      fullpaiddate: data.fullpaiddate,
-      charge: parseNumber(charge),
-      service: parseNumber(service),
-      discount: parseNumber(discount),
-      exemption: parseNumber(exemption),
-      charged: parseNumber(charged),
-      move: data.move || "",
-      feesum: feesumValue.toString(),
-      sum: feesumValue - chargedValue,
-    };
-
-    console.log(updatedData);
-
-    if (phaseId) {
-      updatePhaseData(phaseId, updatedData)
-        .then(() => {
-          router.push(`/inputmoney/userinfo/${IdState}`);
-        })
-        .catch((error) => {
-          console.error("Phase 업데이트 중 오류 발생:", error);
-        });
-    } else {
-      console.error("유효한 Phase ID가 없습니다.");
-    }
-  };
-
-  // 남은금액 및 총액 계산
+  // 남은금액 및 총액 계산 (수정 가능한 값 기준)
   useEffect(() => {
     calculateTotal();
   }, [charge, service, discount, exemption, charged]);
@@ -181,162 +138,192 @@ function Inputmoneypay() {
       case "exemption":
         setExemption(formattedValue === "0" ? "" : formattedValue);
         break;
-      case "charged":
-        setCharged(formattedValue === "0" ? "" : formattedValue);
+      case "move":
+        setMove(value);
         break;
       default:
         break;
     }
   };
 
-  // planneddate 변경 감지 및 로그 출력
-  const plannedDate = watch("planneddate");
+  // 제출 시 수정 가능한 필드만 전송 (납입금액은 수정하지 않음)
+  const onSubmit = (data) => {
+    const partialData = {
+      charge: parseNumber(charge),
+      service: parseNumber(service),
+      discount: parseNumber(discount),
+      exemption: parseNumber(exemption),
+      move: move,
+    };
 
-  useEffect(() => {
-    if (plannedDate) {
-      console.log("예정일자가 변경되었습니다:", plannedDate);
+    if (IdState && ChasuState) {
+      updatePhaseDataPartial(IdState, ChasuState, partialData)
+        .then(() => {
+          router.push(`/inputmoney/userinfo/${IdState}`);
+        })
+        .catch((error) => {
+          console.error("Phase 업데이트 중 오류 발생:", error);
+        });
+    } else {
+      console.error("유효한 고객 ID 또는 차수 정보가 없습니다.");
     }
-  }, [plannedDate]);
+  };
+
+  // planneddate, fullpaiddate 등은 읽기 전용으로 처리
+  const plannedDateValue =
+    userChasuData &&
+    userChasuData.planneddate &&
+    userChasuData.planneddate.match(/^\d{4}-\d{2}-\d{2}$/)
+      ? userChasuData.planneddate
+      : "";
+  const fullPaidDateValue =
+    userChasuData &&
+    userChasuData.fullpaiddate &&
+    userChasuData.fullpaiddate.match(/^\d{4}-\d{2}-\d{2}$/)
+      ? userChasuData.fullpaiddate
+      : "";
 
   return (
     <>
-      {userChasuData && userselectordata.state === "hasValue" && userData && (
-        <div className={styles.Container}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className={styles.Mainbody}>
-              <div className={styles.MainTitle}>
-                <div className={styles.MainTitle1}>
-                  <div className={styles.SearchClientNum}>
-                    <div className={styles.SearchFont1}>회원번호 : </div>
-                    <div className={styles.SearchFont2}>{IdState}</div>
-                  </div>
-                  <div className={styles.SearchClientNum}>
-                    <div className={styles.SearchFont1}>성함 : </div>
-                    <div className={styles.SearchFont2}>
-                      {userData.customerData?.name}
+      {userChasuData &&
+        userselectordata.state === "hasValue" &&
+        userData && (
+          <div className={styles.Container}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className={styles.Mainbody}>
+                <div className={styles.MainTitle}>
+                  <div className={styles.MainTitle1}>
+                    <div className={styles.SearchClientNum}>
+                      <div className={styles.SearchFont1}>회원번호 : </div>
+                      <div className={styles.SearchFont2}>{IdState}</div>
+                    </div>
+                    <div className={styles.SearchClientNum}>
+                      <div className={styles.SearchFont1}>성함 : </div>
+                      <div className={styles.SearchFont2}>
+                        {userData.customerData?.name}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className={styles.InputBody}>
-                <div className={styles.InputBodyTitle}>
-                  <div className={styles.IBTIcon}>
-                    <div className={styles.Icon} style={{ color: "#7152F3" }}>
-                      <BsDatabase style={{ width: "100%", height: "100%" }} />
+                <div className={styles.InputBody}>
+                  <div className={styles.InputBodyTitle}>
+                    <div className={styles.IBTIcon}>
+                      <div className={styles.Icon} style={{ color: "#7152F3" }}>
+                        <BsDatabase style={{ width: "100%", height: "100%" }} />
+                      </div>
+                    </div>
+                    <div className={styles.IBTText}>
+                      {ChasuState}차 납입
                     </div>
                   </div>
-                  <div className={styles.IBTText}>{ChasuState}차 납입</div>
-                </div>
-                <div className={styles.Line}></div>
+                  <div className={styles.Line}></div>
 
-                <div className={styles.SIBLayer}>
-                  <div className={styles.SearchFont}>완납일자</div>
-                  <Inputbox2
-                    type="date"
-                    {...register("fullpaiddate")}
-                    defaultValue={
-                      isValidDateString(userChasuData.fullpaiddate)
-                        ? userChasuData.fullpaiddate
-                        : ""
-                    }
-                  />
-                </div>
-                <div className={styles.SIBLayer}>
-                  <div className={styles.SearchFont}>예정일자</div>
-                  <Inputbox2
-                    type="date"
-                    {...register("planneddate")}
-                    defaultValue={
-                      isValidDateString(userChasuData.planneddate)
-                        ? userChasuData.planneddate
-                        : ""
-                    }
-                  />
-                </div>
-                <div className={styles.IBLayer}>
-                  <Inputbox_M
-                    type="text"
-                    placeholder="부담금"
-                    name="charge"
-                    {...register("charge")}
-                    onChange={onChange}
-                    value={charge}
-                  />
-                  <Inputbox_M
-                    type="text"
-                    placeholder="업무대행비"
-                    name="service"
-                    {...register("service")}
-                    onChange={onChange}
-                    value={service}
-                  />
-                </div>
-                <div className={styles.IBLayer}>
-                  <Inputbox_M
-                    type="text"
-                    placeholder="할인액"
-                    name="discount"
-                    {...register("discount")}
-                    onChange={onChange}
-                    value={discount}
-                  />
-                  <Inputbox_M
-                    type="text"
-                    placeholder="면제액"
-                    name="exemption"
-                    {...register("exemption")}
-                    onChange={onChange}
-                    value={exemption}
-                  />
-                </div>
-                <div className={styles.IBLayer}>
-                  <Inputbox_M
-                    type="text"
-                    placeholder="이동"
-                    name="move"
-                    {...register("move")}
-                    defaultValue={userChasuData.move}
-                  />
-                  <Inputbox_M
-                    type="text"
-                    placeholder="납입금액"
-                    name="charged"
-                    {...register("charged")}
-                    onChange={onChange}
-                    value={charged}
-                  />
-                </div>
-                <div className={styles.IBLayer}>
-                  <div className={styles.IBInputBox_S}>
-                    <div className={styles.SearchFont1}>총액 :</div>
-                    <div className={styles.SearchFont2}>
-                      {feesum.toLocaleString()}₩
+                  {/* 예정일자, 완납일자는 읽기 전용 */}
+                  <div className={styles.SIBLayer}>
+                    <div className={styles.SearchFont}>완납일자</div>
+                    <Inputbox2
+                      type="date"
+                      {...register("fullpaiddate")}
+                      defaultValue={fullPaidDateValue}
+                      readOnly
+                    />
+                  </div>
+                  <div className={styles.SIBLayer}>
+                    <div className={styles.SearchFont}>예정일자</div>
+                    <Inputbox2
+                      type="date"
+                      {...register("planneddate")}
+                      defaultValue={plannedDateValue}
+                      readOnly
+                    />
+                  </div>
+                  {/* 수정 가능한 필드 */}
+                  <div className={styles.IBLayer}>
+                    <Inputbox_M
+                      type="text"
+                      placeholder="부담금"
+                      name="charge"
+                      {...register("charge")}
+                      onChange={onChange}
+                      value={charge}
+                    />
+                    <Inputbox_M
+                      type="text"
+                      placeholder="업무대행비"
+                      name="service"
+                      {...register("service")}
+                      onChange={onChange}
+                      value={service}
+                    />
+                  </div>
+                  <div className={styles.IBLayer}>
+                    <Inputbox_M
+                      type="text"
+                      placeholder="할인액"
+                      name="discount"
+                      {...register("discount")}
+                      onChange={onChange}
+                      value={discount}
+                    />
+                    <Inputbox_M
+                      type="text"
+                      placeholder="면제액"
+                      name="exemption"
+                      {...register("exemption")}
+                      onChange={onChange}
+                      value={exemption}
+                    />
+                  </div>
+                  <div className={styles.IBLayer}>
+                    <Inputbox_M
+                      type="text"
+                      placeholder="이동"
+                      name="move"
+                      {...register("move")}
+                      onChange={onChange}
+                      value={move}
+                    />
+                    {/* 납입금액은 readOnly */}
+                    <Inputbox_M
+                      type="text"
+                      placeholder="납입금액"
+                      name="charged"
+                      {...register("charged")}
+                      value={charged}
+                      readOnly
+                    />
+                  </div>
+                  <div className={styles.IBLayer}>
+                    <div className={styles.IBInputBox_S}>
+                      <div className={styles.SearchFont1}>총액 :</div>
+                      <div className={styles.SearchFont2}>
+                        {feesum.toLocaleString()}₩
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={styles.IBLayer}>
-                  <div className={styles.IBInputBox_S}>
-                    <div className={styles.SearchFont1}>남은금액 :</div>
-                    <div className={styles.SearchFont2}>
-                      {total.toLocaleString()}₩
+                  <div className={styles.IBLayer}>
+                    <div className={styles.IBInputBox_S}>
+                      <div className={styles.SearchFont1}>남은금액 :</div>
+                      <div className={styles.SearchFont2}>
+                        {total.toLocaleString()}₩
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={styles.IBBottonLayer}>
-                  <Link href={`/inputmoney/userinfo/${IdState}`}>
-                    <Button_N type="button">
-                      <div className={styles.BottonFont2}>취소</div>
-                    </Button_N>
-                  </Link>
-                  <Button_Y type="submit">
-                    <div className={styles.BottonFont}>확인</div>
-                  </Button_Y>
+                  <div className={styles.IBBottonLayer}>
+                    <Link href={`/inputmoney/userinfo/${IdState}`}>
+                      <Button_N type="button">
+                        <div className={styles.BottonFont2}>취소</div>
+                      </Button_N>
+                    </Link>
+                    <Button_Y type="submit">
+                      <div className={styles.BottonFont}>확인</div>
+                    </Button_Y>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
-        </div>
-      )}
+            </form>
+          </div>
+        )}
     </>
   );
 }
