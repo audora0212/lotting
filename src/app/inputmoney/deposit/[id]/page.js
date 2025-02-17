@@ -44,6 +44,9 @@ function DepositAddPage() {
 
   const [formData, setFormData] = useState({
     transactionDateTime: "",
+    // 수정: "적요"는 description로 매핑
+    description: "",
+    // 새로 추가: "비고" (remarks)
     remarks: "",
     details: "",
     contractor: "",
@@ -184,6 +187,7 @@ function DepositAddPage() {
     }
     try {
       await createDepositHistory(submitData);
+      console.log("submitData:", submitData);
       alert("데이터가 성공적으로 저장되었습니다.");
       setDepositData(await fetchDepositHistoriesByCustomerId(userId));
     } catch (error) {
@@ -212,7 +216,7 @@ function DepositAddPage() {
     return chunks;
   };
 
-  const handleDelete = async (depositId) => {
+  const handleDeleteDeposit = async (depositId) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
         await deleteDepositHistory(depositId);
@@ -263,6 +267,7 @@ function DepositAddPage() {
           <div className={styles.unitContainer}>거래일시</div>
           <div className={styles.unitContainer}>적요</div>
           <div className={styles.unitContainer}>기재내용</div>
+          <div className={styles.unitContainer}>비고</div>
           <div className={styles.unitContainer}>계약자</div>
           <div className={styles.unitContainer}>찾으신 금액</div>
           <div className={styles.unitContainer}>맡기신 금액</div>
@@ -277,8 +282,15 @@ function DepositAddPage() {
               <div className={styles.unitContainer}>
                 {item.transactionDateTime || "."}
               </div>
-              <div className={styles.unitContainer}>{item.remarks || "."}</div>
-              <div className={styles.unitContainer}>{item.details || "."}</div>
+              <div className={styles.unitContainer}>
+                {item.description || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.details || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.remarks || "."}
+              </div>
               <div className={styles.unitContainer}>
                 {item.contractor || "."}
               </div>
@@ -297,8 +309,12 @@ function DepositAddPage() {
                   ? Number(item.balanceAfter).toLocaleString()
                   : "."}
               </div>
-              <div className={styles.unitContainer}>{item.branch || "."}</div>
-              <div className={styles.unitContainer}>{item.account || "."}</div>
+              <div className={styles.unitContainer}>
+                {item.branch || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.account || "."}
+              </div>
             </div>
             <div className={styles.unitContainer}>
               {item.loanStatus === "o" ? (
@@ -315,7 +331,7 @@ function DepositAddPage() {
               )}
               <button
                 className={styles.TableButton}
-                onClick={() => handleDelete(item.id)}
+                onClick={() => handleDeleteDeposit(item.id)}
               >
                 삭제하기
               </button>
@@ -327,6 +343,7 @@ function DepositAddPage() {
       <h3>입금내역 추가</h3>
       <p></p>
       <form onSubmit={handleSubmit}>
+        {/* 상단 입력란: 거래일시, 적요(-> description), 기재내용, 비고(-> remarks) */}
         <div className={styles.infoContainer}>
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
@@ -348,8 +365,8 @@ function DepositAddPage() {
             <div className={styles.contentbody}>
               <InputboxGray
                 type="text"
-                name="remarks"
-                value={formData.remarks}
+                name="description"
+                value={formData.description}
                 onChange={handleInputChange}
               />
             </div>
@@ -367,7 +384,22 @@ function DepositAddPage() {
               />
             </div>
           </div>
+          {/* 추가: 비고 입력란 */}
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <label className={styles.title}>비고</label>
+            </div>
+            <div className={styles.contentbody}>
+              <InputboxGray
+                type="text"
+                name="remarks"
+                value={formData.remarks}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
         </div>
+        {/* 중단 입력란: 계약자, depositPhase1, 찾으신 금액, 맡기신 금액 */}
         <div className={styles.infoContainer}>
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
@@ -382,48 +414,70 @@ function DepositAddPage() {
               />
             </div>
           </div>
+
           {!isLoanRecord && (
+            <>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>찾으신 금액</label>
+                </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="text"
+                    name="withdrawnAmount"
+                    value={formData.withdrawnAmount}
+                    onChange={(e) => handleMoneyChange(e, setFormData)}
+                    onFocus={(e) => handleMoneyChange(e, setFormData)}
+                  />
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>
+                    맡기신 금액
+                  </label>
+                </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="text"
+                    name="depositAmount"
+                    value={formData.depositAmount}
+                    onChange={(e) => handleMoneyChange(e, setFormData)}
+                    onFocus={(e) => handleMoneyChange(e, setFormData)}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+          {isLoanRecord && (
             <div className={styles.unitbody}>
               <div className={styles.titlebody}>
-                <label className={styles.title}>찾으신 금액</label>
+                <label className={styles.title}>
+                  {isLoanRecord ? "대출액+자납액" : "맡기신 금액"}
+                </label>
               </div>
               <div className={styles.contentbody}>
-                <InputboxGray
-                  type="text"
-                  name="withdrawnAmount"
-                  value={formData.withdrawnAmount}
-                  onChange={(e) => handleMoneyChange(e, setFormData)}
-                  onFocus={(e) => handleMoneyChange(e, setFormData)}
-                />
+                {isLoanRecord ? (
+                  <InputboxGray
+                    type="text"
+                    name="depositAmount"
+                    value={computedDeposit.toLocaleString()}
+                    disabled
+                  />
+                ) : (
+                  <InputboxGray
+                    type="text"
+                    name="depositAmount"
+                    value={formData.depositAmount}
+                    onChange={(e) => handleMoneyChange(e, setFormData)}
+                    onFocus={(e) => handleMoneyChange(e, setFormData)}
+                  />
+                )}
               </div>
             </div>
           )}
-          <div className={styles.unitbody}>
-            <div className={styles.titlebody}>
-              <label className={styles.title}>
-                {isLoanRecord ? "대출액+자납액" : "맡기신 금액"}
-              </label>
-            </div>
-            <div className={styles.contentbody}>
-              {isLoanRecord ? (
-                <InputboxGray
-                  type="text"
-                  name="depositAmount"
-                  value={computedDeposit.toLocaleString()}
-                  disabled
-                />
-              ) : (
-                <InputboxGray
-                  type="text"
-                  name="depositAmount"
-                  value={formData.depositAmount}
-                  onChange={(e) => handleMoneyChange(e, setFormData)}
-                  onFocus={(e) => handleMoneyChange(e, setFormData)}
-                />
-              )}
-            </div>
-          </div>
         </div>
+        {/* 하단 입력란: 거래 후 잔액, 취급점, 계좌 */}
         <div className={styles.infoContainer}>
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
