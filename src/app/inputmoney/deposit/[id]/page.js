@@ -16,6 +16,7 @@ import {
 function DepositAddPage() {
   const pathname = usePathname();
   const userId = pathname.split("/")[3];
+  
 
   // 대출 기록 여부 상태
   const [isLoanRecord, setIsLoanRecord] = useState(false);
@@ -23,6 +24,8 @@ function DepositAddPage() {
   // 고객의 Status.loanExceedAmount 값을 저장할 상태
   const [statusLoanExceed, setStatusLoanExceed] = useState(0);
 
+
+  
   const [formData, setFormData] = useState({
     transactionDateTime: "",
     remarks: "",
@@ -129,32 +132,38 @@ function DepositAddPage() {
     0,
     computedDeposit - selectedPhasesSum + statusLoanExceed
   );
+  const [remainingAmount, setRemainingAmount] = useState(0);
 
+  // totalAmount가 변경될 때 remainingAmount 업데이트
+  useEffect(() => {
+    setRemainingAmount(computedDeposit);
+  }, [computedDeposit]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     let submitData = { ...formData };
+  
+    // 선택된 차수를 반영
+    submitData.targetPhases = selectedPhases;
+  
     if (isLoanRecord) {
-      // 찾으신 금액은 0으로 고정
       submitData.withdrawnAmount = "0";
-      // 맡기신 금액은 computedDeposit 값을 그대로 사용 (문자열 변환)
       submitData.depositAmount = computedDeposit.toString();
-      // 대출 합계와 잔액
       submitData.loanDetails.loanselfsum = computedDeposit.toString();
       submitData.loanDetails.loanselfcurrent = computedLoanBalance.toString();
-      // 대출/자납 기록임을 나타내는 loanStatus 필드를 "o"로 지정
       submitData.loanStatus = "o";
     }
-    console.log("입력된 데이터:", submitData);
+  
     try {
       await createDepositHistory(submitData);
       alert("데이터가 성공적으로 저장되었습니다.");
-      const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
-      setDepositData(updatedDeposits);
+      setDepositData(await fetchDepositHistoriesByCustomerId(userId));
     } catch (error) {
       console.error("Error creating deposit history:", error);
       alert("데이터 저장에 실패했습니다.");
     }
   };
+  
 
   const handleLoanAlert = () => {
     alert("대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.");
@@ -192,7 +201,22 @@ function DepositAddPage() {
       }
     }
   };
-
+  const handlePhaseSelection = (phase) => {
+    const phaseAmount = phase.feesum ?? 0;
+  
+    if (selectedPhases.includes(phase.phaseNumber)) {
+      setSelectedPhases(selectedPhases.filter((num) => num !== phase.phaseNumber));
+      setRemainingAmount(remainingAmount + phaseAmount);
+    } else {
+      if (remainingAmount >= phaseAmount) {
+        setSelectedPhases([...selectedPhases, phase.phaseNumber]);
+        setRemainingAmount(remainingAmount - phaseAmount);
+      } else {
+        alert("남은 금액이 부족하여 선택할 수 없습니다.");
+      }
+    }
+  };
+  
   return (
     <div className={styles.container}>
       <p></p>
@@ -547,35 +571,53 @@ function DepositAddPage() {
                 </div>
               </div>
             </div>
+            <h4>📌 진행 예정 납부 차수 선택</h4>
+<div className={styles.infoContainer}>
+  <div className={styles.unitbody}>
+    <div className={styles.titlebody}>
+      <span className={styles.title}>남은 금액</span>
+    </div>
+    <div className={styles.contentbody}>
+      <p>💰 <strong>{remainingAmount.toLocaleString()}₩</strong></p>
+    </div>
+  </div>
+</div>
 
-            {/* 납입할 차수 선택 체크박스 (한 줄에 3개씩 표시) */}
-            {pendingPhases.length > 0 ? (
-              <div>
-                <h4>납입할 차수 선택</h4>
-                <div className={styles.checkboxContainer}>
-                  {chunkArray(pendingPhases, 3).map((row, rowIndex) => (
-                    <div key={rowIndex} className={styles.checkboxRow}>
-                      {row.map((phase) => (
-                        <label
-                          key={phase.phaseNumber}
-                          className={styles.checkboxLabel}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedPhases.includes(phase.phaseNumber)}
-                            onChange={() => togglePhase(phase.phaseNumber)}
-                          />
-                          {phase.phaseNumber}차 (
-                          {phase.feesum?.toLocaleString() || 0}₩)
-                        </label>
-                      ))}
-                    </div>
-                  ))}
-                </div>
+{pendingPhases.length > 0 ? (
+  <ul>
+  {pendingPhases.map((phase) => {
+    const phaseAmount = phase.feesum ?? 0;
+    const isSelected = selectedPhases.includes(phase.phaseNumber);
+    const isDisabled = remainingAmount < phaseAmount && !isSelected;
+
+    return (
+      <li key={phase.phaseNumber}>
+        <div className={styles.infoContainer}>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <span className={styles.phaseTitle}>{phase.phaseNumber}차 총액</span>
+            </div>
+            <div
+              className={`${styles.contentbody2} 
+                          ${isSelected ? styles.selected : ""}
+                          ${isDisabled ? styles.disabledPhase : ""}`}
+              onClick={() => !isDisabled && handlePhaseSelection(phase)}
+            >
+              <div className={styles.phaseAmount}>
+                {phaseAmount.toLocaleString()}₩
               </div>
-            ) : (
-              <p>진행 예정 납부 차수가 없습니다.</p>
-            )}
+            </div>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
+) : (
+  <p>진행 예정 납부 차수가 없습니다.</p>
+)}
+
           </>
         )}
 

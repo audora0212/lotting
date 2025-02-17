@@ -592,9 +592,114 @@ function Create() {
             </div>
           </div>
         </div>
+        <h3>다힘</h3>
+        <div
+          className={styles.mainbody}
+        >
+          <div className={styles.content_body}>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="시상"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="일자"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="6/30선지급"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="1회차청구"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="금액(만원)"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="일자"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="2회차청구"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="금액(만원)"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox
+                type="text"
+                placeholder="일자"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+            <MGMInputbox
+                type="text"
+                placeholder="합계(만원)"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body2}>
+            <MGMInputbox
+                type="text"
+                placeholder="출처"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+        </div>
+        <p></p>
+        
+
 
         {/* 3. 부속서류 */}
         <h3>부속서류</h3>
+
 
         <div className={styles.attachmentContainer}>
           <div className={styles.attachmentGrid}>
@@ -765,6 +870,50 @@ function Create() {
             isError={!!errors.MGM?.mgmaccount}
           />
         </div>
+        
+        <h3>1차(직원)</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+            <Inputbox
+                type="text"
+                placeholder="차순"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body2}>
+            <Inputbox
+                type="text"
+                placeholder="지급일"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+        </div>
+
+        <h3>2차(직원)</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+            <Inputbox
+                type="text"
+                placeholder="차순"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+            <div className={styles.content_body2}>
+            <Inputbox
+                type="text"
+                placeholder="지급일"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+            </div>
+          </div>
+        </div>
 
         {/* 6. 비고 */}
         <h3>비고</h3>
@@ -776,6 +925,177 @@ function Create() {
             isError={!!errors.specialnote}
           />
         </div>
+
+        <h3>23/9/9총회참석여부</h3>
+            <div className={styles.mainbody}>
+              <div className={styles.content_body}>
+                <div className={styles.content_body3}>
+                <MGMInputbox
+                type="text"
+                placeholder="서면"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+                </div>
+                <div className={styles.content_body3}>
+                <MGMInputbox
+                type="text"
+                placeholder="직접"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+                </div>
+                <div className={styles.content_body3}>
+                <MGMInputbox
+                type="text"
+                placeholder="대리"
+                register={register("Responsible.generalmanagement")}
+                isError={!!errors.Responsible?.generalmanagement}
+              />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="특이사항"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="투표기기"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+            </div>
+
+        <h3>안건</h3>
+          <div className={styles.mainbody}>
+          <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제1호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제2-1호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제2-2호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제2-3호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제2-4호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제3호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제4호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제5호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제6호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제7호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제8호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제9호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+              <div className={styles.content_body}>
+                <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="제10호"
+                  register={register("Responsible.generalmanagement")}
+                  isError={!!errors.Responsible?.generalmanagement}
+                />
+                </div>
+              </div>
+          </div>
+        <p></p>
         <Button_Y type="submit" disabled={idExists || checkingId}>
           저장하기
         </Button_Y>
