@@ -4,32 +4,41 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchPendingPhases, fetchLoanInit } from "@/utils/api";
 import styles from "@/styles/DepositAdd.module.scss";
+import { useRecoilValueLoadable } from "recoil";
+import { userinfoSelector } from "@/utils/selector";
 
 const LoanApplyDetail = ({ params }) => {
   const router = useRouter();
   const { id } = params; // URL에서 회원 ID 가져오기
 
+  // ✅ Recoil 상태 불러오기 (컴포넌트 내부에서 호출)
+  const userselectordata = useRecoilValueLoadable(userinfoSelector);
+
+  // ✅ 상태 저장 (useState 활용)
+  const [userInfo, setUserInfo] = useState(null);
+
+  // ✅ 사용자 정보 불러오기 (useEffect 활용)
+  useEffect(() => {
+    if (userselectordata.state === "hasValue") {
+      setUserInfo(userselectordata.contents);
+    }
+  }, [userselectordata]); // userselectordata 변경될 때 실행
+
+  // ✅ 대출 관련 상태
   const [loanAmount, setLoanAmount] = useState(0);
   const [selfAmount, setSelfAmount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const [pendingPhases, setPendingPhases] = useState([]); // 진행 예정 차수 목록
-  const [selectedPhases, setSelectedPhases] = useState([]); // 선택된 차수 목록
-  const [remainingAmount, setRemainingAmount] = useState(0); // 남은 금액
-
-  // ✅ 백엔드에서 대출 및 자납 데이터 불러오기
   useEffect(() => {
     const fetchLoanData = async () => {
       try {
         console.log("📌 fetchLoanInit 호출됨, id:", id);
-
         const loanData = await fetchLoanInit(id);
         console.log("✅ 대출 데이터 불러오기 성공:", loanData);
 
         setLoanAmount(loanData.loanammount || 0);
         setSelfAmount(loanData.selfammount || 0);
         setTotalAmount((loanData.loanammount || 0) + (loanData.selfammount || 0));
-        setRemainingAmount((loanData.loanammount || 0) + (loanData.selfammount || 0)); // 남은 금액 초기화
       } catch (error) {
         console.error("❌ Error fetching loan data:", error);
       }
@@ -37,12 +46,18 @@ const LoanApplyDetail = ({ params }) => {
 
     if (id) {
       fetchLoanData();
-    } else {
-      console.error("❌ 오류: LoanApplyDetail에서 id 값이 없습니다.");
     }
   }, [id]);
 
-  // ✅ 진행 예정 납부 차수 데이터 가져오기
+  // ✅ 진행 예정 납부 차수 목록
+  const [pendingPhases, setPendingPhases] = useState([]);
+  const [selectedPhases, setSelectedPhases] = useState([]);
+  const [remainingAmount, setRemainingAmount] = useState(0);
+// ✅ totalAmount가 변경될 때 remainingAmount 업데이트
+useEffect(() => {
+    setRemainingAmount(totalAmount);
+  }, [totalAmount]); // totalAmount 변경될 때 실행
+  // ✅ 진행 예정 납부 차수 불러오기
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -94,26 +109,27 @@ const LoanApplyDetail = ({ params }) => {
 
     // 여기에 선택한 차수를 백엔드에 저장하는 API 호출 로직 추가 가능
   };
-
   return (
     <div>
     <p></p>
-      <div className={styles.infoContainer}>
+        <div className={styles.infoContainer}>
         <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
+            <div className={styles.titlebody}>
             <span className={styles.title}>관리번호</span>
-          </div>
-          <div className={styles.contentbody}>
-          </div>
+            </div>
+            <div className={styles.contentbody}>
+            {userInfo?.id || "정보 없음"}
+            </div>
         </div>
         <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
+            <div className={styles.titlebody}>
             <span className={styles.title}>성명</span>
-          </div>
-          <div className={styles.contentbody}>
-          </div>
+            </div>
+            <div className={styles.contentbody}>
+            {userInfo?.customerData?.name || "정보 없음"}
+            </div>
         </div>
-      </div>
+        </div>
       <p></p>
       <h2>대출/자납액 정보</h2>
       <div className={styles.infoContainer}>

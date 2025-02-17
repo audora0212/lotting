@@ -108,7 +108,7 @@ function Modify({ params }) {
           setInitialPostreceiveAddress(
             customer.postreceive.postreceive || ""
           );
-
+  
           reset({
             customertype: customer.customertype,
             type: customer.type,
@@ -157,31 +157,21 @@ function Modify({ params }) {
               mgminstitution: customer.mgm.mgminstitution,
               mgmaccount: customer.mgm.mgmaccount,
             },
-            prizename: customer.attachments.prizename || "",
-            prizedate: customer.attachments.prizedate || "",
+            Dahim: {
+              prizeType: customer.Dahim?.prizeType || "",
+              prizeDate: customer.Dahim?.prizeDate || "",
+              prepaidAmount: customer.Dahim?.prepaidAmount || "",
+              firstClaim: customer.Dahim?.firstClaim || "",
+              firstClaimAmount: customer.Dahim?.firstClaimAmount || "",
+              firstClaimDate: customer.Dahim?.firstClaimDate || "",
+              paymentSource: customer.Dahim?.paymentSource || "",
+              secondClaim: customer.Dahim?.secondClaim || "",
+              secondClaimAmount: customer.Dahim?.secondClaimAmount || "",
+              secondClaimDate: customer.Dahim?.secondClaimDate || "",
+              totalAmount: customer.Dahim?.totalAmount || "",
+            },
           });
-
-          setIsupload({
-            isuploaded: customer.attachments.isuploaded,
-            sealcertificateprovided:
-              customer.attachments.sealcertificateprovided,
-            selfsignatureconfirmationprovided:
-              customer.attachments.selfsignatureconfirmationprovided,
-            commitmentletterprovided:
-              customer.attachments.commitmentletterprovided,
-            idcopyprovided: customer.attachments.idcopyprovided,
-            freeoption: customer.attachments.freeoption,
-            forfounding: customer.attachments.forfounding,
-            agreement: customer.attachments.agreement,
-            preferenceattachment: customer.attachments.preferenceattachment,
-            prizeattachment: customer.attachments.prizeattachment,
-            exemption7: customer.attachments.exemption7,
-            investmentfile: customer.attachments.investmentfile,
-            contract: customer.attachments.contract,
-          });
-
-          setExistingFileInfo(customer.attachments.fileinfo || "");
-
+  
           if (customer.registerprice) {
             setFormattedRegisterPrice(customer.registerprice.toLocaleString());
           }
@@ -197,6 +187,7 @@ function Modify({ params }) {
     };
     getData();
   }, [id, reset]);
+  
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -533,6 +524,132 @@ function Modify({ params }) {
             </div>
           </div>
         </div>
+
+        <h3>다힘</h3>
+            <div className={styles.mainbody}>
+              <div className={styles.mgmRow}>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>시상</div>
+                  <MGMInputbox
+                    type="text"
+                    placeholder="시상"
+                    defaultValue={watch("Dahim.prizeType") || ""}
+                    register={register("Dahim.prizeType")}
+                    isError={!!errors.Dahim?.prizeType}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>일자</div>
+                  <MGMInputbox
+                    type="date"
+                    placeholder="일자"
+                    defaultValue={watch("Dahim.prizeDate") || ""}
+                    register={register("Dahim.prizeDate")}
+                    isError={!!errors.Dahim?.prizeDate}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>6/30선지급</div>
+                  <MGMInputbox
+                    type="number"
+                    placeholder="6/30선지급"
+                    defaultValue={watch("Dahim.prepaidAmount") || ""}
+                    register={register("Dahim.prepaidAmount")}
+                    isError={!!errors.Dahim?.prepaidAmount}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.mgmRow}>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>1회차청구</div>
+                  <MGMInputbox
+                    type="text"
+                    placeholder="1회차청구"
+                    defaultValue={watch("Dahim.firstClaim") || ""}
+                    register={register("Dahim.firstClaim")}
+                    isError={!!errors.Dahim?.firstClaim}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>금액(만원)</div>
+                  <MGMInputbox
+                    type="number"
+                    placeholder="금액(만원)"
+                    defaultValue={watch("Dahim.firstClaimAmount") || ""}
+                    register={register("Dahim.firstClaimAmount")}
+                    isError={!!errors.Dahim?.firstClaimAmount}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>일자</div>
+                  <MGMInputbox
+                    type="date"
+                    placeholder="일자"
+                    defaultValue={watch("Dahim.firstClaimDate") || ""}
+                    register={register("Dahim.firstClaimDate")}
+                    isError={!!errors.Dahim?.firstClaimDate}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.mgmRow}>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>2회차청구</div>
+                  <MGMInputbox
+                    type="text"
+                    placeholder="2회차청구"
+                    defaultValue={watch("Dahim.secondClaim") || ""}
+                    register={register("Dahim.secondClaim")}
+                    isError={!!errors.Dahim?.secondClaim}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>금액(만원)</div>
+                  <MGMInputbox
+                    type="number"
+                    placeholder="금액(만원)"
+                    defaultValue={watch("Dahim.secondClaimAmount") || ""}
+                    register={register("Dahim.secondClaimAmount")}
+                    isError={!!errors.Dahim?.secondClaimAmount}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>일자</div>
+                  <MGMInputbox
+                    type="date"
+                    placeholder="일자"
+                    defaultValue={watch("Dahim.secondClaimDate") || ""}
+                    register={register("Dahim.secondClaimDate")}
+                    isError={!!errors.Dahim?.secondClaimDate}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.mgmRow}>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>합계(만원)</div>
+                  <MGMInputbox
+                    type="number"
+                    placeholder="합계(만원)"
+                    defaultValue={watch("Dahim.totalAmount") || ""}
+                    register={register("Dahim.totalAmount")}
+                    isError={!!errors.Dahim?.totalAmount}
+                  />
+                </div>
+                <div className={styles.inputColumnRow}>
+                  <div className={styles.inputColumnLabel}>출처</div>
+                  <MGMInputbox
+                    type="text"
+                    placeholder="출처"
+                    defaultValue={watch("Dahim.paymentSource") || ""}
+                    register={register("Dahim.paymentSource")}
+                    isError={!!errors.Dahim?.paymentSource}
+                  />
+                </div>
+              </div>
+            </div>
+
 
         {/* 2. 관리 정보 */}
         <h3>관리 정보</h3>
@@ -877,6 +994,57 @@ function Modify({ params }) {
           </div>
         </div>
 
+      <h3>1차(직원)</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.mgmRow}>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>차순</div>
+              <MGMInputbox
+                type="text"
+                placeholder="차순"
+                defaultValue={watch("Employee.firstRoundOrder") || ""}
+                register={register("Employee.firstRoundOrder")}
+                isError={!!errors.Employee?.firstRoundOrder}
+              />
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>지급일</div>
+              <MGMInputbox
+                type="date"
+                placeholder="지급일"
+                defaultValue={watch("Employee.firstRoundDate") || ""}
+                register={register("Employee.firstRoundDate")}
+                isError={!!errors.Employee?.firstRoundDate}
+              />
+            </div>
+          </div>
+        </div>
+      <h3>2차(직원)</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.mgmRow}>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>차순</div>
+              <MGMInputbox
+                type="text"
+                placeholder="차순"
+                defaultValue={watch("Employee.secondRoundOrder") || ""}
+                register={register("Employee.secondRoundOrder")}
+                isError={!!errors.Employee?.secondRoundOrder}
+              />
+            </div>
+            <div className={styles.inputColumnRow}>
+              <div className={styles.inputColumnLabel}>지급일</div>
+              <MGMInputbox
+                type="date"
+                placeholder="지급일"
+                defaultValue={watch("Employee.secondRoundDate") || ""}
+                register={register("Employee.secondRoundDate")}
+                isError={!!errors.Employee?.secondRoundDate}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* 6. 비고 */}
         <h3>비고</h3>
         <div className={styles.content_container}>
@@ -888,6 +1056,219 @@ function Modify({ params }) {
             />
           </div>
         </div>
+
+        <h3>23/9/9 총회 참석 여부</h3>
+<div className={styles.mainbody}>
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>서면</div>
+      <Inputbox
+        type="text"
+        placeholder="서면"
+        defaultValue={watch("Attendance.written") || ""}
+        register={register("Attendance.written")}
+        isError={!!errors.Attendance?.written}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>직접</div>
+      <Inputbox
+        type="text"
+        placeholder="직접"
+        defaultValue={watch("Attendance.direct") || ""}
+        register={register("Attendance.direct")}
+        isError={!!errors.Attendance?.direct}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>대리</div>
+      <Inputbox
+        type="text"
+        placeholder="대리"
+        defaultValue={watch("Attendance.proxy") || ""}
+        register={register("Attendance.proxy")}
+        isError={!!errors.Attendance?.proxy}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>투표기기</div>
+      <Inputbox
+        type="text"
+        placeholder="투표 기기"
+        defaultValue={watch("Attendance.votingDevice") || ""}
+        register={register("Attendance.votingDevice")}
+        isError={!!errors.Attendance?.votingDevice}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>특이사항</div>
+      <Inputbox
+        type="text"
+        placeholder="특이사항"
+        defaultValue={watch("Attendance.note") || ""}
+        register={register("Attendance.note")}
+        isError={!!errors.Attendance?.note}
+      />
+    </div>
+  </div>
+</div>
+
+<h3>안건</h3>
+<div className={styles.mainbody}>
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제1호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제1호"
+        defaultValue={watch("Agenda.agenda1") || ""}
+        register={register("Agenda.agenda1")}
+        isError={!!errors.Agenda?.agenda1}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제2-1호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제2-1호"
+        defaultValue={watch("Agenda.agenda2_1") || ""}
+        register={register("Agenda.agenda2_1")}
+        isError={!!errors.Agenda?.agenda2_1}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제2-2호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제2-2호"
+        defaultValue={watch("Agenda.agenda2_2") || ""}
+        register={register("Agenda.agenda2_2")}
+        isError={!!errors.Agenda?.agenda2_2}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제2-3호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제2-3호"
+        defaultValue={watch("Agenda.agenda2_3") || ""}
+        register={register("Agenda.agenda2_3")}
+        isError={!!errors.Agenda?.agenda2_3}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제2-4호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제2-4호"
+        defaultValue={watch("Agenda.agenda2_4") || ""}
+        register={register("Agenda.agenda2_4")}
+        isError={!!errors.Agenda?.agenda2_4}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제3호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제3호"
+        defaultValue={watch("Agenda.agenda3") || ""}
+        register={register("Agenda.agenda3")}
+        isError={!!errors.Agenda?.agenda3}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제4호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제4호"
+        defaultValue={watch("Agenda.agenda4") || ""}
+        register={register("Agenda.agenda4")}
+        isError={!!errors.Agenda?.agenda4}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제5호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제5호"
+        defaultValue={watch("Agenda.agenda5") || ""}
+        register={register("Agenda.agenda5")}
+        isError={!!errors.Agenda?.agenda5}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제6호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제6호"
+        defaultValue={watch("Agenda.agenda6") || ""}
+        register={register("Agenda.agenda6")}
+        isError={!!errors.Agenda?.agenda6}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제7호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제7호"
+        defaultValue={watch("Agenda.agenda7") || ""}
+        register={register("Agenda.agenda7")}
+        isError={!!errors.Agenda?.agenda7}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제8호</div>
+      <MGMInputbox
+        type="text"
+        placeholder="제8호"
+        defaultValue={watch("Agenda.agenda8") || ""}
+        register={register("Agenda.agenda8")}
+        isError={!!errors.Agenda?.agenda8}
+      />
+    </div>
+  </div>
+
+  <div className={styles.mgmRow}>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제9호</div>
+      <MGMInputbox
+        type="text"
+        defaultValue={watch("Agenda.agenda9") || ""}
+        register={register("Agenda.agenda9")}
+        isError={!!errors.Agenda?.agenda9}
+      />
+    </div>
+    <div className={styles.inputColumnRow}>
+      <div className={styles.inputColumnLabel}>제10호</div>
+      <MGMInputbox
+        type="text"
+        defaultValue={watch("Agenda.agenda10") || "정보없음"}
+        register={register("Agenda.agenda10")}
+        isError={!!errors.Agenda?.agenda10}
+      />
+    </div>
+  </div>
+</div>
+
+
         <h1></h1>
         <Button_Y type="submit">수정하기</Button_Y>
         <h1></h1>

@@ -15,7 +15,7 @@ import {
 import { userinfoSelector } from "@/utils/selector";
 
 import { BsBagDash, BsDatabase } from "react-icons/bs";
-import { FaEdit,FaFileInvoice  } from "react-icons/fa";
+import { FaEdit, FaFileInvoice } from "react-icons/fa";
 import ChasuPreBody from "@/components/ChasuPreBody";
 import ChasuFinBody from "@/components/ChasuFinBody";
 import { SearchButton, ModifyButton } from "@/components/Button";
@@ -36,6 +36,7 @@ function Inputmoney() {
 
   const [userData, setUserData] = useState(null);
   const [loanData, setLoanData] = useState(null);
+  const [loanex, setLoanex] = useState(null);
 
   const router = useRouter();
 
@@ -60,9 +61,15 @@ function Inputmoney() {
       } else {
         setUserData(userdata);
         setLoanData(userdata.loan);
+        setLoanex(userdata.status.loanExceedAmount);
       }
     }
   }, [userselectordata]);
+
+  // 상태 업데이트 후 loanex 값 확인 (디버깅용)
+  useEffect(() => {
+    console.log("Updated loanex:", loanex);
+  }, [loanex]);
 
   const handleCancel = () => {
     MySwal.fire({
@@ -126,20 +133,15 @@ function Inputmoney() {
               </div>
             </div>
             <div className={styles.buttonContainer}>
-            <Link href={`/inputmoney/deposit/${userData.id}`}>
-              <button className={styles.contractButton}>
-                <FaFileInvoice className={styles.editIcon} />
-                입금내역 확인/추가
-              </button>
+              <Link href={`/inputmoney/deposit/${userData.id}`}>
+                <button className={styles.contractButton}>
+                  <FaFileInvoice className={styles.editIcon} />
+                  입금내역 확인/추가
+                </button>
               </Link>
 
-              <button className={styles.contractButton}>
-                <FaFileInvoice className={styles.editIcon} />
-                 대출/자납 추가
-              </button>
             </div>
             <div className={styles.MainContent}>
-        
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
@@ -150,7 +152,6 @@ function Inputmoney() {
                 </div>
                 <ChasuPreBody userId={userData.id} />
               </div>
-
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
@@ -196,11 +197,6 @@ function Inputmoney() {
                     </div>
                   </div>
                   <div className={styles.CBBottonBody}>
-                    <Link href={`/inputmoney/loan/${userData.id}`}>
-                      <ModifyButton>
-                        <div className={styles.CBBottonFont}>대출수정</div>
-                      </ModifyButton>
-                    </Link>
                   </div>
                   <div className={styles.CBSum}>
                     <div className={styles.CBMoneyImg}>
@@ -230,13 +226,23 @@ function Inputmoney() {
                         <BsDatabase style={{ width: "100%", height: "100%" }} />
                       </div>
                     </div>
+                    <div className={styles.CBSumText}>잔액</div>
+                    <div className={styles.CBSumNum}>
+                      {(loanex || 0).toLocaleString()} ₩
+                    </div>
+                  </div>
+                  <div className={styles.CBSum}>
+                    <div className={styles.CBMoneyImg}>
+                      <div className={styles.Icon2}>
+                        <BsDatabase style={{ width: "100%", height: "100%" }} />
+                      </div>
+                    </div>
                     <div className={styles.CBSumText}>총액</div>
                     <div className={styles.CBSumNum}>
                       {(
                         (loanData?.selfammount || 0) +
                         (loanData?.loanammount || 0)
-                      ).toLocaleString()}{" "}
-                      ₩
+                      ).toLocaleString()} ₩
                     </div>
                   </div>
                 </div>

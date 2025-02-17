@@ -592,9 +592,112 @@ function Create() {
             </div>
           </div>
         </div>
+        <h3>다힘</h3>
+          <div className={styles.mainbody}>
+            <div className={styles.content_body}>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="시상"
+                  register={register("Dahim.prizeType")}
+                  isError={!!errors.Dahim?.prizeType}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="일자"
+                  register={register("Dahim.prizeDate")}
+                  isError={!!errors.Dahim?.prizeDate}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="6/30선지급"
+                  register={register("Dahim.prepaidAmount")}
+                  isError={!!errors.Dahim?.prepaidAmount}
+                />
+              </div>
+            </div>
 
+            <div className={styles.content_body}>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="1회차청구"
+                  register={register("Dahim.firstClaim")}
+                  isError={!!errors.Dahim?.firstClaim}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="금액(만원)"
+                  register={register("Dahim.firstClaimAmount")}
+                  isError={!!errors.Dahim?.firstClaimAmount}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="일자"
+                  register={register("Dahim.firstClaimDate")}
+                  isError={!!errors.Dahim?.firstClaimDate}
+                />
+              </div>
+            </div>
+
+            <div className={styles.content_body}>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="2회차청구"
+                  register={register("Dahim.secondClaim")}
+                  isError={!!errors.Dahim?.secondClaim}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="금액(만원)"
+                  register={register("Dahim.secondClaimAmount")}
+                  isError={!!errors.Dahim?.secondClaimAmount}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="일자"
+                  register={register("Dahim.secondClaimDate")}
+                  isError={!!errors.Dahim?.secondClaimDate}
+                />
+              </div>
+            </div>
+
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="합계(만원)"
+                  register={register("Dahim.totalAmount")}
+                  isError={!!errors.Dahim?.totalAmount}
+                />
+              </div>
+              <div className={styles.content_body2}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="출처"
+                  register={register("Dahim.paymentSource")}
+                  isError={!!errors.Dahim?.paymentSource}
+                />
+              </div>
+            </div>
+          </div>
+          <p></p>      
         {/* 3. 부속서류 */}
         <h3>부속서류</h3>
+
 
         <div className={styles.attachmentContainer}>
           <div className={styles.attachmentGrid}>
@@ -765,6 +868,52 @@ function Create() {
             isError={!!errors.MGM?.mgmaccount}
           />
         </div>
+        
+        <h3>1차(직원)</h3>
+          <div className={styles.mainbody}>
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="차순"
+                  register={register("Employee.firstRoundOrder")}
+                  isError={!!errors.Employee?.firstRoundOrder}
+                />
+              </div>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="지급일"
+                  register={register("Employee.firstRoundDate")}
+                  isError={!!errors.Employee?.firstRoundDate}
+                />
+              </div>
+            </div>
+          </div>
+
+          <h3>2차(직원)</h3>
+          <div className={styles.mainbody}>
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="차순"
+                  register={register("Employee.secondRoundOrder")}
+                  isError={!!errors.Employee?.secondRoundOrder}
+                />
+              </div>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="지급일"
+                  register={register("Employee.secondRoundDate")}
+                  isError={!!errors.Employee?.secondRoundDate}
+                />
+              </div>
+            </div>
+          </div>
+
+
 
         {/* 6. 비고 */}
         <h3>비고</h3>
@@ -776,6 +925,186 @@ function Create() {
             isError={!!errors.specialnote}
           />
         </div>
+
+        <h3>23/9/9총회참석여부</h3>
+          <div className={styles.mainbody}>
+            <div className={styles.content_body}>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="서면"
+                  register={register("Attendance.written")}
+                  isError={!!errors.Attendance?.written}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="직접"
+                  register={register("Attendance.direct")}
+                  isError={!!errors.Attendance?.direct}
+                />
+              </div>
+              <div className={styles.content_body3}>
+                <MGMInputbox
+                  type="text"
+                  placeholder="대리"
+                  register={register("Attendance.proxy")}
+                  isError={!!errors.Attendance?.proxy}
+                />
+              </div>
+            </div>
+
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="특이사항"
+                  register={register("Attendance.note")}
+                  isError={!!errors.Attendance?.note}
+                />
+              </div>
+              <div className={styles.content_body2}>
+                <Inputbox
+                  type="text"
+                  placeholder="투표기기"
+                  register={register("Attendance.votingDevice")}
+                  isError={!!errors.Attendance?.votingDevice}
+                />
+              </div>
+            </div>
+          </div>
+
+          <h3>안건</h3>
+<div className={styles.mainbody}>
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제1호"
+        register={register("Agenda.agenda1")}
+        isError={!!errors.Agenda?.agenda1}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제2-1호"
+        register={register("Agenda.agenda2_1")}
+        isError={!!errors.Agenda?.agenda2_1}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제2-2호"
+        register={register("Agenda.agenda2_2")}
+        isError={!!errors.Agenda?.agenda2_2}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제2-3호"
+        register={register("Agenda.agenda2_3")}
+        isError={!!errors.Agenda?.agenda2_3}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제2-4호"
+        register={register("Agenda.agenda2_4")}
+        isError={!!errors.Agenda?.agenda2_4}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제3호"
+        register={register("Agenda.agenda3")}
+        isError={!!errors.Agenda?.agenda3}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제4호"
+        register={register("Agenda.agenda4")}
+        isError={!!errors.Agenda?.agenda4}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제5호"
+        register={register("Agenda.agenda5")}
+        isError={!!errors.Agenda?.agenda5}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제6호"
+        register={register("Agenda.agenda6")}
+        isError={!!errors.Agenda?.agenda6}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제7호"
+        register={register("Agenda.agenda7")}
+        isError={!!errors.Agenda?.agenda7}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제8호"
+        register={register("Agenda.agenda8")}
+        isError={!!errors.Agenda?.agenda8}
+      />
+    </div>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제9호"
+        register={register("Agenda.agenda9")}
+        isError={!!errors.Agenda?.agenda9}
+      />
+    </div>
+  </div>
+
+  <div className={styles.content_body}>
+    <div className={styles.content_body2}>
+      <Inputbox
+        type="text"
+        placeholder="제10호"
+        register={register("Agenda.agenda10")}
+        isError={!!errors.Agenda?.agenda10}
+      />
+    </div>
+  </div>
+</div>
+
+
+        <p></p>
         <Button_Y type="submit" disabled={idExists || checkingId}>
           저장하기
         </Button_Y>
