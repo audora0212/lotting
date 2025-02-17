@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useridState } from "@/utils/atom";
 import { DownloadButton, LinkButton } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
-import { FaEdit,FaFileInvoice  } from "react-icons/fa";
+import { FaEdit, FaFileInvoice } from "react-icons/fa";
 import categoryMapping from "@/utils/categoryMapping";
 import Link from "next/link";
 import { downloadFormat1, downloadFormat2 } from "@/utils/api";
@@ -28,16 +28,16 @@ function Search() {
   const sortMapping = categoryMapping;
   const router = useRouter();
 
-    const handleDownloadFormat1 = () => {
-      console.log(1)
-      if (!userid) return;
-      downloadFormat1(userid);
-    };
-  
-    const handleDownloadFormat2 = () => {
-      if (!userid) return;
-      downloadFormat2(userid);
-    };
+  const handleDownloadFormat1 = () => {
+    console.log(1);
+    if (!userid) return;
+    downloadFormat1(userid);
+  };
+
+  const handleDownloadFormat2 = () => {
+    if (!userid) return;
+    downloadFormat2(userid);
+  };
 
   useEffect(() => {
     if (userid) {
@@ -74,13 +74,19 @@ function Search() {
             <h3></h3>
 
             <div className={styles.buttonContainer}>
-              {/* 계약서 다운로드 버튼 */}
-              <button className={styles.contractButton} onClick={handleDownloadFormat1}>
+              {/* 일반 신청서 다운로드 버튼 */}
+              <button
+                className={styles.contractButton}
+                onClick={handleDownloadFormat1}
+              >
                 <FaFileInvoice className={styles.editIcon} />
                 일반 신청서
               </button>
-              {/* 계약서 다운로드 버튼 */}
-              <button className={styles.contractButton} onClick={handleDownloadFormat2}>
+              {/* 일반 부속 서류 다운로드 버튼 */}
+              <button
+                className={styles.contractButton}
+                onClick={handleDownloadFormat2}
+              >
                 <FaFileInvoice className={styles.editIcon} />
                 일반 부속 서류
               </button>
@@ -242,7 +248,8 @@ function Search() {
                 </div>
                 <div className={styles.postcontentbody}>
                   <span>
-                    우편번호: {userdata.legalAddress?.postnumber || "정보 없음"}
+                    우편번호:{" "}
+                    {userdata.legalAddress?.postnumber || "정보 없음"}
                   </span>
                   <br />
                   <span>{userdata.legalAddress?.post || "정보 없음"}, </span>
@@ -339,159 +346,141 @@ function Search() {
               </div>
             </div>
 
+            {/* 다힘 */}
+            <hr />
+            <h3>다힘</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
-                  <span className={styles.title}>총괄</span>
+                  <span className={styles.title}>시상</span>
                 </div>
                 <div className={styles.contentbody}>
                   <span>
-                    {userdata.responsible?.generalmanagement || "정보 없음"}
+                    {userdata.dahim?.dahimsisang || "정보 없음"}
                   </span>
                 </div>
               </div>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
-                  <span className={styles.title}>본부</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>{userdata.responsible?.division || "정보 없음"}</span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>팀</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>{userdata.responsible?.team || "정보 없음"}</span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>담당자</span>
+                  <span className={styles.title}>일자</span>
                 </div>
                 <div className={styles.contentbody}>
                   <span>
-                    {userdata.responsible?.managername || "정보 없음"}
+                    {userdata.dahim?.dahimdate || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>6/30선지급</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimprepaid || "정보 없음"}
                   </span>
                 </div>
               </div>
             </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>1회차청구</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimfirst || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>금액(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimfirstpay || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimdate2 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>출처</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsource || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>2회차청구</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsecond || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>금액(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsecondpay || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimdate3 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>합계(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsum || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 납입금 관리 */}
             <hr />
-            <h3>다힘</h3>
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>시상</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.prizeType || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>일자</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.prizeDate || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>6/30선지급</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.prepaidAmount || "정보 없음"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>1회차청구</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.firstClaim || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>금액(만원)</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.firstClaimAmount || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>일자</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.firstClaimDate || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>출처</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.paymentSource || "정보 없음"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>2회차청구</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.secondClaim || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>금액(만원)</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.secondClaimAmount || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>일자</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.secondClaimDate || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>합계(만원)</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Dahim?.totalAmount || "정보 없음"}</span>
-                  </div>
-                </div>
-              </div>
-
-            <hr />
-
-            {/* 2. 납입금관리 */}
             <h3>납입금 관리</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.linkbutton}>
                 <Link href={`/inputmoney/userinfo/${splitpath[2]}`}>
-                  <LinkButton>
-                    바로가기
-                  </LinkButton>
+                  <LinkButton>바로가기</LinkButton>
                 </Link>
               </div>
             </div>
             <hr />
 
-            {/* 3. 납입차수정보 */}
+            {/* 납입차수 정보 */}
             <h3>납입차수 정보</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
@@ -516,7 +505,8 @@ function Search() {
                       ...Array.from(
                         { length: 10 - (userdata.phases?.length || 0) },
                         (_, i) => ({
-                          phaseNumber: (userdata.phases?.length || 0) + i + 1,
+                          phaseNumber:
+                            (userdata.phases?.length || 0) + i + 1,
                         })
                       ),
                     ].map((phase, index) => {
@@ -541,13 +531,18 @@ function Search() {
                         <tr
                           key={index}
                           className={isOverdue ? styles.overduePhase : ""}
-                          style={{ cursor: isOverdue ? "pointer" : "default" }}
+                          style={{
+                            cursor: isOverdue ? "pointer" : "default",
+                          }}
                           onClick={handleRowClick}
                         >
                           <td>{phase.phaseNumber || "없음"}</td>
                           <td>
                             {phase.planneddate
-                              ? parseInt(phase.planneddate.slice(0, 4), 10) > 2100
+                              ? parseInt(
+                                  phase.planneddate.slice(0, 4),
+                                  10
+                                ) > 2100
                                 ? "예정"
                                 : phase.planneddate.slice(0, 10)
                               : "없음"}
@@ -590,9 +585,13 @@ function Search() {
                               ? formatNumberWithComma(
                                   userdata.phases
                                     ?.filter(
-                                      (p) => p.phaseNumber === phase.phaseNumber
+                                      (p) =>
+                                        p.phaseNumber === phase.phaseNumber
                                     )
-                                    .reduce((sum, p) => sum + (p.feesum || 0), 0)
+                                    .reduce(
+                                      (sum, p) => sum + (p.feesum || 0),
+                                      0
+                                    )
                                 )
                               : "없음"}
                           </td>
@@ -618,7 +617,7 @@ function Search() {
             </div>
             <hr />
 
-            {/* 4. 대출및자납정보 */}
+            {/* 대출 및 자납 정보 */}
             <h3>대출 및 자납 정보</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
@@ -674,10 +673,9 @@ function Search() {
             </div>
             <hr />
 
-            {/* 5,6. 총 면제금액 & 납입총액 */}
+            {/* 총 면제금액 및 납입 총액 */}
             <h3>총 면제금액 및 납입 총액</h3>
             <div className={styles.rowcontainer}>
-              {/* 총 면제금액 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <span className={styles.title}>총 면제금액</span>
@@ -696,7 +694,6 @@ function Search() {
                 </div>
               </div>
 
-              {/* 납입 총액 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <span className={styles.title}>납입 총액</span>
@@ -717,7 +714,7 @@ function Search() {
             </div>
             <hr />
 
-            {/* 7. 부속서류 */}
+            {/* 부속서류 */}
             <h3>부속서류</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
@@ -754,8 +751,7 @@ function Search() {
                     </div>
                     <div>
                       <span>본인서명확인서</span>
-                      {userdata.attachments
-                        ?.selfsignatureconfirmationprovided ? (
+                      {userdata.attachments?.selfsignatureconfirmationprovided ? (
                         <span>✔️</span>
                       ) : (
                         <span>❌</span>
@@ -830,7 +826,9 @@ function Search() {
                     <span className={styles.title}>사은품명</span>
                   </div>
                   <div className={styles.contentbody}>
-                    <span>{userdata.attachments?.prizename || "정보 없음"}</span>
+                    <span>
+                      {userdata.attachments?.prizename || "정보 없음"}
+                    </span>
                   </div>
                 </div>
                 <div className={styles.unitbody}>
@@ -850,7 +848,7 @@ function Search() {
 
             <hr />
 
-            {/* 8. MGM */}
+            {/* MGM */}
             <h3>MGM</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody}>
@@ -888,50 +886,59 @@ function Search() {
             </div>
             <hr />
 
+            {/* 1차(직원) */}
             <h3>1차(직원)</h3>
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>차순</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Employee?.firstRoundOrder || "정보 없음"}</span>
-                  </div>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>차순</span>
                 </div>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>지급일</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Employee?.firstRoundDate || "정보 없음"}</span>
-                  </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.firstemp?.firstemptimes || "정보 없음"}
+                  </span>
                 </div>
               </div>
-              <hr />
-
-              <h3>2차(직원)</h3>
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>차순</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Employee?.secondRoundOrder || "정보 없음"}</span>
-                  </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>지급일</span>
                 </div>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>지급일</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Employee?.secondRoundDate || "정보 없음"}</span>
-                  </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.firstemp?.firstempdate || "정보 없음"}
+                  </span>
                 </div>
               </div>
-              <hr />
+            </div>
+            <hr />
 
+            {/* 2차(직원) */}
+            <h3>2차(직원)</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>차순</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.secondemp?.secondemptimes || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>지급일</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.secondemp?.secondempdate || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <hr />
 
-            {/* 9. 비고(기타정보) */}
+            {/* 비고 */}
             <h3>비고</h3>
             <div className={styles.rowcontainer}>
               <div className={styles.unitbody} style={{ width: "100%" }}>
@@ -945,173 +952,186 @@ function Search() {
             </div>
             <hr />
 
-            <h3>23/9/9 총회 참석 여부</h3>
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>서면</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Attendance?.written || "정보 없음"}</span>
-                  </div>
+            {/* 총회 참석여부 */}
+            <h3>총회 참석 여부</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>서면</span>
                 </div>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>직접</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Attendance?.direct || "정보 없음"}</span>
-                  </div>
-                </div>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>대리</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Attendance?.proxy || "정보 없음"}</span>
-                  </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.meetingattend?.ftofattend || "정보 없음"}
+                  </span>
                 </div>
               </div>
-
-              <div className={styles.rowcontainer}>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>특이사항</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Attendance?.note || "정보 없음"}</span>
-                  </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>직접</span>
                 </div>
-                <div className={styles.unitbody} style={{ width: "100%" }}>
-                  <div className={styles.titlebody}>
-                    <span className={styles.title}>투표기기</span>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <span>{userdata.Attendance?.votingDevice || "정보 없음"}</span>
-                  </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.meetingattend?.selfattend || "정보 없음"}
+                  </span>
                 </div>
               </div>
-              <hr />
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>대리</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.meetingattend?.behalfattend || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <hr />
 
+            {/* 안건 */}
+            <h3>안건</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제1호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda1 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제2-1호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda2_1 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제2-2호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda2_2 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제2-3호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda2_3 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제2-4호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda2_4 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-              <h3>안건</h3>
-<div className={styles.rowcontainer}>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제1호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda1 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제2-1호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda2_1 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제2-2호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda2_2 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제2-3호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda2_3 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제2-4호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda2_4 || "정보 없음"}</span>
-    </div>
-  </div>
-</div>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제3호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda3 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제4호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda4 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제5호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda5 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-<div className={styles.rowcontainer}>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제3호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda3 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제4호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda4 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제5호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda5 || "정보 없음"}</span>
-    </div>
-  </div>
-</div>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제6호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda6 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제7호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda7 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제8호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda8 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-<div className={styles.rowcontainer}>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제6호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda6 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제7호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda7 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제8호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda8 || "정보 없음"}</span>
-    </div>
-  </div>
-</div>
-
-<div className={styles.rowcontainer}>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제9호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda9 || "정보 없음"}</span>
-    </div>
-  </div>
-  <div className={styles.unitbody} style={{ width: "100%" }}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>제10호</span>
-    </div>
-    <div className={styles.contentbody}>
-      <span>{userdata.Agenda?.agenda10 || "정보 없음"}</span>
-    </div>
-  </div>
-</div>
-<hr />
-
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제9호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda9 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>제10호</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.agenda?.agenda10 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <hr />
           </>
         );
       }

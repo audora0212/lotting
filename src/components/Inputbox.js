@@ -5,19 +5,19 @@ import styles from "@/styles/Inputbox.module.scss";
 import { IoMdCloudUpload } from "react-icons/io";
 
 export const Checkbox = (props) => {
-  const { label, name, onChange, defaultChecked, register, isError, ...rest } = props;
+  const { label, name, onChange, checked, register, isError, ...rest } = props;
   const { onChange: onChangeFromRegister, onBlur, name: fieldName, ref } = register;
-
+  
   return (
     <label className={`${styles.customCheckbox} ${isError ? styles.errorInput : ''}`}>
       <input
         type="checkbox"
         name={fieldName}
-        defaultChecked={defaultChecked}
+        checked={checked} // controlled 방식으로 처리
         ref={ref}
         onBlur={onBlur}
         onChange={(e) => {
-          if (onChangeFromRegister) onChangeFromRegister(e); 
+          if (onChangeFromRegister) onChangeFromRegister(e);
           if (onChange) onChange(e);
         }}
         {...rest}

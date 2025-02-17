@@ -250,13 +250,13 @@ const DepositList = ({
         </div>
         <div className={depositStyles.unitContainer} onClick={() => handleSort("loanRecord")}>
           <span>
-            loan_record
+            대출
             <span className={depositStyles.sortIcon}>{getSortIcon("loanRecord")}</span>
           </span>
         </div>
         <div className={depositStyles.unitContainer} onClick={() => handleSort("selfRecord")}>
           <span>
-            self_record
+            자납
             <span className={depositStyles.sortIcon}>{getSortIcon("selfRecord")}</span>
           </span>
         </div>
@@ -276,14 +276,14 @@ const DepositList = ({
 
       {/* 테이블 바디 */}
       {sortedData.map((item, idx) => {
-        let computedDate = "N/A";
+        let computedDate = "";
         if (item.loanRecord) {
-          computedDate = item.loanDetails?.loandate
-            ? new Date(item.loanDetails.loandate).toLocaleDateString()
+          computedDate = item?.loanDate
+            ? new Date(item.loanDate).toLocaleDateString()
             : "N/A";
         } else if (item.selfRecord && !isNaN(Number(item.selfRecord))) {
-          computedDate = item.loanDetails?.selfdate
-            ? new Date(item.loanDetails.selfdate).toLocaleDateString()
+          computedDate = item?.selfDate
+            ? new Date(item.selfDate).toLocaleDateString()
             : "N/A";
         }
         return (
