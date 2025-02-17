@@ -350,6 +350,17 @@ export const downloadFormat2 = async (id) => {
 
 // ================ Deposit 관련 API ================ //
 
+// **추가**: 모든 고객의 입금내역(DepositList DTO) 전체를 조회하는 함수
+export const fetchDepositList = async () => {
+  try {
+    const response = await axios.get(`${path}/depositlist`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching deposit list:", error);
+    throw error;
+  }
+};
+
 // 고객의 전체 입금내역 조회 (GET /deposit/customer/{userId})
 export const fetchDepositHistoriesByCustomerId = async (userId) => {
   try {
@@ -416,6 +427,7 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
 // 특정 차수 데이터 부분 업데이트 (부담금, 업무대행비, 할인액, 면제액, 이동만)
 export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
   return axios

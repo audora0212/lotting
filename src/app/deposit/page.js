@@ -1,4 +1,3 @@
-// pages/deposit/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,11 +9,11 @@ import * as XLSX from "xlsx";
 import depositStyles from "@/styles/Deposit.module.scss"; // 새로운 스타일 파일
 import { FaPrint } from "react-icons/fa6"; // 아이콘
 
-// api.js에서 제공하는 함수 임포트
-//import { fetchDepositData } from "@/utils/api";
+// 백엔드 API에서 입금내역 목록을 불러오는 함수 임포트 (전체 입금내역 DTO)
+import { fetchDepositList } from "@/utils/api";
 
 function DepositPage() {
-  // 검색 필드: 'contractor'(계약자 이름)와 'memberNumber'(회원번호)
+  // 검색 필드: 'contractor'(계약자 이름)와 'memberNumber'(회원번호 → 여기서는 id 필터로 사용)
   const [contractor, setContractor] = useState("");
   const [memberNumber, setMemberNumber] = useState("");
   const [depositData, setDepositData] = useState([]);
@@ -34,16 +33,38 @@ function DepositPage() {
     const sortedData = [...depositData];
     if (sortConfig.key) {
       sortedData.sort((a, b) => {
-        let aValue = a[sortConfig.key];
-        let bValue = b[sortConfig.key];
+        let aValue, bValue;
+        if (sortConfig.key === "computedDate") {
+          aValue = a.loanRecord
+            ? a.loanDetails?.loandate
+              ? new Date(a.loanDetails.loandate)
+              : new Date(0)
+            : a.selfRecord && !isNaN(Number(a.selfRecord)) && a.loanDetails?.selfdate
+            ? new Date(a.loanDetails.selfdate)
+            : new Date(0);
+          bValue = b.loanRecord
+            ? b.loanDetails?.loandate
+              ? new Date(b.loanDetails.loandate)
+              : new Date(0)
+            : b.selfRecord && !isNaN(Number(b.selfRecord)) && b.loanDetails?.selfdate
+            ? new Date(b.loanDetails.selfdate)
+            : new Date(0);
+        } else {
+          aValue = a[sortConfig.key];
+          bValue = b[sortConfig.key];
 
-        // null 또는 undefined 처리
-        if (aValue === null || aValue === undefined) return 1;
-        if (bValue === null || bValue === undefined) return -1;
+          if (aValue === null || aValue === undefined) return 1;
+          if (bValue === null || bValue === undefined) return -1;
 
-        if (typeof aValue === "string") {
-          aValue = aValue.toLowerCase();
-          bValue = bValue.toLowerCase();
+          if (sortConfig.key === "transactionDateTime") {
+            aValue = new Date(aValue);
+            bValue = new Date(bValue);
+          }
+
+          if (typeof aValue === "string") {
+            aValue = aValue.toLowerCase();
+            bValue = bValue.toLowerCase();
+          }
         }
 
         if (aValue < bValue) {
@@ -57,40 +78,52 @@ function DepositPage() {
     }
 
     // 엑셀에 넣을 데이터 포맷팅
-    const exportData = sortedData.map((item) => ({
-      회원번호: item.memberNumber || "N/A",
-      "마지막 거래 일시": item.lastTransactionDateTime
-        ? new Date(item.lastTransactionDateTime).toLocaleDateString()
-        : "N/A",
-      적요: item.remarks || "",
-      기재내용: item.memo || "",
-      계약자: item.contractor || "N/A",
-      "찾으신 금액 (환불)": item.withdrawnAmount
-        ? item.withdrawnAmount.toLocaleString()
-        : "0",
-      "맡기신 금액 (입금 총액)": item.depositAmount
-        ? item.depositAmount.toLocaleString()
-        : "0",
-      취급점: item.bankBranch || "",
-      계좌: item.account || "",
-      예약: item.reservation || "",
-      "1차 입금": item.depositPhase1 || "",
-      "2차 입금": item.depositPhase2 || "",
-      "3차 입금": item.depositPhase3 || "",
-      "4차 입금": item.depositPhase4 || "",
-      "5차 입금": item.depositPhase5 || "",
-      "6차 입금": item.depositPhase6 || "",
-      "7차 입금": item.depositPhase7 || "",
-      "8차 입금": item.depositPhase8 || "",
-      "9차 입금": item.depositPhase9 || "",
-      "10차 입금": item.depositPhase10 || "",
-      대출금액: item.loanAmount ? item.loanAmount.toLocaleString() : "0",
-      대출일자: item.loanDate
-        ? new Date(item.loanDate).toLocaleDateString()
-        : "N/A",
-      임시: item.temporary || "",
-      비고: item.note || "",
-    }));
+    const exportData = sortedData.map((item) => {
+      let dateValue = "N/A";
+      if (item.loanRecord) {
+        dateValue = item.loanDetails?.loandate
+          ? new Date(item.loanDetails.loandate).toLocaleDateString()
+          : "N/A";
+      } else if (item.selfRecord && !isNaN(Number(item.selfRecord))) {
+        dateValue = item.loanDetails?.selfdate
+          ? new Date(item.loanDetails.selfdate).toLocaleDateString()
+          : "N/A";
+      }
+      return {
+        "ID": item.id || "N/A",
+        "거래일시": item.transactionDateTime
+          ? new Date(item.transactionDateTime).toLocaleString()
+          : "N/A",
+        "적요": item.description || "",
+        "기재내용": item.details || "",
+        "계약자": item.contractor || "N/A",
+        "찾으신금액": item.withdrawnAmount
+          ? item.withdrawnAmount.toLocaleString()
+          : "0",
+        "맡기신금액": item.depositAmount
+          ? item.depositAmount.toLocaleString()
+          : "0",
+        "거래 후 잔액": item.balanceAfter
+          ? item.balanceAfter.toLocaleString()
+          : "0",
+        "취급점": item.branch || "",
+        "계좌": item.account || "",
+        "1차": item.depositPhase1 || "",
+        "2차": item.depositPhase2 || "",
+        "3차": item.depositPhase3 || "",
+        "4차": item.depositPhase4 || "",
+        "5차": item.depositPhase5 || "",
+        "6차": item.depositPhase6 || "",
+        "7차": item.depositPhase7 || "",
+        "8차": item.depositPhase8 || "",
+        "9차": item.depositPhase9 || "",
+        "10차": item.depositPhase10 || "",
+        "loan_record": item.loanRecord || "",
+        "self_record": item.selfRecord || "",
+        "일자": dateValue,
+        "비고": item.remarks || "",
+      };
+    });
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
@@ -119,8 +152,8 @@ function DepositPage() {
   useEffect(() => {
     const getData = async () => {
       try {
-        //const data = await fetchDepositData();
-        //setDepositData(data);
+        const data = await fetchDepositList();
+        setDepositData(data);
       } catch (error) {
         console.error("입금 내역을 불러오는 데 실패했습니다.", error);
       }
@@ -130,15 +163,13 @@ function DepositPage() {
 
   return (
     <>
-
-
       <DepositForm
-  contractor={contractor}
-  setContractor={setContractor}
-  memberNumber={memberNumber}
-  setMemberNumber={setMemberNumber}
-  onExport={handleExport} // 엑셀 출력 버튼 핸들러 전달
-/>
+        contractor={contractor}
+        setContractor={setContractor}
+        memberNumber={memberNumber}
+        setMemberNumber={setMemberNumber}
+        onExport={handleExport} // 엑셀 출력 버튼 핸들러 전달
+      />
 
       <DepositList
         contractor={contractor}

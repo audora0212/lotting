@@ -227,3 +227,10 @@
     }
   }
   
+  .stickyHeader {
+    position: sticky;
+    top: 0;
+    background-color: #a48ff8; // 헤더의 원래 배경색과 동일하게 설정
+    z-index: 10;
+  }
+  
