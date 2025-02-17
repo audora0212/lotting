@@ -11,7 +11,7 @@ import depositStyles from "@/styles/Deposit.module.scss"; // 새로운 스타일
 import { FaPrint } from "react-icons/fa6"; // 아이콘
 
 // api.js에서 제공하는 함수 임포트
-import { fetchDepositData } from "@/utils/api";
+//import { fetchDepositData } from "@/utils/api";
 
 function DepositPage() {
   // 검색 필드: 'contractor'(계약자 이름)와 'memberNumber'(회원번호)
@@ -119,8 +119,8 @@ function DepositPage() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchDepositData();
-        setDepositData(data);
+        //const data = await fetchDepositData();
+        //setDepositData(data);
       } catch (error) {
         console.error("입금 내역을 불러오는 데 실패했습니다.", error);
       }
