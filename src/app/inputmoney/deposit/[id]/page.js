@@ -9,9 +9,11 @@ import {
   fetchDepositHistoriesByCustomerId,
   createDepositHistory,
   fetchPendingPhases,
-  fetchCustomerById, // 전체 Customer 객체를 반환 (Loan, Status 등 포함)
-  deleteDepositHistory, // 삭제 API 함수 추가
+  fetchCustomerById, // ✅ 올바른 import 추가
+  deleteDepositHistory,
 } from "@/utils/api";
+
+
 
 function DepositAddPage() {
   const pathname = usePathname();
@@ -31,23 +33,24 @@ function DepositAddPage() {
     remarks: "",
     details: "",
     contractor: "",
-    withdrawnAmount: "", // 찾으신 금액
-    depositAmount: "", // 맡기신 금액 (대출 기록 시는 계산됨)
+    withdrawnAmount: "",
+    depositAmount: "",
     balanceAfter: "",
     branch: "",
     account: "",
     customer: { id: userId },
+    loanDate: "", // loanDetails.loandate → loanDate로 변경
     loanDetails: {
-      loandate: "",
       loanbank: "",
       loanammount: "",
-      selfdate: "",
+      selfPaymentDate: "", // loanDetails.selfdate → selfPaymentDate로 변경
       selfammount: "",
       loanselfsum: "",
       loanselfcurrent: "",
     },
-    targetPhases: [], // 선택된 납입 차수 배열
+    targetPhases: [],
   });
+  
 
   const [depositData, setDepositData] = useState([]);
   const [pendingPhases, setPendingPhases] = useState([]);
@@ -83,18 +86,25 @@ function DepositAddPage() {
     };
     const loadCustomerData = async () => {
       try {
-        const customerData = await fetchCustomerById(userId);
-        // customerData.status.loanExceedAmount 값을 숫자로 변환 (없으면 0)
-        setStatusLoanExceed(Number(customerData.status.loanExceedAmount) || 0);
-        console.log("Customer Data:", customerData);
+        const customerData = await fetchCustomerById(userId);  // ✅ 올바른 API 호출
+        console.log("Fetched Customer Data:", customerData);
+        setFormData((prev) => ({
+          ...prev,
+          contractor: customerData.customerData?.name || customerData.name || "", 
+        }));
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
     };
-    if (userId && isLoanRecord) {
-      loadPendingPhases();
+    
+    
+    if (userId) {
       loadCustomerData();
+      if (isLoanRecord) {
+        loadPendingPhases();
+      }
     }
+    
   }, [userId, isLoanRecord]);
 
   // 선택된 차수 업데이트 시 formData.targetPhases 동기화
@@ -102,10 +112,13 @@ function DepositAddPage() {
     setFormData((prev) => ({ ...prev, targetPhases: selectedPhases }));
   }, [selectedPhases]);
 
-  // 중첩 필드 업데이트 (예: loanDetails.loandate)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes(".")) {
+  
+    if (name === "loanDate" || name === "selfPaymentDate") {
+      // loanDate와 selfPaymentDate는 최상위 필드이므로 따로 처리
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else if (name.includes(".")) {
       const [parent, child] = name.split(".");
       setFormData((prev) => ({
         ...prev,
@@ -118,6 +131,7 @@ function DepositAddPage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
+  
 
   // 계산: 대출액 + 자납액
   const computedDeposit =
@@ -142,10 +156,17 @@ function DepositAddPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let submitData = { ...formData };
+
+
+  console.log("📌 최종 전송 데이터:", JSON.stringify(submitData, null, 2));
   
+    // ✅ loanDate 및 selfPaymentDate 추가
+    submitData.loanDate = formData.loanDate;
+    submitData.loanDetails.selfPaymentDate = formData.loanDetails.selfPaymentDate;
+
     // 선택된 차수를 반영
     submitData.targetPhases = selectedPhases;
-  
+
     if (isLoanRecord) {
       submitData.withdrawnAmount = "0";
       submitData.depositAmount = computedDeposit.toString();
@@ -162,7 +183,8 @@ function DepositAddPage() {
       console.error("Error creating deposit history:", error);
       alert("데이터 저장에 실패했습니다.");
     }
-  };
+};
+
   
 
   const handleLoanAlert = () => {
@@ -206,16 +228,11 @@ function DepositAddPage() {
   
     if (selectedPhases.includes(phase.phaseNumber)) {
       setSelectedPhases(selectedPhases.filter((num) => num !== phase.phaseNumber));
-      setRemainingAmount(remainingAmount + phaseAmount);
     } else {
-      if (remainingAmount >= phaseAmount) {
-        setSelectedPhases([...selectedPhases, phase.phaseNumber]);
-        setRemainingAmount(remainingAmount - phaseAmount);
-      } else {
-        alert("남은 금액이 부족하여 선택할 수 없습니다.");
-      }
+      setSelectedPhases([...selectedPhases, phase.phaseNumber]);
     }
   };
+  
   
   return (
     <div className={styles.container}>
@@ -257,6 +274,7 @@ function DepositAddPage() {
 
         {depositData.map((item, index) => (
           <div className={styles.maincontainer} key={index}>
+            <div className={styles.rowContainer}>
             <div className={styles.unitContainer}>
               {item.transactionDateTime || "."}
             </div>
@@ -276,26 +294,28 @@ function DepositAddPage() {
             </div>
             <div className={styles.unitContainer}>{item.branch || "."}</div>
             <div className={styles.unitContainer}>{item.account || "."}</div>
+            </div>
             <div className={styles.unitContainer}>
               {item.loanStatus === "o" ? (
                 <button
-                  className={styles.contractButton}
+                  className={styles.TableButton}
                   onClick={handleLoanAlert}
                 >
                   수정불가
                 </button>
               ) : (
                 <Link href={`/inputmoney/deposit/modify/${item.id}`}>
-                  <button className={styles.contractButton}>수정하기</button>
+                  <button className={styles.TableButton}>수정하기</button>
                 </Link>
               )}
               <button
-                className={styles.contractButton}
+                className={styles.TableButton}
                 onClick={() => handleDelete(item.id)}
               >
                 삭제하기
               </button>
             </div>
+
           </div>
         ))}
       </div>
@@ -464,21 +484,24 @@ function DepositAddPage() {
         {isLoanRecord && (
           <>
             {/* Row 1: 대출일자, 대출은행, 대출액 */}
+            <p></p>
+            <h3>대출정보 입력</h3>
             <div className={styles.infoContainer}>
-              <div className={styles.row}>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
                     <label className={styles.title}>대출일자</label>
                   </div>
                   <div className={styles.contentbody}>
-                    <InputboxGray
-                      type="datetime-local"
-                      name="loanDetails.loandate"
-                      value={formData.loanDetails.loandate}
-                      onChange={handleInputChange}
-                    />
+                  <InputboxGray
+                    type="datetime-local"
+                    name="loanDate"
+                    value={formData.loanDate}
+                    onChange={handleInputChange}
+                  />
                   </div>
                 </div>
+                </div>
+              <div className={styles.infoContainer}>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
                     <label className={styles.title}>대출은행</label>
@@ -505,21 +528,20 @@ function DepositAddPage() {
                     />
                   </div>
                 </div>
-              </div>
             </div>
 
             {/* Row 2: 자납일, 자납액 */}
             <div className={styles.infoContainer}>
-              <div className={styles.row}>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
                     <label className={styles.title}>자납일</label>
                   </div>
                   <div className={styles.contentbody}>
+                    
                     <InputboxGray
                       type="datetime-local"
-                      name="loanDetails.selfdate"
-                      value={formData.loanDetails.selfdate}
+                      name="selfPaymentDate"
+                      value={formData.selfPaymentDate}
                       onChange={handleInputChange}
                     />
                   </div>
@@ -537,7 +559,6 @@ function DepositAddPage() {
                     />
                   </div>
                 </div>
-              </div>
             </div>
 
             {/* Row 3: 대출 합계, 대출 잔액 */}
@@ -575,7 +596,7 @@ function DepositAddPage() {
 <div className={styles.infoContainer}>
   <div className={styles.unitbody}>
     <div className={styles.titlebody}>
-      <span className={styles.title}>남은 금액</span>
+      <span className={styles.title}>금액</span>
     </div>
     <div className={styles.contentbody}>
       <p>💰 <strong>{remainingAmount.toLocaleString()}₩</strong></p>

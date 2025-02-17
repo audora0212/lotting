@@ -230,6 +230,25 @@
 .contractButton:hover {
   background-color: #7152F3;
 }
+
+.TableButton {
+  background-color: #8b70f7;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 5px; /* 둥근 모서리로 변경 */
+  cursor: pointer;
+  margin-bottom: 3px;
+  display: flex;
+  margin-right:5px;
+  margin-left:15px;
+  align-items: center;
+  font-size: 10px; /* 기존보다 작은 글씨 크기 */
+}
+
+.TableButton:hover {
+  background-color: #7152F3;
+}
 .inputBox {
   width: 100%; /* unitContainer 안에서 꽉 차도록 설정 */
   height: 100%; /* unitContainer 높이에 맞춤 */
