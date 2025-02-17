@@ -227,7 +227,7 @@ function Create() {
           postnumberreceive: data.Postreceive.postnumberreceive,
           postreceive: data.Postreceive.postreceive,
         },
-        MGM: data.MGM, // ====> MGM 필수 입력 제거됨
+        MGM: data.MGM,
         Responsible: data.Responsible,
         deposits: parsedData.Deposit,
         attachments: attachments,
