@@ -228,7 +228,7 @@ function DepositPage() {
     <div className={styles.container}>
       <p></p>
 
-      <h2>기업입금내역 추가</h2>
+      <h2>기업 입금내역 추가</h2>
       <p></p>
       <p></p>
       <form onSubmit={handleSubmit}>
