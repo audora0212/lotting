@@ -1,6 +1,6 @@
 "use client";
 // src/app/inputmoney/deposit/[id]/page.js
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
 import { InputboxGray } from "@/components/Inputbox";
@@ -13,12 +13,9 @@ import {
   deleteDepositHistory,
 } from "@/utils/api";
 
-
-
 function DepositAddPage() {
-  const pathname = usePathname();
-  const userId = pathname.split("/")[3];
-  
+  // URL 파라미터를 안전하게 추출 (뒤로가기 시에도 올바른 값을 얻을 수 있음)
+  const { id: userId } = useParams();
 
   // 대출 기록 여부 상태
   const [isLoanRecord, setIsLoanRecord] = useState(false);
@@ -26,8 +23,6 @@ function DepositAddPage() {
   // 고객의 Status.loanExceedAmount 값을 저장할 상태
   const [statusLoanExceed, setStatusLoanExceed] = useState(0);
 
-
-  
   const [formData, setFormData] = useState({
     transactionDateTime: "",
     remarks: "",
@@ -50,7 +45,6 @@ function DepositAddPage() {
     },
     targetPhases: [],
   });
-  
 
   const [depositData, setDepositData] = useState([]);
   const [pendingPhases, setPendingPhases] = useState([]);
@@ -96,7 +90,6 @@ function DepositAddPage() {
         console.error("Error fetching customer data:", error);
       }
     };
-    
     
     if (userId) {
       loadCustomerData();
@@ -157,8 +150,7 @@ function DepositAddPage() {
     e.preventDefault();
     let submitData = { ...formData };
 
-
-  console.log("📌 최종 전송 데이터:", JSON.stringify(submitData, null, 2));
+    console.log("📌 최종 전송 데이터:", JSON.stringify(submitData, null, 2));
   
     // ✅ loanDate 및 selfPaymentDate 추가
     submitData.loanDate = formData.loanDate;
@@ -183,9 +175,7 @@ function DepositAddPage() {
       console.error("Error creating deposit history:", error);
       alert("데이터 저장에 실패했습니다.");
     }
-};
-
-  
+  };
 
   const handleLoanAlert = () => {
     alert("대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.");
@@ -223,6 +213,7 @@ function DepositAddPage() {
       }
     }
   };
+
   const handlePhaseSelection = (phase) => {
     const phaseAmount = phase.feesum ?? 0;
   
@@ -232,7 +223,6 @@ function DepositAddPage() {
       setSelectedPhases([...selectedPhases, phase.phaseNumber]);
     }
   };
-  
   
   return (
     <div className={styles.container}>
@@ -275,25 +265,25 @@ function DepositAddPage() {
         {depositData.map((item, index) => (
           <div className={styles.maincontainer} key={index}>
             <div className={styles.rowContainer}>
-            <div className={styles.unitContainer}>
-              {item.transactionDateTime || "."}
-            </div>
-            <div className={styles.unitContainer}>{item.remarks || "."}</div>
-            <div className={styles.unitContainer}>{item.details || "."}</div>
-            <div className={styles.unitContainer}>
-              {item.contractor || "."}
-            </div>
-            <div className={styles.unitContainer}>
-              {item.withdrawnAmount || "."}
-            </div>
-            <div className={styles.unitContainer}>
-              {item.depositAmount || "."}
-            </div>
-            <div className={styles.unitContainer}>
-              {item.balanceAfter || "."}
-            </div>
-            <div className={styles.unitContainer}>{item.branch || "."}</div>
-            <div className={styles.unitContainer}>{item.account || "."}</div>
+              <div className={styles.unitContainer}>
+                {item.transactionDateTime || "."}
+              </div>
+              <div className={styles.unitContainer}>{item.remarks || "."}</div>
+              <div className={styles.unitContainer}>{item.details || "."}</div>
+              <div className={styles.unitContainer}>
+                {item.contractor || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.withdrawnAmount || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.depositAmount || "."}
+              </div>
+              <div className={styles.unitContainer}>
+                {item.balanceAfter || "."}
+              </div>
+              <div className={styles.unitContainer}>{item.branch || "."}</div>
+              <div className={styles.unitContainer}>{item.account || "."}</div>
             </div>
             <div className={styles.unitContainer}>
               {item.loanStatus === "o" ? (
@@ -315,7 +305,6 @@ function DepositAddPage() {
                 삭제하기
               </button>
             </div>
-
           </div>
         ))}
       </div>
@@ -487,78 +476,77 @@ function DepositAddPage() {
             <p></p>
             <h3>대출정보 입력</h3>
             <div className={styles.infoContainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <label className={styles.title}>대출일자</label>
-                  </div>
-                  <div className={styles.contentbody}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>대출일자</label>
+                </div>
+                <div className={styles.contentbody}>
                   <InputboxGray
                     type="datetime-local"
                     name="loanDate"
                     value={formData.loanDate}
                     onChange={handleInputChange}
                   />
-                  </div>
                 </div>
+              </div>
+            </div>
+            <div className={styles.infoContainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>대출은행</label>
                 </div>
-              <div className={styles.infoContainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <label className={styles.title}>대출은행</label>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <InputboxGray
-                      type="text"
-                      name="loanDetails.loanbank"
-                      value={formData.loanDetails.loanbank}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="text"
+                    name="loanDetails.loanbank"
+                    value={formData.loanDetails.loanbank}
+                    onChange={handleInputChange}
+                  />
                 </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <label className={styles.title}>대출액</label>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <InputboxGray
-                      type="number"
-                      name="loanDetails.loanammount"
-                      value={formData.loanDetails.loanammount}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>대출액</label>
                 </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="number"
+                    name="loanDetails.loanammount"
+                    value={formData.loanDetails.loanammount}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Row 2: 자납일, 자납액 */}
             <div className={styles.infoContainer}>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <label className={styles.title}>자납일</label>
-                  </div>
-                  <div className={styles.contentbody}>
-                    
-                    <InputboxGray
-                      type="datetime-local"
-                      name="selfPaymentDate"
-                      value={formData.selfPaymentDate}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>자납일</label>
                 </div>
-                <div className={styles.unitbody}>
-                  <div className={styles.titlebody}>
-                    <label className={styles.title}>자납액</label>
-                  </div>
-                  <div className={styles.contentbody}>
-                    <InputboxGray
-                      type="number"
-                      name="loanDetails.selfammount"
-                      value={formData.loanDetails.selfammount}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="datetime-local"
+                    name="loanDetails.selfPaymentDate"
+                    value={formData.loanDetails.selfPaymentDate}
+                    onChange={handleInputChange}
+                  />
                 </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <label className={styles.title}>자납액</label>
+                </div>
+                <div className={styles.contentbody}>
+                  <InputboxGray
+                    type="number"
+                    name="loanDetails.selfammount"
+                    value={formData.loanDetails.selfammount}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Row 3: 대출 합계, 대출 잔액 */}
@@ -593,52 +581,50 @@ function DepositAddPage() {
               </div>
             </div>
             <h4>📌 진행 예정 납부 차수 선택</h4>
-<div className={styles.infoContainer}>
-  <div className={styles.unitbody}>
-    <div className={styles.titlebody}>
-      <span className={styles.title}>금액</span>
-    </div>
-    <div className={styles.contentbody}>
-      <p>💰 <strong>{remainingAmount.toLocaleString()}₩</strong></p>
-    </div>
-  </div>
-</div>
-
-{pendingPhases.length > 0 ? (
-  <ul>
-  {pendingPhases.map((phase) => {
-    const phaseAmount = phase.feesum ?? 0;
-    const isSelected = selectedPhases.includes(phase.phaseNumber);
-    const isDisabled = remainingAmount < phaseAmount && !isSelected;
-
-    return (
-      <li key={phase.phaseNumber}>
-        <div className={styles.infoContainer}>
-          <div className={styles.unitbody}>
-            <div className={styles.titlebody}>
-              <span className={styles.phaseTitle}>{phase.phaseNumber}차 총액</span>
-            </div>
-            <div
-              className={`${styles.contentbody2} 
-                          ${isSelected ? styles.selected : ""}
-                          ${isDisabled ? styles.disabledPhase : ""}`}
-              onClick={() => !isDisabled && handlePhaseSelection(phase)}
-            >
-              <div className={styles.phaseAmount}>
-                {phaseAmount.toLocaleString()}₩
+            <div className={styles.infoContainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>금액</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <p>💰 <strong>{remainingAmount.toLocaleString()}₩</strong></p>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </li>
-    );
-  })}
-</ul>
 
-) : (
-  <p>진행 예정 납부 차수가 없습니다.</p>
-)}
+            {pendingPhases.length > 0 ? (
+              <ul>
+                {pendingPhases.map((phase) => {
+                  const phaseAmount = phase.feesum ?? 0;
+                  const isSelected = selectedPhases.includes(phase.phaseNumber);
+                  const isDisabled = remainingAmount < phaseAmount && !isSelected;
 
+                  return (
+                    <li key={phase.phaseNumber}>
+                      <div className={styles.infoContainer}>
+                        <div className={styles.unitbody}>
+                          <div className={styles.titlebody}>
+                            <span className={styles.phaseTitle}>{phase.phaseNumber}차 총액</span>
+                          </div>
+                          <div
+                            className={`${styles.contentbody2} 
+                              ${isSelected ? styles.selected : ""}
+                              ${isDisabled ? styles.disabledPhase : ""}`}
+                            onClick={() => !isDisabled && handlePhaseSelection(phase)}
+                          >
+                            <div className={styles.phaseAmount}>
+                              {phaseAmount.toLocaleString()}₩
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p>진행 예정 납부 차수가 없습니다.</p>
+            )}
           </>
         )}
 
