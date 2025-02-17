@@ -97,6 +97,23 @@ const Nav = () => {
             </div>
           </div>
         </Link>
+
+        <Link href="/inputmoney/deposit">
+          <div
+            className={
+              splitpath[2] === "deposit" ? styles.select : styles.nonselect
+            }
+          >
+            <div className={styles.innerContainer}>
+              {splitpath[2] === "deposit" ? (
+                <HiUsers style={iconstyle} />
+              ) : (
+                <HiOutlineUsers style={iconstyle} />
+              )}
+              <span className={styles.innertext}>기업 입금 내역</span>
+            </div>
+          </div>
+        </Link>
         {/* 연체료 메뉴 Link */}
         <Link href="/latefees">
           <div
