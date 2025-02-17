@@ -227,71 +227,9 @@ function DepositPage() {
   return (
     <div className={styles.container}>
       <p></p>
-      <h3>현재 입금내역</h3>
-      <p></p>
-      <div className={styles.tableWrapper}>
-        <div className={styles.tablecontainer}>
-          <div className={styles.unitContainer}>거래일시</div>
-          <div className={styles.unitContainer}>적요</div>
-          <div className={styles.unitContainer}>기재내용</div>
-          <div className={styles.unitContainer}>계약자</div>
-          <div className={styles.unitContainer}>찾으신 금액</div>
-          <div className={styles.unitContainer}>맡기신 금액</div>
-          <div className={styles.unitContainer}>거래 후 잔액</div>
-          <div className={styles.unitContainer}>취급점</div>
-          <div className={styles.unitContainer}>계좌</div>
-          <div className={styles.unitContainer}>수정/삭제</div>
-        </div>
 
-        {depositData.map((item, index) => (
-          <div className={styles.maincontainer} key={index}>
-            <div className={styles.rowContainer}>
-              <div className={styles.unitContainer}>
-                {item.transactionDateTime || "."}
-              </div>
-              <div className={styles.unitContainer}>{item.remarks || "."}</div>
-              <div className={styles.unitContainer}>{item.details || "."}</div>
-              <div className={styles.unitContainer}>
-                {item.contractor || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.withdrawnAmount || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.depositAmount || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.balanceAfter || "."}
-              </div>
-              <div className={styles.unitContainer}>{item.branch || "."}</div>
-              <div className={styles.unitContainer}>{item.account || "."}</div>
-            </div>
-            <div className={styles.unitContainer}>
-              {item.loanStatus === "o" ? (
-                <button
-                  className={styles.TableButton}
-                  onClick={handleLoanAlert}
-                >
-                  수정불가
-                </button>
-              ) : (
-                <Link href={`/inputmoney/deposit/modify/${item.id}`}>
-                  <button className={styles.TableButton}>수정하기</button>
-                </Link>
-              )}
-              <button
-                className={styles.TableButton}
-                onClick={() => handleDelete(item.id)}
-              >
-                삭제하기
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <h2>기업입금내역 추가</h2>
       <p></p>
-
-      <h3>입금내역 추가</h3>
       <p></p>
       <form onSubmit={handleSubmit}>
         {/* 상단 입력란: 거래일시, 적요, 기재내용 */}
