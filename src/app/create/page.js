@@ -660,7 +660,7 @@ function Create() {
               <div className={styles.content_body3}>
                 <MGMInputbox
                   type="text"
-                  placeholder="금액(만원)"
+                  placeholder="금액"
                   register={register("Dahim.secondClaimAmount")}
                   isError={!!errors.Dahim?.secondClaimAmount}
                 />
@@ -679,7 +679,7 @@ function Create() {
               <div className={styles.content_body2}>
                 <MGMInputbox
                   type="text"
-                  placeholder="합계(만원)"
+                  placeholder="합계"
                   register={register("Dahim.totalAmount")}
                   isError={!!errors.Dahim?.totalAmount}
                 />
