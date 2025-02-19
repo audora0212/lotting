@@ -68,6 +68,18 @@ function Search() {
       if (!userdata) {
         return <h1>잘못된 접근입니다</h1>;
       } else {
+        // 대출 및 자납 정보의 합계 계산
+        const loanAmount = userdata.loan?.loanammount;
+        const selfAmount = userdata.loan?.selfammount;
+        let totalLoanSelf = null;
+        if (loanAmount != null && selfAmount != null) {
+          totalLoanSelf = loanAmount + selfAmount;
+        } else if (loanAmount != null) {
+          totalLoanSelf = loanAmount;
+        } else if (selfAmount != null) {
+          totalLoanSelf = selfAmount;
+        }
+
         return (
           <>
             {/* 1. 회원정보 */}
@@ -462,7 +474,9 @@ function Search() {
                 </div>
                 <div className={styles.contentbody}>
                   <span>
-                    {userdata.dahim?.dahimsum || "정보 없음"}
+                    {totalLoanSelf != null
+                      ? formatNumberWithComma(totalLoanSelf)
+                      : "정보 없음"}
                   </span>
                 </div>
               </div>
@@ -657,9 +671,9 @@ function Search() {
                             : "N/A"}
                         </td>
                         <td>
-                          {userdata.loan.loanselfsum
-                            ? formatNumberWithComma(userdata.loan.loanselfsum)
-                            : "N/A"}
+                          {totalLoanSelf != null
+                            ? formatNumberWithComma(totalLoanSelf)
+                            : "정보 없음"}
                         </td>
                       </tr>
                     ) : (

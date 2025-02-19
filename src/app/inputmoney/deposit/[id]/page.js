@@ -44,9 +44,9 @@ function DepositAddPage() {
 
   const [formData, setFormData] = useState({
     transactionDateTime: "",
-    // 수정: "적요"는 description로 매핑
+    // "적요"는 description로 매핑
     description: "",
-    // 새로 추가: "비고" (remarks)
+    // "비고" (remarks)
     remarks: "",
     details: "",
     contractor: "",
@@ -61,7 +61,7 @@ function DepositAddPage() {
     loanDetails: {
       loanbank: "",
       loanammount: "",
-      selfPaymentDate: "",
+      selfdate: "", // 기존 selfPaymentDate 대신 selfdate 사용
       selfammount: "",
       loanselfsum: "",
       loanselfcurrent: "",
@@ -124,7 +124,7 @@ function DepositAddPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "loanDate" || name === "selfPaymentDate") {
+    if (name === "loanDate") {
       setFormData(prev => ({ ...prev, [name]: value }));
     } else if (name.includes(".")) {
       const [parent, child] = name.split(".");
@@ -163,7 +163,7 @@ function DepositAddPage() {
         alert("대출액이 양수일 경우 대출은행을 입력해주세요.");
         return;
       }
-      if (Number(formData.loanDetails.selfammount.replace(/,/g, "")) > 0 && !formData.loanDetails.selfPaymentDate) {
+      if (Number(formData.loanDetails.selfammount.replace(/,/g, "")) > 0 && !formData.loanDetails.selfdate) {
         alert("자납액이 양수일 경우 자납일을 입력해주세요.");
         return;
       }
@@ -176,7 +176,7 @@ function DepositAddPage() {
     submitData.loanDetails.loanammount = removeCommas(submitData.loanDetails.loanammount);
     submitData.loanDetails.selfammount = removeCommas(submitData.loanDetails.selfammount);
     submitData.loanDate = formData.loanDate;
-    submitData.loanDetails.selfPaymentDate = formData.loanDetails.selfPaymentDate;
+    submitData.loanDetails.selfdate = formData.loanDetails.selfdate; // self납일은 selfdate로 저장
     submitData.targetPhases = selectedPhases;
     if (isLoanRecord) {
       submitData.withdrawnAmount = "0";
@@ -433,9 +433,7 @@ function DepositAddPage() {
               </div>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
-                  <label className={styles.title}>
-                    맡기신 금액
-                  </label>
+                  <label className={styles.title}>맡기신 금액</label>
                 </div>
                 <div className={styles.contentbody}>
                   <InputboxGray
@@ -620,8 +618,8 @@ function DepositAddPage() {
                 <div className={styles.contentbody}>
                   <InputboxGray
                     type="datetime-local"
-                    name="loanDetails.selfPaymentDate"
-                    value={formData.loanDetails.selfPaymentDate}
+                    name="loanDetails.selfdate"
+                    value={formData.loanDetails.selfdate}
                     onChange={handleInputChange}
                   />
                 </div>
