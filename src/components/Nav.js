@@ -11,7 +11,12 @@ import {
   AiFillDollarCircle,
 } from "react-icons/ai";
 import { HiOutlineUsers, HiUsers } from "react-icons/hi2";
+import { HiUserAdd } from "react-icons/hi";
 import { GrMoney } from "react-icons/gr";
+import { MdOutlineAccountBalance, MdAccountBalance, MdManageAccounts,MdOutlineManageAccounts  } from "react-icons/md"; //<MdOutlineAccountBalance />  <MdAccountBalance />
+import { RiMoneyDollarCircleFill, RiMoneyDollarCircleLine } from "react-icons/ri"; //<RiMoneyDollarCircleFill />  <RiMoneyDollarCircleLine />
+import { IoCloudUploadOutline,IoCloudUpload  } from "react-icons/io5";
+
 import LOGO from "@/img/logo.png";
 import styles from "../styles/Nav.module.scss";
 
@@ -73,9 +78,9 @@ const Nav = () => {
           >
             <div className={styles.innerContainer}>
               {splitpath[1] === "create" ? (
-                <HiUsers style={iconstyle} />
+                <HiUserAdd  style={iconstyle} />
               ) : (
-                <HiOutlineUsers style={iconstyle} />
+                <HiUserAdd  style={iconstyle} />
               )}
               <span className={styles.innertext}>회원 정보 입력</span>
             </div>
@@ -89,11 +94,11 @@ const Nav = () => {
           >
             <div className={styles.innerContainer}>
               {splitpath[1] === "deposit" ? (
-                <HiUsers style={iconstyle} />
+                <RiMoneyDollarCircleFill style={iconstyle} />
               ) : (
-                <HiOutlineUsers style={iconstyle} />
+                <RiMoneyDollarCircleLine style={iconstyle} />
               )}
-              <span className={styles.innertext}>회원 입금 내역</span>
+              <span className={styles.innertext}>전체 입출금 내역</span>
             </div>
           </div>
         </Link>
@@ -106,11 +111,11 @@ const Nav = () => {
           >
             <div className={styles.innerContainer}>
               {splitpath[2] === "deposit" ? (
-                <HiUsers style={iconstyle} />
+                <MdAccountBalance style={iconstyle} />
               ) : (
-                <HiOutlineUsers style={iconstyle} />
+                <MdOutlineAccountBalance style={iconstyle} />
               )}
-              <span className={styles.innertext}>기업 입금 내역</span>
+              <span className={styles.innertext}>기업 입출금 추가</span>
             </div>
           </div>
         </Link>
@@ -127,11 +132,27 @@ const Nav = () => {
               ) : (
                 <GrMoney style={iconstyle} />
               )}
-              <span className={styles.innertext}>연체료</span>
+              <span className={styles.innertext}>연체료 (임시)</span>
             </div>
           </div>
         </Link>
-
+        {/* 연체료 메뉴 Link */}
+        <Link href="/filecontrol">
+          <div
+            className={
+              splitpath[1] === "filecontrol" ? styles.select : styles.nonselect
+            }
+          >
+            <div className={styles.innerContainer}>
+              {splitpath[1] === "filecontrol" ? (
+                <IoCloudUpload style={iconstyle} />
+              ) : (
+                <IoCloudUploadOutline style={iconstyle} />
+              )}
+              <span className={styles.innertext}>엑셀파일</span>
+            </div>
+          </div>
+        </Link>
         {/* 차수 관리 Link */}
         <Link href="/control">
           <div
@@ -141,9 +162,9 @@ const Nav = () => {
           >
             <div className={styles.innerContainer}>
               {splitpath[1] === "control" ? (
-                <AiFillDollarCircle style={iconstyle} />
+                <MdManageAccounts   style={iconstyle} />
               ) : (
-                <AiOutlineDollar style={iconstyle} />
+                <MdOutlineManageAccounts  style={iconstyle} />
               )}
               <span className={styles.innertext}>차수 관리</span>
             </div>
