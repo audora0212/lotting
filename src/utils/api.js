@@ -438,3 +438,13 @@ export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
       throw error;
     });
 };
+
+
+// 파일 업로드(엑셀 파일 전용)
+export const uploadExcelFile = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return axios.post(`${path}/files/uploadExcel`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};

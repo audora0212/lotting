@@ -1,40 +1,52 @@
-// pages/filecontrol.js (또는 FilecontrolPage.js)
 "use client";
 
 import { useState } from "react";
 import { ExcelFileInputbox } from "@/components/Inputbox"; // 파일 업로드 컴포넌트
 import withAuth from "@/utils/hoc/withAuth";
-import styles from "@/styles/Create.module.scss"; // 필요한 스타일 (원본과 동일)
+import styles from "@/styles/Create.module.scss";
+import { uploadExcelFile } from "@/utils/api";
 
 function FilecontrolPage() {
   const [file, setFile] = useState(null);
-  const [isupload, setIsupload] = useState({
-    isuploaded: false,
-  });
+  const [uploadStatus, setUploadStatus] = useState(""); // 업로드 상태 메시지
 
   const handleFileChange = (e) => {
+    console.log(e.target.files);
     const { files } = e.target;
     if (files && files.length > 0) {
       const selectedFile = files[0];
       setFile(selectedFile);
-      setIsupload({ isuploaded: true });
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      setUploadStatus("파일을 선택해주세요.");
+      return;
+    }
+    try {
+      await uploadExcelFile(file);
+      setUploadStatus("업로드 및 데이터 처리 완료");
+    } catch (error) {
+      setUploadStatus("업로드 실패: " + error.message);
     }
   };
 
   return (
     <div className={styles.content_container}>
       <div>
-        <span>파일업로드</span>
+        <span>파일업로드 (엑셀)</span>
         <ExcelFileInputbox
           name="fileupload"
           handleChange={handleFileChange}
           value={file ? file.name : ""}
-          isupload={isupload.isuploaded}
+          isupload={!!file}
         />
+        <button onClick={handleUpload}>업로드</button>
+        {uploadStatus && <p>{uploadStatus}</p>}
       </div>
     </div>
   );
 }
-
 
 export default withAuth(FilecontrolPage);
