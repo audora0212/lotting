@@ -257,8 +257,8 @@ function Search() {
                 </div>
                 <div className={styles.contentbody}>
                   <span>
-                    {userdata.deposits?.trustsubmissiondate
-                      ? userdata.deposits.trustsubmissiondate.slice(0, 10)
+                    {userdata.financial?.trustcompanydate
+                      ? userdata.financial.trustcompanydate.slice(0, 10)
                       : "정보 없음"}
                   </span>
                 </div>
