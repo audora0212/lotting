@@ -67,8 +67,10 @@ function Modify({ params }) {
 
   const [initialLegalPostNumber, setInitialLegalPostNumber] = useState("");
   const [initialLegalAddress, setInitialLegalAddress] = useState("");
-  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] = useState("");
-  const [initialPostreceiveAddress, setInitialPostreceiveAddress] = useState("");
+  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] =
+    useState("");
+  const [initialPostreceiveAddress, setInitialPostreceiveAddress] =
+    useState("");
 
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
@@ -90,7 +92,10 @@ function Modify({ params }) {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue("deposits.depositammount", rawValue ? parseInt(rawValue, 10) : null);
+    setValue(
+      "deposits.depositammount",
+      rawValue ? parseInt(rawValue, 10) : null
+    );
   };
 
   useEffect(() => {
@@ -102,7 +107,9 @@ function Modify({ params }) {
         if (customer) {
           setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
           setInitialLegalAddress(customer.legalAddress.post || "");
-          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
+          setInitialPostreceivePostNumber(
+            customer.postreceive.postnumberreceive || ""
+          );
           setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
 
           reset({
@@ -114,7 +121,8 @@ function Modify({ params }) {
             registerdate: customer.registerdate,
             registerprice: customer.registerprice,
             registerpath: customer.registerpath,
-            specialnote: customer.specialnote,
+            // 비고 -> additional 로 변경
+            additional: customer.additional || "",
             prizewinning: customer.prizewinning,
             CustomerData: {
               name: customer.customerData.name,
@@ -137,10 +145,11 @@ function Modify({ params }) {
               bankname: customer.financial.bankname,
               accountnum: customer.financial.accountnum,
               accountholder: customer.financial.accountholder,
+              trustcompanydate: customer.financial.trustcompanydate,
             },
             deposits: {
-              depositdate: customer.deposits.depositdate,
-              depositammount: customer.deposits.depositammount,
+              depositdate: customer.deposits?.depositdate,
+              depositammount: customer.deposits?.depositammount,
             },
             responsible: {
               generalmanagement: customer.responsible?.generalmanagement || "",
@@ -161,9 +170,12 @@ function Modify({ params }) {
             agreement: customer.attachments?.agreement,
             preferenceattachment: customer.attachments?.preferenceattachment,
             prizeattachment: customer.attachments?.prizeattachment,
-            sealcertificateprovided: customer.attachments?.sealcertificateprovided,
-            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided,
-            commitmentletterprovided: customer.attachments?.commitmentletterprovided,
+            sealcertificateprovided:
+              customer.attachments?.sealcertificateprovided,
+            selfsignatureconfirmationprovided:
+              customer.attachments?.selfsignatureconfirmationprovided,
+            commitmentletterprovided:
+              customer.attachments?.commitmentletterprovided,
             idcopyprovided: customer.attachments?.idcopyprovided,
             freeoption: customer.attachments?.freeoption,
             forfounding: customer.attachments?.forfounding,
@@ -173,28 +185,36 @@ function Modify({ params }) {
           });
 
           // 금액 포맷팅
-          if (customer.registerprice) {
-            setFormattedRegisterPrice(customer.registerprice.toLocaleString());
+          if (customer?.registerprice) {
+            setFormattedRegisterPrice(
+              customer.registerprice.toLocaleString()
+            );
           }
-          if (customer.deposits.depositammount) {
-            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
+          if (customer.deposits?.depositammount) {
+            setFormattedDepositAmmount(
+              customer.deposits.depositammount.toLocaleString()
+            );
           }
           // 기존 파일 정보도 설정 (있다면)
           if (customer.attachments && customer.attachments.fileinfo) {
             setExistingFileInfo(customer.attachments.fileinfo);
           }
-          
-          // 체크박스 초기값 업데이트 : customer.attachments 에서 가져오기
+
+          // 체크박스 초기값
           setIsupload({
             isuploaded: false,
-            sealcertificateprovided: customer.attachments?.sealcertificateprovided || false,
-            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided || false,
-            commitmentletterprovided: customer.attachments?.commitmentletterprovided || false,
+            sealcertificateprovided:
+              customer.attachments?.sealcertificateprovided || false,
+            selfsignatureconfirmationprovided:
+              customer.attachments?.selfsignatureconfirmationprovided || false,
+            commitmentletterprovided:
+              customer.attachments?.commitmentletterprovided || false,
             idcopyprovided: customer.attachments?.idcopyprovided || false,
             freeoption: customer.attachments?.freeoption || false,
             forfounding: customer.attachments?.forfounding || false,
             agreement: customer.attachments?.agreement || false,
-            preferenceattachment: customer.attachments?.preferenceattachment || false,
+            preferenceattachment:
+              customer.attachments?.preferenceattachment || false,
             prizeattachment: customer.attachments?.prizeattachment || false,
             exemption7: customer.attachments?.exemption7 || false,
             investmentfile: customer.attachments?.investmentfile || false,
@@ -207,7 +227,7 @@ function Modify({ params }) {
     };
     getData();
   }, [id, reset]);
-  
+
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setIsupload((prev) => ({
@@ -267,7 +287,6 @@ function Modify({ params }) {
         registerprice: parseInt(data.registerprice),
         deposits: {
           ...data.deposits,
-          depositdate: data.deposits.depositdate,
           depositammount: parseInt(data.deposits.depositammount),
         },
       };
@@ -306,14 +325,12 @@ function Modify({ params }) {
         responsible: parsedData.responsible,
         deposits: parsedData.deposits,
         attachments: attachments,
-        // 누락되었던 항목들 추가
         dahim: parsedData.dahim,
         firstemp: parsedData.firstemp,
         secondemp: parsedData.secondemp,
         meetingattend: parsedData.meetingattend,
         agenda: parsedData.agenda,
         prizewinning: parsedData.prizewinning,
-        // 체크박스 관련 값들도 포함
         exemption7: parsedData.exemption7,
         investmentfile: parsedData.investmentfile,
         contract: parsedData.contract,
@@ -321,16 +338,19 @@ function Modify({ params }) {
         preferenceattachment: parsedData.preferenceattachment,
         prizeattachment: parsedData.prizeattachment,
         sealcertificateprovided: parsedData.sealcertificateprovided,
-        selfsignatureconfirmationprovided: parsedData.selfsignatureconfirmationprovided,
+        selfsignatureconfirmationprovided:
+          parsedData.selfsignatureconfirmationprovided,
         commitmentletterprovided: parsedData.commitmentletterprovided,
         idcopyprovided: parsedData.idcopyprovided,
         freeoption: parsedData.freeoption,
         forfounding: parsedData.forfounding,
-        specialnote: parsedData.specialnote,
+        // 변경된 비고 필드: additional
+        additional: parsedData.additional,
       };
 
       console.log("수정할 데이터:");
       console.log(customerData);
+
       const updateUserResponse = await updateUser(id, customerData);
 
       Swal.fire({
@@ -690,7 +710,7 @@ function Modify({ params }) {
             </div>
           </div>
           <div className={styles.content_body}>
-          <div className={styles.content_body2}>
+            <div className={styles.content_body2}>
               <div className={styles.inputRow}>
                 <div className={styles.inputLabel}>그룹 *</div>
                 <DropInputbox
@@ -768,21 +788,23 @@ function Modify({ params }) {
               </div>
             </div>
           </div>
+
+          {/* 신탁사 제출일자 -> Financial.trustcompanydate 로 매핑 */}
           <div className={styles.content_body}>
-          <div className={styles.content_body2}>
-            <div className={styles.inputRow}>
-              <div className={styles.inputLabel}>신탁사 제출일자 *</div>
-              <div className={styles.dateInputContainer}>
-                <Inputbox
-                  type="date"
-                  register={register("deposits.trustsubmissiondate", {
-                    required: "신탁사 제출일자를 입력해주세요.",
-                  })}
-                  isError={!!errors.deposits?.trustsubmissiondate}
-                />
+            <div className={styles.content_body2}>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>신탁사 제출일자 *</div>
+                <div className={styles.dateInputContainer}>
+                  <Inputbox
+                    type="date"
+                    register={register("Financial.trustcompanydate", {
+                      required: "신탁사 제출일자를 입력해주세요.",
+                    })}
+                    isError={!!errors.Financial?.trustcompanydate}
+                  />
+                </div>
               </div>
             </div>
-          </div>
           </div>
 
           <div className={styles.content_body}>
@@ -1079,14 +1101,14 @@ function Modify({ params }) {
           </div>
         </div>
 
-        {/* 비고 */}
+        {/* 비고 -> additional */}
         <h3>비고</h3>
         <div className={styles.content_container}>
           <div className={styles.inputRow}>
             <InputAreabox
               type="text"
-              register={register("specialnote")}
-              isError={!!errors.specialnote}
+              register={register("additional")}
+              isError={!!errors.additional}
             />
           </div>
         </div>

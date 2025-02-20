@@ -51,20 +51,7 @@ function Create() {
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const nextId = await newIdGenerate();
-        setNewid(nextId);
-        setValue("id", nextId);
-      } catch (error) {
-        console.error("관리번호를 가져오는데 실패했습니다:", error);
-      }
-    };
-    getData();
-  }, [setValue]);
-
-  // 백엔드 Attachments 모델에 맞춤 (agreement → generalmeetingconsentformprovided)
+  // 파일 업로드 체크박스 상태
   const [isupload, setIsupload] = useState({
     isuploaded: false,
     sealcertificateprovided: false,
@@ -83,26 +70,21 @@ function Create() {
 
   const [file, setFile] = useState(null);
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setIsupload((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
+  useEffect(() => {
+    // 서버에서 다음 관리번호 가져오기
+    const getData = async () => {
+      try {
+        const nextId = await newIdGenerate();
+        setNewid(nextId);
+        setValue("id", nextId);
+      } catch (error) {
+        console.error("관리번호를 가져오는데 실패했습니다:", error);
+      }
+    };
+    getData();
+  }, [setValue]);
 
-  const handleFileChange = (e) => {
-    const { files } = e.target;
-    if (files && files.length > 0) {
-      const selectedFile = files[0];
-      setFile(selectedFile);
-      setIsupload((prev) => ({
-        ...prev,
-        isuploaded: true,
-      }));
-    }
-  };
-
+  /** 관리번호 중복 체크 */
   const handleIdChange = async (e) => {
     const enteredId = e.target.value;
     setValue("id", enteredId);
@@ -123,6 +105,29 @@ function Create() {
     }
   };
 
+  /** 체크박스 변화 */
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setIsupload((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
+  /** 파일 업로드 변화 */
+  const handleFileChange = (e) => {
+    const { files } = e.target;
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+      setFile(selectedFile);
+      setIsupload((prev) => ({
+        ...prev,
+        isuploaded: true,
+      }));
+    }
+  };
+
+  /** 숫자 천단위 콤마 처리 */
   const formatNumberWithCommas = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
     if (!numericValue) return "";
@@ -143,11 +148,11 @@ function Create() {
     setValue("deposits.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
+  /** 폼 검증 오류 처리 */
   const onError = (errors) => {
     console.log("검증 오류:", errors);
 
     const errorMessages = [];
-
     for (const field in errors) {
       if (errors.hasOwnProperty(field)) {
         if (errors[field].message) {
@@ -165,23 +170,24 @@ function Create() {
       }
     }
 
-    const errorMessage = errorMessages.join("\n");
-
     Swal.fire({
       icon: "warning",
       title: "필수 항목 누락",
-      text: errorMessage,
+      text: errorMessages.join("\n"),
     });
   };
 
+  /** 폼 제출 */
   const onSubmit = async (data) => {
     try {
+      // 파일 업로드 처리
       let uploadedFileInfo = "";
       if (file) {
         const uploadResponse = await createFile(file, parseInt(data.id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
 
+      // 숫자 변환
       const parsedData = {
         ...data,
         id: parseInt(data.id, 10),
@@ -194,10 +200,10 @@ function Create() {
         deposits: {
           depositdate: data.deposits.depositdate,
           depositammount: parseInt(data.deposits.depositammount, 10),
-          trustsubmissiondate: data.deposits.trustsubmissiondate,  // ✅ 신탁사제출일 추가
-        },        
+        },
       };
 
+      // 첨부 파일 정보
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
@@ -205,6 +211,7 @@ function Create() {
         prizedate: data.prizedate,
       };
 
+      // 최종 전송할 데이터
       const customerData = {
         id: parsedData.id,
         customertype: data.customertype,
@@ -215,13 +222,18 @@ function Create() {
         registerdate: parsedData.registerdate,
         registerprice: parsedData.registerprice,
         registerpath: data.registerpath,
-        specialnote: data.specialnote,
+        // 비고 -> additional
+        additional: data.additional,
         prizewinning: data.prizewinning,
-        votemachine: data.votemachine, // 투표기기를 별도 필드로 추가
+        votemachine: data.votemachine,
         CustomerData: parsedData.CustomerData,
         LegalAddress: data.LegalAddress,
         Postreceive: data.Postreceive,
-        Financial: data.Financial,
+        // 신탁사 제출일자를 deposits → Financial로 이동
+        Financial: {
+          ...data.Financial,
+          // "Financial.trustcompanydate"를 그대로 전달
+        },
         deposits: parsedData.deposits,
         attachments: attachments,
         dahim: data.dahim,
@@ -246,6 +258,7 @@ function Create() {
           parsedData.CustomerData.name,
       });
 
+      // 폼 리셋
       reset();
       setFile(null);
       setIsupload({
@@ -266,6 +279,7 @@ function Create() {
       setIdExists(false);
       setFormattedRegisterPrice("");
       setFormattedDepositAmmount("");
+
       if (typeof window !== "undefined") {
         window.scrollTo(0, 0);
       }
@@ -284,6 +298,7 @@ function Create() {
     }
   };
 
+  // 사은품 체크박스
   const prizeattachmentChecked = watch("prizeattachment", false);
 
   return (
@@ -292,6 +307,7 @@ function Create() {
         {/* 1. 회원정보 */}
         <h3>회원정보</h3>
         <div className={styles.content_container}>
+          {/* 관리번호 */}
           <div className={styles.Font}>
             <label htmlFor="id"></label>
             <Inputbox
@@ -314,6 +330,8 @@ function Create() {
             )}
           </div>
           <h1></h1>
+
+          {/* 이름, 휴대폰, 주민번호 */}
           <div>
             <Inputbox
               type="text"
@@ -364,6 +382,8 @@ function Create() {
               isError={!!errors.CustomerData?.email}
             />
           </div>
+
+          {/* 분류, 가입경로, 은행, 계좌, 예금주 */}
           <div>
             <DropInputbox
               list={classificationlist}
@@ -414,6 +434,8 @@ function Create() {
               isError={!!errors.Financial?.accountholder}
             />
           </div>
+
+          {/* 법정주소, 우편물 주소지 */}
           <div className={styles.InputboxField}>
             <div className={styles.InputFont}>법정주소 *</div>
             <PostInputbox
@@ -504,6 +526,8 @@ function Create() {
               />
             </div>
           </div>
+
+          {/* 가입일자, 가입가 */}
           <div className={styles.mainbody}>
             <div className={styles.content_body}>
               <div className={styles.content_body2}>
@@ -528,6 +552,8 @@ function Create() {
                 />
               </div>
             </div>
+
+            {/* 예약금 납입일자, 예약금 */}
             <div className={styles.content_body}>
               <div className={styles.content_body2}>
                 <div className={styles.dateInputContainer}>
@@ -551,23 +577,26 @@ function Create() {
                 />
               </div>
             </div>
+
+            {/* 신탁사 제출일자 -> Financial.trustcompanydate */}
             <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>신탁사 제출일자 *</div>
-                <div className={styles.dateInputContainer}>
-                  <Inputbox
-                    type="date"
-                    register={register("deposits.trustsubmissiondate", {
-                      required: "신탁사 제출일자를 입력해주세요.",
-                    })}
-                    isError={!!errors.deposits?.trustsubmissiondate}
-                  />
+              <div className={styles.content_body2}>
+                <div className={styles.inputRow}>
+                  <div className={styles.inputLabel}>신탁사 제출일자 *</div>
+                  <div className={styles.dateInputContainer}>
+                    <Inputbox
+                      type="date"
+                      register={register("Financial.trustcompanydate", {
+                        required: "신탁사 제출일자를 입력해주세요.",
+                      })}
+                      isError={!!errors.Financial?.trustcompanydate}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            </div>
+            {/* 체크박스들 */}
             <div className={styles.content_body}>
               <div className={styles.content_body3}>
                 <Checkbox
@@ -620,7 +649,6 @@ function Create() {
                 isError={!!errors.dahim?.dahimprepaid}
               />
             </div>
-
           </div>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
@@ -639,7 +667,6 @@ function Create() {
                 isError={!!errors.dahim?.dahimfirstpay}
               />
             </div>
-
           </div>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
@@ -658,8 +685,9 @@ function Create() {
                 isError={!!errors.dahim?.dahimsecondpay}
               />
             </div>
-
           </div>
+
+          {/* 날짜들 (첫/두/세번째) */}
           <div className={styles.content_body}>
             <div className={styles.content_body3}>
               <div className={styles.dateInputContainer}>
@@ -780,6 +808,8 @@ function Create() {
               isError={!!errors.prizeattachment}
             />
           </div>
+
+          {/* 사은품 관련 */}
           {prizeattachmentChecked && (
             <div className={styles.prizeRow}>
               <Inputbox
@@ -1089,6 +1119,17 @@ function Create() {
               />
             </div>
           </div>
+        </div>
+
+        {/* 11. 비고 (additional) */}
+        <h3>비고</h3>
+        <div className={styles.content_container}>
+          <InputAreabox
+            type="text"
+            placeholder="비고를 입력하세요"
+            register={register("additional")}
+            isError={!!errors.additional}
+          />
         </div>
 
         <p></p>

@@ -973,7 +973,7 @@ function Search() {
                   <span className={styles.title}>기타</span>
                 </div>
                 <div className={styles.contentbody}>
-                  <span>{userdata.specialnote || "정보 없음"}</span>
+                  <span>{userdata.additional || "정보 없음"}</span>
                 </div>
               </div>
             </div>
