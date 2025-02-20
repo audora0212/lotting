@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ExcelFileInputbox } from "@/components/Inputbox"; // 파일 업로드 컴포넌트
+import { ExcelFileInputbox } from "@/components/Inputbox";
 import withAuth from "@/utils/hoc/withAuth";
 import styles from "@/styles/Create.module.scss";
-import { uploadExcelFile } from "@/utils/api";
+import { uploadExcelFile, downloadRegFile } from "@/utils/api";
 
 function FilecontrolPage() {
   const [file, setFile] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState(""); // 업로드 상태 메시지
+  const [uploadStatus, setUploadStatus] = useState("");
 
   const handleFileChange = (e) => {
     console.log(e.target.files);
@@ -32,6 +32,14 @@ function FilecontrolPage() {
     }
   };
 
+  const handleRegFileDownload = async () => {
+    try {
+      await downloadRegFile();
+    } catch (error) {
+      console.error("Reg 파일 다운로드 실패:", error);
+    }
+  };
+
   return (
     <div className={styles.content_container}>
       <div>
@@ -44,6 +52,10 @@ function FilecontrolPage() {
         />
         <button onClick={handleUpload}>업로드</button>
         {uploadStatus && <p>{uploadStatus}</p>}
+      </div>
+      <div>
+        <span>Reg 파일 다운로드</span>
+        <button onClick={handleRegFileDownload}>다운로드 버튼</button>
       </div>
     </div>
   );

@@ -440,11 +440,42 @@ export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
 };
 
 
-// 파일 업로드(엑셀 파일 전용)
+// 파일 업로드(reg 파일 전용)
 export const uploadExcelFile = (file) => {
   const formData = new FormData();
   formData.append("file", file);
   return axios.post(`${path}/files/uploadExcel`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+};
+
+export const downloadRegFile = async () => {
+  try {
+    const response = await axios.get(`${path}/files/regfiledownload`, {
+      responseType: "blob",
+    });
+    const disposition = response.headers["content-disposition"];
+    let fileName = "regfile_download.xlsx";
+    if (disposition && disposition.indexOf("filename=") !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      if (matches != null && matches[1]) {
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+    }
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading reg file:", error);
+    throw error;
+  }
 };

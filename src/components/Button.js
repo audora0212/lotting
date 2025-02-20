@@ -35,6 +35,22 @@ export const DownloadButton = ({ userid, filename, children }) => {
     )
 }
 
+export const RegDownloadButton = ({ children }) => {
+    const handleClick = async () => {
+      try {
+        await downloadRegFile();
+      } catch (error) {
+        console.error("Reg 파일 다운로드 실패:", error);
+      }
+    };
+  
+    return (
+      <button className={styles.downloadbuttonstyle} onClick={handleClick}>
+        {children || "Reg 파일 다운로드"}
+      </button>
+    );
+  };
+
 export const CgSearchButton = (props) => {
     return (
         <button className={styles.CgButton}>
