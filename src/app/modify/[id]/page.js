@@ -688,7 +688,9 @@ function Modify({ params }) {
                 />
               </div>
             </div>
-            <div className={styles.content_body2}>
+          </div>
+          <div className={styles.content_body}>
+          <div className={styles.content_body2}>
               <div className={styles.inputRow}>
                 <div className={styles.inputLabel}>그룹 *</div>
                 <DropInputbox
@@ -711,7 +713,6 @@ function Modify({ params }) {
               </div>
             </div>
           </div>
-
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
               <div className={styles.inputRow}>
@@ -766,6 +767,22 @@ function Modify({ params }) {
                 />
               </div>
             </div>
+          </div>
+          <div className={styles.content_body}>
+          <div className={styles.content_body2}>
+            <div className={styles.inputRow}>
+              <div className={styles.inputLabel}>신탁사 제출일자 *</div>
+              <div className={styles.dateInputContainer}>
+                <Inputbox
+                  type="date"
+                  register={register("deposits.trustsubmissiondate", {
+                    required: "신탁사 제출일자를 입력해주세요.",
+                  })}
+                  isError={!!errors.deposits?.trustsubmissiondate}
+                />
+              </div>
+            </div>
+          </div>
           </div>
 
           <div className={styles.content_body}>
