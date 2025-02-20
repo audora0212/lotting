@@ -192,10 +192,10 @@ function Create() {
           resnumback: parseInt(data.CustomerData.resnumback, 10),
         },
         deposits: {
-          ...data.deposits,
           depositdate: data.deposits.depositdate,
           depositammount: parseInt(data.deposits.depositammount, 10),
-        },
+          trustsubmissiondate: data.deposits.trustsubmissiondate,  // ✅ 신탁사제출일 추가
+        },        
       };
 
       const attachments = {
@@ -552,6 +552,23 @@ function Create() {
               </div>
             </div>
             <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>신탁사 제출일자 *</div>
+                <div className={styles.dateInputContainer}>
+                  <Inputbox
+                    type="date"
+                    register={register("deposits.trustsubmissiondate", {
+                      required: "신탁사 제출일자를 입력해주세요.",
+                    })}
+                    isError={!!errors.deposits?.trustsubmissiondate}
+                  />
+                </div>
+              </div>
+            </div>
+
+            </div>
+            <div className={styles.content_body}>
               <div className={styles.content_body3}>
                 <Checkbox
                   label="7차 면제"
@@ -587,7 +604,7 @@ function Create() {
         <h3>다힘</h3>
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
-            <div className={styles.content_body3}>
+            <div className={styles.content_body2}>
               <MGMInputbox
                 type="text"
                 placeholder="시상"
@@ -595,6 +612,55 @@ function Create() {
                 isError={!!errors.dahim?.dahimsisang}
               />
             </div>
+            <div className={styles.content_body2}>
+              <MGMInputbox
+                type="text"
+                placeholder="6/30선지급"
+                register={register("dahim.dahimprepaid")}
+                isError={!!errors.dahim?.dahimprepaid}
+              />
+            </div>
+
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <MGMInputbox
+                type="text"
+                placeholder="1회차청구"
+                register={register("dahim.dahimfirst")}
+                isError={!!errors.dahim?.dahimfirst}
+              />
+            </div>
+            <div className={styles.content_body2}>
+              <MGMInputbox
+                type="text"
+                placeholder="금액(만원)"
+                register={register("dahim.dahimfirstpay")}
+                isError={!!errors.dahim?.dahimfirstpay}
+              />
+            </div>
+
+          </div>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <MGMInputbox
+                type="text"
+                placeholder="2회차청구"
+                register={register("dahim.dahimsecond")}
+                isError={!!errors.dahim?.dahimsecond}
+              />
+            </div>
+            <div className={styles.content_body2}>
+              <MGMInputbox
+                type="text"
+                placeholder="금액"
+                register={register("dahim.dahimsecondpay")}
+                isError={!!errors.dahim?.dahimsecondpay}
+              />
+            </div>
+
+          </div>
+          <div className={styles.content_body}>
             <div className={styles.content_body3}>
               <div className={styles.dateInputContainer}>
                 <label className={styles.dateLabel}>일자(첫번째)</label>
@@ -606,32 +672,6 @@ function Create() {
               </div>
             </div>
             <div className={styles.content_body3}>
-              <MGMInputbox
-                type="text"
-                placeholder="6/30선지급"
-                register={register("dahim.dahimprepaid")}
-                isError={!!errors.dahim?.dahimprepaid}
-              />
-            </div>
-          </div>
-          <div className={styles.content_body}>
-            <div className={styles.content_body3}>
-              <MGMInputbox
-                type="text"
-                placeholder="1회차청구"
-                register={register("dahim.dahimfirst")}
-                isError={!!errors.dahim?.dahimfirst}
-              />
-            </div>
-            <div className={styles.content_body3}>
-              <MGMInputbox
-                type="text"
-                placeholder="금액(만원)"
-                register={register("dahim.dahimfirstpay")}
-                isError={!!errors.dahim?.dahimfirstpay}
-              />
-            </div>
-            <div className={styles.content_body3}>
               <div className={styles.dateInputContainer}>
                 <label className={styles.dateLabel}>일자(두번째)</label>
                 <MGMInputbox
@@ -640,24 +680,6 @@ function Create() {
                   isError={!!errors.dahim?.dahimdate2}
                 />
               </div>
-            </div>
-          </div>
-          <div className={styles.content_body}>
-            <div className={styles.content_body3}>
-              <MGMInputbox
-                type="text"
-                placeholder="2회차청구"
-                register={register("dahim.dahimsecond")}
-                isError={!!errors.dahim?.dahimsecond}
-              />
-            </div>
-            <div className={styles.content_body3}>
-              <MGMInputbox
-                type="text"
-                placeholder="금액"
-                register={register("dahim.dahimsecondpay")}
-                isError={!!errors.dahim?.dahimsecondpay}
-              />
             </div>
             <div className={styles.content_body3}>
               <div className={styles.dateInputContainer}>

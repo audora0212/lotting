@@ -41,9 +41,13 @@ function FilecontrolPage() {
   };
 
   return (
+    
     <div className={styles.content_container}>
+      <h3>엑셀 업로드 및 다운로드</h3>
+      <p></p>
       <div>
         <span>파일업로드 (엑셀)</span>
+        <p></p>
         <ExcelFileInputbox
           name="fileupload"
           handleChange={handleFileChange}

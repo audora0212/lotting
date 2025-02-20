@@ -251,6 +251,19 @@ function Search() {
                   </span>
                 </div>
               </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>신탁사제출일</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.deposits?.trustsubmissiondate
+                      ? userdata.deposits.trustsubmissiondate.slice(0, 10)
+                      : "정보 없음"}
+                  </span>
+                </div>
+              </div>
+
             </div>
 
             <div className={styles.rowcontainer}>
