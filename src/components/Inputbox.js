@@ -348,13 +348,27 @@ export const FileInputbox = (props) => {
   );
 };
 
-export const ExcelFileInputbox = (props) => {
-  const { handleChange, isupload, value, name, register, isError, ...rest } = props;
+export function ExcelFileInputbox(props) {
+  const {
+    handleChange,
+    isupload,
+    value,
+    name,
+    register,
+    isError,
+    ...rest
+  } = props;
+
   const { onChange: registerOnChange, onBlur, ref, ...restRegister } = register || {};
 
   const combinedOnChange = (e) => {
-    handleChange(e);
+    if (handleChange) handleChange(e);
     if (registerOnChange) registerOnChange(e);
+  };
+
+  const iconStyle = {
+    fontSize: "2rem",
+    color: "#999",
   };
 
   return (
@@ -370,27 +384,26 @@ export const ExcelFileInputbox = (props) => {
         {...rest}
       />
       <p style={{ textAlign: "center", margin: 0 }}>
-        <IoMdCloudUpload style={iconstyle} />
+        <IoMdCloudUpload style={iconStyle} />
       </p>
       {isupload ? (
         <>
           <p className={styles.successtext}>업로드 완료</p>
-          <p className={styles.successfilename}>
-            {value}
-          </p>
+          <p className={styles.successfilename}>{value}</p>
         </>
       ) : (
         <>
           <p className={styles.filetext}>
-            드래그 드랍 또는 <span className={styles.texthighlight}>업로드 할 파일</span>을 선택해주세요
+            드래그 드롭 또는{" "}
+            <span className={styles.texthighlight}>업로드 할 파일</span>을 선택해주세요
           </p>
-          <p className={styles.filetypetext}>파일형식 : XLSX </p>
+          <p className={styles.filetypetext}>파일형식 : XLSX / XLS</p>
         </>
       )}
       {isError && <span className={styles.error}>파일을 업로드해주세요.</span>}
     </label>
   );
-};
+}
 
 export const PostInputbox = ({ register, setValue, namePrefix, postcodeName, addressName, isError }) => {
   const [postnumber, setPostnumber] = useState("우편번호");

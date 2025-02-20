@@ -440,14 +440,100 @@ export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
 };
 
 
-// 파일 업로드(reg 파일 전용)
-export const uploadExcelFile = (file) => {
+export async function uploadExcelFileWithProgress(file, onProgress, onComplete, onError) {
+  // onProgress: (progressData) => void  (ex: "3/30")
+  // onComplete: (message) => void       (ex: "Parsing complete")
+  // onError:    (errorMessage) => void  (ex: "Invalid file format")
+
   const formData = new FormData();
   formData.append("file", file);
-  return axios.post(`${path}/files/uploadExcel`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+
+  // 백엔드 URL (직접 상수 혹은 env 등)
+  const backendUrl = "http://localhost:8080/files/uploadExcelWithProgress";
+
+  // fetch로 POST
+  const response = await fetch(backendUrl, {
+    method: "POST",
+    headers: {
+      // SSE 스트림을 받기 위해 Accept 헤더 설정
+      Accept: "text/event-stream",
+    },
+    body: formData,
   });
-};
+
+  if (!response.ok) {
+    throw new Error("서버 응답 에러: " + response.statusText);
+  }
+
+  // 스트림(body)이 없으면 에러
+  if (!response.body) {
+    throw new Error("ReadableStream을 가져올 수 없습니다");
+  }
+
+  // 스트림 → reader
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+
+  let buffer = "";
+  let currentEvent = "";
+
+  // 무한 루프: chunk 단위로 SSE 처리
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    // chunk → 문자열
+    buffer += decoder.decode(value, { stream: true });
+
+    // SSE는 \n\n 로 이벤트 경계, 우선 줄 단위로 split
+    const lines = buffer.split(/\r?\n/);
+
+    // 마지막 줄 전까지 파싱
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+
+      if (!line) {
+        // 빈 줄 == 이벤트 구분
+        currentEvent = "";
+        continue;
+      }
+
+      if (line.startsWith("event:")) {
+        currentEvent = line.slice("event:".length).trim();
+      } else if (line.startsWith("data:")) {
+        const data = line.slice("data:".length).trim();
+        // 이벤트별 처리
+        if (currentEvent === "progress" && onProgress) {
+          onProgress(data); // 예: "3/30"
+        } else if (currentEvent === "complete" && onComplete) {
+          onComplete(data); // 예: "Parsing complete"
+        } else if (currentEvent === "error" && onError) {
+          onError(data);    // 예: "Some error occurred"
+        }
+      }
+    }
+    // 마지막 줄 남김
+    buffer = lines[lines.length - 1];
+  }
+
+  // 남은 부분 처리
+  if (buffer) {
+    const line = buffer.trim();
+    if (line.startsWith("event:")) {
+      currentEvent = line.slice("event:".length).trim();
+    } else if (line.startsWith("data:")) {
+      const data = line.slice("data:".length).trim();
+      if (currentEvent === "progress" && onProgress) {
+        onProgress(data);
+      } else if (currentEvent === "complete" && onComplete) {
+        onComplete(data);
+      } else if (currentEvent === "error" && onError) {
+        onError(data);
+      }
+    }
+  }
+}
+
 
 export const downloadRegFile = async () => {
   try {
