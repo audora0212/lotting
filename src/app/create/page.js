@@ -375,9 +375,8 @@ function Create() {
           <div>
             <Inputbox
               type="email"
-              placeholder="이메일 *"
+              placeholder="이메일"
               register={register("CustomerData.email", {
-                required: "이메일을 입력해주세요.",
               })}
               isError={!!errors.CustomerData?.email}
             />
@@ -397,9 +396,8 @@ function Create() {
           <div>
             <Inputbox
               type="text"
-              placeholder="가입경로 *"
+              placeholder="가입경로"
               register={register("registerpath", {
-                required: "가입경로를 입력해주세요.",
               })}
               isError={!!errors.registerpath}
             />

@@ -445,11 +445,10 @@ function Modify({ params }) {
             />
           </div>
           <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>이메일 *</div>
+            <div className={styles.inputLabel}>이메일</div>
             <Inputbox
               type="email"
               register={register("CustomerData.email", {
-                required: "이메일을 입력해주세요.",
               })}
               isError={!!errors.CustomerData?.email}
             />
@@ -465,11 +464,10 @@ function Modify({ params }) {
             />
           </div>
           <div className={styles.inputRow}>
-            <div className={styles.inputLabel}>가입경로 *</div>
+            <div className={styles.inputLabel}>가입경로</div>
             <Inputbox
               type="text"
               register={register("registerpath", {
-                required: "가입경로를 입력해주세요.",
               })}
               isError={!!errors.registerpath}
             />
