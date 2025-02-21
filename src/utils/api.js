@@ -666,3 +666,65 @@ export async function uploadDepositHistoryExcelWithProgress(file, onProgress, on
     }
   }
 }
+export const downloadDepositHistoryExcel = async (onProgress, onComplete, onError) => {
+  try {
+    const eventSource = new EventSource(`${path}/api/deposithistory/excel/download/progress`);
+    
+    eventSource.addEventListener("progress", (event) => {
+      if (onProgress) {
+        onProgress(event.data); // 예: "3/48"
+      }
+    });
+    
+    eventSource.addEventListener("complete", async (event) => {
+      // complete 이벤트 데이터에는 fileId가 들어있음
+      const fileId = event.data;
+      try {
+        const response = await axios.get(`${path}/api/deposithistory/excel/download/file?fileId=${fileId}`, {
+          responseType: "blob",
+        });
+        const disposition = response.headers["content-disposition"];
+        let fileName = "deposit_histories.xlsx";
+        if (disposition && disposition.indexOf("filename=") !== -1) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(disposition);
+          if (matches != null && matches[1]) {
+            fileName = matches[1].replace(/['"]/g, "");
+          }
+        }
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        if (onComplete) {
+          onComplete(fileName);
+        }
+      } catch (downloadError) {
+        if (onError) {
+          onError(downloadError);
+        }
+      } finally {
+        eventSource.close();
+      }
+    });
+    
+    eventSource.addEventListener("error", (event) => {
+      if (onError) {
+        onError("SSE 연결 중 오류가 발생했습니다.");
+      }
+      eventSource.close();
+    });
+    
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};

@@ -484,7 +484,6 @@ function Create() {
 
         {/* 2. 관리정보 */}
         <h3>관리정보</h3>
-        <h5>*현재 납입일정이 추가되어있지 않아 기본 설정만 가능합니다.</h5>
         <div className={styles.mainbody}>
           <div className={styles.content_body}>
             <div className={styles.content_body2}>
@@ -585,7 +584,6 @@ function Create() {
                     <Inputbox
                       type="date"
                       register={register("Financial.trustcompanydate", {
-                        required: "신탁사 제출일자를 입력해주세요.",
                       })}
                       isError={!!errors.Financial?.trustcompanydate}
                     />

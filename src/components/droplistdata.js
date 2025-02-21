@@ -153,8 +153,8 @@ export const sintacklist = [
 export const typeidlist = [
   //가입 차순
   {
-    value: "1차",
-    item: "1차",
+    value: "2차",
+    item: "2차",
   },
   // {
   //   value: "1-1차",
@@ -188,22 +188,22 @@ export const typelist = [
     value: "44",
     item: "44",
   },
-  // {
-  //   value: "49",
-  //   item: "49",
-  // },
-  // {
-  //   value: "70",
-  //   item: "70",
-  // },
-  // {
-  //   value: "84A",
-  //   item: "84A",
-  // },
-  // {
-  //   value: "84B",
-  //   item: "84B",
-  // },
+  {
+    value: "49",
+    item: "49",
+  },
+  {
+    value: "70",
+    item: "70",
+  },
+  {
+    value: "84A",
+    item: "84A",
+  },
+  {
+    value: "84B",
+    item: "84B",
+  },
 ];
 
 export const grouplist = [
@@ -212,30 +212,30 @@ export const grouplist = [
     value: "가",
     item: "가",
   },
-  // {
-  //   value: "나",
-  //   item: "나",
-  // },
-  // {
-  //   value: "다",
-  //   item: "다",
-  // },
-  // {
-  //   value: "라",
-  //   item: "라",
-  // },
-  // {
-  //   value: "마",
-  //   item: "마",
-  // },
-  // {
-  //   value: "바",
-  //   item: "바",
-  // },
-  // {
-  //   value: "사",
-  //   item: "사",
-  // },
+  {
+    value: "나",
+    item: "나",
+  },
+  {
+    value: "다",
+    item: "다",
+  },
+  {
+    value: "라",
+    item: "라",
+  },
+  {
+    value: "마",
+    item: "마",
+  },
+  {
+    value: "바",
+    item: "바",
+  },
+  {
+    value: "사",
+    item: "사",
+  },
 ];
 
 export const turnlist = [

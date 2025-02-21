@@ -8,6 +8,7 @@ import {
   uploadExcelFileWithProgress,          // 고객 파일 업로드용 API
   uploadDepositHistoryExcelWithProgress, // 입금내역 업로드용 API
   downloadRegFile,                       // Reg 파일 다운로드용 API
+  downloadDepositHistoryExcel            // 추가: 입금내역 엑셀 다운로드용 API
 } from "@/utils/api";
 
 function FilecontrolPage() {
@@ -24,6 +25,10 @@ function FilecontrolPage() {
   // 3) Reg 파일 다운로드 관련 state
   const [regProgress, setRegProgress] = useState("");
   const [regMessage, setRegMessage] = useState("");
+
+  // 4) 입금내역 엑셀 다운로드 관련 state
+  const [depDownloadProgress, setDepDownloadProgress] = useState("");
+  const [depDownloadMessage, setDepDownloadMessage] = useState("");
 
   // ─────────────────────────────
   // (A) 고객 파일 업로드 핸들러
@@ -107,7 +112,7 @@ function FilecontrolPage() {
   // (C) Reg 파일 다운로드 핸들러
   // ─────────────────────────────
   const handleRegFileDownload = async () => {
-    setRegMessage("Reg 파일 다운로드 시작...");
+    setRegMessage("고객 파일 다운로드 시작...");
     setRegProgress("");
     try {
       await downloadRegFile(
@@ -122,14 +127,37 @@ function FilecontrolPage() {
         }
       );
     } catch (error) {
-      console.error("Reg 파일 다운로드 실패:", error);
+      console.error("고객 파일 다운로드 실패:", error);
       setRegMessage("다운로드 중 오류 발생: " + error.message);
+    }
+  };
+
+  // ─────────────────────────────
+  // (D) 입금내역 엑셀 다운로드 핸들러
+  // ─────────────────────────────
+  const handleDepDownload = async () => {
+    setDepDownloadMessage("입금내역 엑셀 다운로드 시작...");
+    setDepDownloadProgress("");
+    try {
+      await downloadDepositHistoryExcel(
+        (prog) => {
+          setDepDownloadProgress(prog);
+        },
+        (fileName) => {
+          setDepDownloadMessage("다운로드 완료: " + fileName);
+        },
+        (err) => {
+          setDepDownloadMessage("다운로드 실패: " + err);
+        }
+      );
+    } catch (error) {
+      console.error("입금내역 다운로드 오류:", error);
+      setDepDownloadMessage("다운로드 중 오류 발생: " + error.message);
     }
   };
 
   return (
     <div className={styles.content_container}>
-
       {/* ─────────────────────────────
           1) 고객 파일 업로드 섹션
           ───────────────────────────── */}
@@ -142,7 +170,6 @@ function FilecontrolPage() {
           isupload={!!customerFile}
         />
         <button onClick={handleCustomerUpload}>고객 파일 업로드</button>
-        {/* 메시지 & 진행도 */}
         {customerMessage && <p>{customerMessage}</p>}
         {customerProgress && <p>진행도: {customerProgress}</p>}
       </div>
@@ -151,16 +178,16 @@ function FilecontrolPage() {
           2) Reg 파일 다운로드 섹션
           ───────────────────────────── */}
       <div style={{ marginBottom: "2rem" }}>
-        <h3>Reg 파일 다운로드</h3>
-        <button onClick={handleRegFileDownload}>다운로드 버튼</button>
+        <h3>고객 파일 다운로드</h3>
+        <button onClick={handleRegFileDownload}>고객 파일 다운로드</button>
         {regMessage && <p>{regMessage}</p>}
         {regProgress && <p>진행도: {regProgress}</p>}
       </div>
 
       {/* ─────────────────────────────
-          3) 입금내역(Deposit) 업로드 섹션
+          3) 입금내역 업로드 섹션
           ───────────────────────────── */}
-      <div>
+      <div style={{ marginBottom: "2rem" }}>
         <h3>입금내역 업로드 (엑셀, SSE 진행도)</h3>
         <ExcelFileInputbox
           name="depositFileUpload"
@@ -171,6 +198,16 @@ function FilecontrolPage() {
         <button onClick={handleDepositUpload}>입금내역 업로드</button>
         {depositMessage && <p>{depositMessage}</p>}
         {depositProgress && <p>진행도: {depositProgress}</p>}
+      </div>
+
+      {/* ─────────────────────────────
+          4) 입금내역 엑셀 다운로드 섹션
+          ───────────────────────────── */}
+      <div>
+        <h3>입금내역 엑셀 다운로드 (SSE 진행도)</h3>
+        <button onClick={handleDepDownload}>입금내역 다운로드</button>
+        {depDownloadMessage && <p>{depDownloadMessage}</p>}
+        {depDownloadProgress && <p>진행도: {depDownloadProgress}</p>}
       </div>
     </div>
   );
