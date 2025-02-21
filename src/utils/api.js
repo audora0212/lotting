@@ -598,3 +598,71 @@ export const downloadRegFile = async (onProgress, onComplete, onError) => {
     }
   }
 };
+
+export async function uploadDepositHistoryExcelWithProgress(file, onProgress, onComplete, onError) {
+  const formData = new FormData();
+  formData.append("file", file);
+  // 입금 기록 업로드 백엔드 URL
+  const backendUrl = `${path}/api/deposithistory/excel/upload`;
+
+  const response = await fetch(backendUrl, {
+    method: "POST",
+    headers: {
+      Accept: "text/event-stream",
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("서버 응답 에러: " + response.statusText);
+  }
+  if (!response.body) {
+    throw new Error("ReadableStream을 가져올 수 없습니다");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+  let currentEvent = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split(/\r?\n/);
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+      if (!line) {
+        currentEvent = "";
+        continue;
+      }
+      if (line.startsWith("event:")) {
+        currentEvent = line.slice("event:".length).trim();
+      } else if (line.startsWith("data:")) {
+        const data = line.slice("data:".length).trim();
+        if (currentEvent === "progress" && onProgress) {
+          onProgress(data);
+        } else if (currentEvent === "complete" && onComplete) {
+          onComplete(data);
+        } else if (currentEvent === "error" && onError) {
+          onError(data);
+        }
+      }
+    }
+    buffer = lines[lines.length - 1];
+  }
+  if (buffer) {
+    const line = buffer.trim();
+    if (line.startsWith("event:")) {
+      currentEvent = line.slice("event:".length).trim();
+    } else if (line.startsWith("data:")) {
+      const data = line.slice("data:".length).trim();
+      if (currentEvent === "progress" && onProgress) {
+        onProgress(data);
+      } else if (currentEvent === "complete" && onComplete) {
+        onComplete(data);
+      } else if (currentEvent === "error" && onError) {
+        onError(data);
+      }
+    }
+  }
+}

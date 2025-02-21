@@ -191,6 +191,8 @@ function DepositAddPage() {
       alert("데이터가 성공적으로 저장되었습니다.");
       setDepositData(await fetchDepositHistoriesByCustomerId(userId));
     } catch (error) {
+      
+      console.log("submitData:", submitData);
       console.error("Error creating deposit history:", error);
       alert("데이터 저장에 실패했습니다.");
     }
