@@ -1,7 +1,7 @@
 // src/utils/api.js
 import axios from "axios";
-//const path = "http://localhost:8080";
-const path = "http://3.38.181.18:8080";
+const path = "http://localhost:8080";
+//const path = "http://3.38.181.18:8080";
 
 // 고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => {
@@ -535,33 +535,66 @@ export async function uploadExcelFileWithProgress(file, onProgress, onComplete, 
 }
 
 
-export const downloadRegFile = async () => {
+// SSE 엔드포인트를 통해 진행 상황과 최종 fileId를 받고, 그 후 실제 파일 다운로드 요청을 하는 함수
+export const downloadRegFile = async (onProgress, onComplete, onError) => {
   try {
-    const response = await axios.get(`${path}/files/regfiledownload`, {
-      responseType: "blob",
-    });
-    const disposition = response.headers["content-disposition"];
-    let fileName = "regfile_download.xlsx";
-    if (disposition && disposition.indexOf("filename=") !== -1) {
-      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(disposition);
-      if (matches != null && matches[1]) {
-        fileName = matches[1].replace(/['"]/g, "");
+    const eventSource = new EventSource(`${path}/files/regfiledownload/progress`);
+    
+    eventSource.addEventListener("progress", (event) => {
+      if (onProgress) {
+        onProgress(event.data); // 예: "3/48"
       }
-    }
-    const blob = new Blob([response.data], {
-      type: response.headers["content-type"],
     });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
+    
+    eventSource.addEventListener("complete", async (event) => {
+      // complete 이벤트 데이터에는 fileId가 들어있음
+      const fileId = event.data;
+      try {
+        const response = await axios.get(`${path}/files/regfiledownload/file?fileId=${fileId}`, {
+          responseType: "blob",
+        });
+        const disposition = response.headers["content-disposition"];
+        let fileName = "regfile_download.xlsx";
+        if (disposition && disposition.indexOf("filename=") !== -1) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(disposition);
+          if (matches != null && matches[1]) {
+            fileName = matches[1].replace(/['"]/g, "");
+          }
+        }
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        if (onComplete) {
+          onComplete(fileName);
+        }
+      } catch (downloadError) {
+        if (onError) {
+          onError(downloadError);
+        }
+      } finally {
+        eventSource.close();
+      }
+    });
+    
+    eventSource.addEventListener("error", (event) => {
+      if (onError) {
+        onError("SSE 연결 중 오류가 발생했습니다.");
+      }
+      eventSource.close();
+    });
+    
   } catch (error) {
-    console.error("Error downloading reg file:", error);
-    throw error;
+    if (onError) {
+      onError(error);
+    }
   }
 };

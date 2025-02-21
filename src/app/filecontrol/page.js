@@ -8,7 +8,7 @@ import { ExcelFileInputbox } from "@/components/Inputbox";
 import {
   uploadExcelFileWithProgress,
   downloadRegFile,
-} from "@/utils/api"; // 위 api.js
+} from "@/utils/api";
 
 function FilecontrolPage() {
   // 업로드할 파일
@@ -26,7 +26,7 @@ function FilecontrolPage() {
     }
   };
 
-  // 업로드 버튼
+  // 업로드 버튼 (기존 업로드 기능)
   const handleUpload = async () => {
     if (!file) {
       setUploadMessage("파일을 선택해주세요.");
@@ -53,8 +53,6 @@ function FilecontrolPage() {
         }
       );
 
-      // SSE 스트림이 끝난 후에 additional action 가능
-      // (여기서 onComplete/onError에서 setUploadMessage 처리하므로, 중복 X)
       if (!uploadMessage) {
         setUploadMessage("업로드가 종료되었습니다.");
       }
@@ -64,12 +62,25 @@ function FilecontrolPage() {
     }
   };
 
-  // Reg 파일 다운로드
+  // Reg 파일 다운로드 버튼
   const handleRegFileDownload = async () => {
+    setUploadMessage("Reg 파일 다운로드 시작...");
+    setProgress("");
     try {
-      await downloadRegFile();
+      await downloadRegFile(
+        (prog) => {
+          setProgress(prog);
+        },
+        (fileName) => {
+          setUploadMessage("다운로드 완료: " + fileName);
+        },
+        (err) => {
+          setUploadMessage("다운로드 실패: " + err);
+        }
+      );
     } catch (error) {
       console.error("Reg 파일 다운로드 실패:", error);
+      setUploadMessage("Reg 파일 다운로드 실패: " + error.message);
     }
   };
 
@@ -84,7 +95,6 @@ function FilecontrolPage() {
           isupload={!!file}
         />
         <button onClick={handleUpload}>업로드</button>
-
         {uploadMessage && <p>{uploadMessage}</p>}
         {progress && <p>진행도: {progress}</p>}
       </div>
