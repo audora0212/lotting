@@ -9,8 +9,8 @@ import { fetchContractedCustomers, fetchFullyPaidCustomers } from "@/utils/api";
 import styles from "../../styles/Dashboard.module.scss";
 
 const Dashboard = () => {
-  const [contractedCount, setContractedCount] = useState(0);
-  const [fullyPaidCount, setFullyPaidCount] = useState(0);
+  const [contractedCount, setContractedCount] = useState("loading...");
+  const [fullyPaidCount, setFullyPaidCount] = useState("loading...");
   const clients = [
     { id: "123455", name: "이승준", lastPayment: "4차", tempDong: "84A-사-1" },
     { id: "123456", name: "김철수", lastPayment: "3차", tempDong: "84B-사-2" },
