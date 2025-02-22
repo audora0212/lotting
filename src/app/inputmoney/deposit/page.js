@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
 import { InputboxGray } from "@/components/Inputbox";
 import Link from "next/link";
+import Swal from "sweetalert2";
+
 import {
   fetchDepositHistoriesByCustomerId,
   createDepositHistory,
@@ -83,28 +85,52 @@ function DepositPage() {
     console.log("📌 최종 전송 데이터:", JSON.stringify(submitData, null, 2));
     try {
       await createDepositHistory(submitData);
-      alert("데이터가 성공적으로 저장되었습니다.");
+      Swal.fire({
+        icon: "success",
+        title: "성공",
+        text: "데이터가 성공적으로 저장되었습니다.",
+      });
+      
       const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
       setDepositData(updatedDeposits);
     } catch (error) {
       console.error("Error creating deposit history:", error);
-      alert("데이터 저장에 실패했습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "실패",
+        text: "데이터 저장에 실패했습니다.",
+      });
+      
     }
   };
-
   const handleDelete = async (depositId) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
-        await deleteDepositHistory(depositId);
-        alert("삭제되었습니다.");
-        const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
-        setDepositData(updatedDeposits);
-      } catch (error) {
-        console.error("Error deleting deposit history:", error);
-        alert("삭제에 실패했습니다.");
+    Swal.fire({
+      icon: "warning",
+      title: "정말 삭제하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteDepositHistory(depositId);
+          Swal.fire({
+            icon: "success",
+            title: "삭제되었습니다.",
+          });
+          const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
+          setDepositData(updatedDeposits);
+        } catch (error) {
+          console.error("Error deleting deposit history:", error);
+          Swal.fire({
+            icon: "error",
+            title: "삭제에 실패했습니다.",
+          });
+        }
       }
-    }
+    });
   };
+  
 
   return (
     <div className={styles.container}>

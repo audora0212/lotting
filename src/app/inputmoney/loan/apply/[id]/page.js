@@ -6,6 +6,7 @@ import { fetchPendingPhases, fetchLoanInit } from "@/utils/api";
 import styles from "@/styles/DepositAdd.module.scss";
 import { useRecoilValueLoadable } from "recoil";
 import { userinfoSelector } from "@/utils/selector";
+import Swal from "sweetalert2";
 
 const LoanApplyDetail = ({ params }) => {
   const router = useRouter();
@@ -89,7 +90,11 @@ useEffect(() => {
         setSelectedPhases([...selectedPhases, phase.phaseNumber]);
         setRemainingAmount(remainingAmount - phaseAmount);
       } else {
-        alert("남은 금액이 부족하여 선택할 수 없습니다.");
+        Swal.fire({
+          icon: "warning",
+          title: "선택 불가",
+          text: "남은 금액이 부족하여 선택할 수 없습니다.",
+        });
       }
     }
   };
@@ -97,7 +102,11 @@ useEffect(() => {
   // ✅ 선택한 차수 정보 적용 버튼 클릭
   const handleApply = () => {
     if (selectedPhases.length === 0) {
-      alert("적용할 차수를 선택해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "차수 선택 필요",
+        text: "적용할 차수를 선택해주세요.",
+      });
       return;
     }
 

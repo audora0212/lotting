@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
 import { InputboxGray } from "@/components/Inputbox";
 import Link from "next/link";
+import Swal from "sweetalert2";
+
 import {
   fetchDepositHistoriesByCustomerId,
   createDepositHistory,
@@ -155,16 +157,29 @@ function DepositAddPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.transactionDateTime) {
-      alert("거래일시는 필수 입력값입니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "필수 입력값 누락",
+        text: "거래일시는 필수 입력값입니다.",
+      });
       return;
     }
+    
     if (isLoanRecord) {
       if (Number(formData.loanDetails.loanammount.replace(/,/g, "")) > 0 && !formData.loanDetails.loanbank) {
-        alert("대출액이 양수일 경우 대출은행을 입력해주세요.");
+        Swal.fire({
+          icon: "warning",
+          title: "필수 입력값 누락",
+          text: "대출액이 양수일 경우 대출은행을 입력해주세요.",
+        });
         return;
       }
       if (Number(formData.loanDetails.selfammount.replace(/,/g, "")) > 0 && !formData.loanDetails.selfdate) {
-        alert("자납액이 양수일 경우 자납일을 입력해주세요.");
+        Swal.fire({
+          icon: "warning",
+          title: "필수 입력값 누락",
+          text: "자납액이 양수일 경우 자납일을 입력해주세요.",
+        });
         return;
       }
     }
@@ -188,18 +203,32 @@ function DepositAddPage() {
     try {
       await createDepositHistory(submitData);
       console.log("submitData:", submitData);
-      alert("데이터가 성공적으로 저장되었습니다.");
+      Swal.fire({
+        icon: "success",
+        title: "저장 완료",
+        text: "데이터가 성공적으로 저장되었습니다.",
+      }); 
+      
       setDepositData(await fetchDepositHistoriesByCustomerId(userId));
     } catch (error) {
       
       console.log("submitData:", submitData);
       console.error("Error creating deposit history:", error);
-      alert("데이터 저장에 실패했습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "저장 실패",
+        text: "데이터 저장에 실패했습니다.",
+      });
+      
     }
   };
 
   const handleLoanAlert = () => {
-    alert("대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.");
+    Swal.fire({
+      icon: "warning",
+      title: "수정 불가",
+      text: "대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.",
+    });
   };
 
   const togglePhase = (phaseNumber) => {
@@ -219,19 +248,33 @@ function DepositAddPage() {
   };
 
   const handleDeleteDeposit = async (depositId) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
-        await deleteDepositHistory(depositId);
-        alert("삭제되었습니다.");
-        const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
-        setDepositData(updatedDeposits);
-      } catch (error) {
-        console.error("Error deleting deposit history:", error);
-        alert("삭제에 실패했습니다.");
+    Swal.fire({
+      icon: "warning",
+      title: "정말 삭제하시겠습니까?",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteDepositHistory(depositId);
+          Swal.fire({
+            icon: "success",
+            title: "삭제되었습니다.",
+          });
+          const updatedDeposits = await fetchDepositHistoriesByCustomerId(userId);
+          setDepositData(updatedDeposits);
+        } catch (error) {
+          console.error("Error deleting deposit history:", error);
+          Swal.fire({
+            icon: "error",
+            title: "삭제에 실패했습니다.",
+          });
+        }
       }
-    }
+    });
   };
-
+  
   const handlePhaseSelection = (phase) => {
     const phaseAmount = phase.feesum ?? 0;
     if (selectedPhases.includes(phase.phaseNumber)) {
