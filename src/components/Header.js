@@ -22,6 +22,7 @@ const Header = () => {
     deposit: "회원 입금 내역",
     latefees: "전체 회원 연체료",
     control: "차수 관리",
+    filecontrol: "엑셀 관리"
   };
   const subtitle = {
     dashboard: "덕소 리버 베르데포레 [개발중]",
@@ -34,6 +35,7 @@ const Header = () => {
     latefees: "회원들의 연체료를 조회할 수 있는 페이지입니다.",
     control:
       "차수별 납입금을 한번에 확인하고 수정,생성,삭제를 진행할 수 있습니다. [개발중]",
+    filecontrol: "고객 정보가 담긴 엑셀 파일을 업로드, 다운로드할 수 있는 페이지입니다."
   };
 
   const { isLoggedIn, username, logout } = useContext(AuthContext);

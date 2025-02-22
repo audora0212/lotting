@@ -25,7 +25,10 @@ const ChasuFinBody = ({ userId }) => {
   };
 
   if (!data || data.length === 0) {
-    return <p>완납된 납부 내역이 없습니다.</p>;
+    return <div className={styles.ContentPreBody}>
+      <div className={styles.ContentBodyTitle}>완납된 납부 내역이 없습니다.</div>
+    </div>
+      ;
   }
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styles from "@/styles/Create.module.scss";
+import styles from "@/styles/Userinfo.module.scss";
 import withAuth from "@/utils/hoc/withAuth";
 import { ExcelFileInputbox } from "@/components/Inputbox";
 import {
@@ -157,7 +157,10 @@ function FilecontrolPage() {
   };
 
   return (
-    <div className={styles.content_container}>
+    <div className={styles.mainbody}>
+    <p></p>
+    <div className={styles.rowContainer}>
+      <div className={styles.excelcontainer}>
       {/* ─────────────────────────────
           1) 고객 파일 업로드 섹션
           ───────────────────────────── */}
@@ -169,24 +172,27 @@ function FilecontrolPage() {
           value={customerFile ? customerFile.name : ""}
           isupload={!!customerFile}
         />
-        <button onClick={handleCustomerUpload}>고객 파일 업로드</button>
+        <p></p>
+        <button className = {styles.contractButton}
+        onClick={handleCustomerUpload}>고객 파일 업로드</button>
         {customerMessage && <p>{customerMessage}</p>}
         {customerProgress && <p>진행도: {customerProgress}</p>}
       </div>
+      </div>
 
-      {/* ─────────────────────────────
-          2) Reg 파일 다운로드 섹션
-          ───────────────────────────── */}
+      <div className={styles.excelcontainer}>
       <div style={{ marginBottom: "2rem" }}>
         <h3>고객 파일 다운로드</h3>
-        <button onClick={handleRegFileDownload}>고객 파일 다운로드</button>
+        <button className = {styles.editButton}
+        onClick={handleRegFileDownload}>고객 파일 다운로드</button>
         {regMessage && <p>{regMessage}</p>}
         {regProgress && <p>진행도: {regProgress}</p>}
       </div>
-
-      {/* ─────────────────────────────
-          3) 입금내역 업로드 섹션
-          ───────────────────────────── */}
+      </div>
+      </div>
+      <hr></hr>
+      <p></p>
+      <div className={styles.rowContainer}>
       <div style={{ marginBottom: "2rem" }}>
         <h3>입금내역 업로드 (엑셀, SSE 진행도)</h3>
         <ExcelFileInputbox
@@ -195,17 +201,18 @@ function FilecontrolPage() {
           value={depositFile ? depositFile.name : ""}
           isupload={!!depositFile}
         />
-        <button onClick={handleDepositUpload}>입금내역 업로드</button>
+        <p></p>
+        <button className = {styles.contractButton}
+        onClick={handleDepositUpload}>입금내역 업로드</button>
         {depositMessage && <p>{depositMessage}</p>}
         {depositProgress && <p>진행도: {depositProgress}</p>}
       </div>
+      </div>
 
-      {/* ─────────────────────────────
-          4) 입금내역 엑셀 다운로드 섹션
-          ───────────────────────────── */}
       <div>
         <h3>입금내역 엑셀 다운로드 (SSE 진행도)</h3>
-        <button onClick={handleDepDownload}>입금내역 다운로드</button>
+        <button className = {styles.editButton}
+        onClick={handleDepDownload}>입금내역 다운로드</button>
         {depDownloadMessage && <p>{depDownloadMessage}</p>}
         {depDownloadProgress && <p>진행도: {depDownloadProgress}</p>}
       </div>

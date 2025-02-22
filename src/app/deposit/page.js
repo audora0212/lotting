@@ -6,6 +6,8 @@ import withAuth from "@/utils/hoc/withAuth";
 import DepositList from "@/components/Deposit/DepositList";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+
 import depositStyles from "@/styles/Deposit.module.scss"; // 새로운 스타일 파일
 import { FaPrint } from "react-icons/fa6"; // 아이콘
 
@@ -25,7 +27,11 @@ function DepositPage() {
   // 엑셀 내보내기 핸들러
   const handleExport = () => {
     if (depositData.length === 0) {
-      alert("내보낼 데이터가 없습니다.");
+      Swal.fire({
+             icon: "warning",
+              title: "내보낼 데이터가 없습니다.",
+              text: "데이터가 존재하지 않아 엑셀로 내보낼 수 없습니다.",
+            });
       return;
     }
 
