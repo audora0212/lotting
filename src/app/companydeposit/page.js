@@ -18,7 +18,7 @@ const formatNumberWithCommas = (value) => {
   return Number(value).toLocaleString();
 };
 
-function DepositPage() {
+function CompanyDepositPage() {
   // 고객 id를 "1"로 고정
   const userId = "1";
 
@@ -75,6 +75,24 @@ function DepositPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // 필수 입력 필드 유효성 검사:
+    if (
+      !formData.transactionDateTime.trim() ||
+      !formData.details.trim() ||
+      !formData.contractor.trim() ||
+      (
+        !formData.withdrawnAmount.trim() &&
+        !formData.depositAmount.trim()
+      )
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "필수 항목 누락",
+        text: "거래일시, 기재내용, 계약자, 그리고 찾으신 금액 또는 맡기신 금액 중 하나는 필수 입력 필드입니다.",
+      });
+      return;
+    }
+
     // 전송 전, 숫자형 필드는 콤마를 제거하여 순수 숫자 문자열로 변환
     const submitData = {
       ...formData,
@@ -103,6 +121,7 @@ function DepositPage() {
       
     }
   };
+
   const handleDelete = async (depositId) => {
     Swal.fire({
       icon: "warning",
@@ -130,7 +149,6 @@ function DepositPage() {
       }
     });
   };
-  
 
   return (
     <div className={styles.container}>
@@ -177,7 +195,6 @@ function DepositPage() {
               />
             </div>
           </div>
-
         </div>
 
         {/* 중단 입력란: 계약자, depositPhase1, 찾으신 금액, 맡기신 금액 */}
@@ -237,7 +254,7 @@ function DepositPage() {
           </div>
         </div>
 
-        {/* 하단 입력란: 거래 후 잔액, 취급점, 계좌 */}
+        {/* 하단 입력란: 거래 후 잔액, 취급점, 계좌, 비고 */}
         <div className={styles.infoContainer}>
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
@@ -278,8 +295,8 @@ function DepositPage() {
               />
             </div>
           </div>
-                    {/* 새로 추가: 비고 입력란 */}
-                    <div className={styles.unitbody}>
+          {/* 새로 추가: 비고 입력란 */}
+          <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>비고</label>
             </div>
@@ -304,4 +321,4 @@ function DepositPage() {
   );
 }
 
-export default DepositPage;
+export default CompanyDepositPage;

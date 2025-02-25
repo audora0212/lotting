@@ -103,14 +103,14 @@ const Nav = () => {
           </div>
         </Link>
 
-        <Link href="/inputmoney/deposit">
+        <Link href="/companydeposit">
           <div
             className={
-              splitpath[2] === "deposit" ? styles.select : styles.nonselect
+              splitpath[2] === "companydeposit" ? styles.select : styles.nonselect
             }
           >
             <div className={styles.innerContainer}>
-              {splitpath[2] === "deposit" ? (
+              {splitpath[2] === "companydeposit" ? (
                 <MdAccountBalance style={iconstyle} />
               ) : (
                 <MdOutlineAccountBalance style={iconstyle} />
