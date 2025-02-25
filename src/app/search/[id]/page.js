@@ -72,6 +72,7 @@ function Search() {
         const loanAmount = userdata.loan?.loanammount;
         const selfAmount = userdata.loan?.selfammount;
         let totalLoanSelf = null;
+        console.log(userdata.phases)
         if (loanAmount != null && selfAmount != null) {
           totalLoanSelf = loanAmount + selfAmount;
         } else if (loanAmount != null) {
@@ -528,6 +529,7 @@ function Search() {
                   </thead>
                   <tbody>
                     {[
+                      
                       ...userdata.phases,
                       ...Array.from(
                         { length: 10 - (userdata.phases?.length || 0) },
@@ -566,12 +568,9 @@ function Search() {
                           <td>{phase.phaseNumber || "없음"}</td>
                           <td>
                             {phase.planneddate
-                              ? parseInt(
-                                  phase.planneddate.slice(0, 4),
-                                  10
-                                ) > 2100
-                                ? "예정"
-                                : phase.planneddate.slice(0, 10)
+                              ? parseInt(phase.planneddate.slice(0, 4), 10) > 2099
+                                  ? phase.planneddateString
+                                  : phase.planneddate.slice(0, 10)
                               : "없음"}
                           </td>
                           <td>
