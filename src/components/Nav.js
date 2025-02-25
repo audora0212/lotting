@@ -26,6 +26,9 @@ const Nav = () => {
   const pathname = usePathname();
   const splitpath = pathname.split("/");
   const [menuOpen, setMenuOpen] = useState(false);
+  // 현재 경로가 "search" 또는 "inputmoney"이면 active로 처리
+const isSearchActive = splitpath[1] === "search" || splitpath[1] === "inputmoney";
+
 
   return (
     <div className={styles.container}>
@@ -53,21 +56,17 @@ const Nav = () => {
 
         {/* 회원 정보 검색 Link (Simplified) */}
         <Link href="/search">
-          <div
-            className={
-              splitpath[1] === "search" ? styles.select : styles.nonselect
-            }
-          >
-            <div className={styles.innerContainer}>
-              {splitpath[1] === "search" ? (
-                <HiUsers style={iconstyle} />
-              ) : (
-                <HiOutlineUsers style={iconstyle} />
-              )}
-              <span className={styles.innertext}>회원 정보 검색</span>
-            </div>
-          </div>
-        </Link>
+  <div className={isSearchActive ? styles.select : styles.nonselect}>
+    <div className={styles.innerContainer}>
+      {isSearchActive ? (
+        <HiUsers style={iconstyle} />
+      ) : (
+        <HiOutlineUsers style={iconstyle} />
+      )}
+      <span className={styles.innertext}>회원 정보 검색</span>
+    </div>
+  </div>
+</Link>
 
         {/* 회원 정보 입력 Link */}
         <Link href="/create">
@@ -106,11 +105,11 @@ const Nav = () => {
         <Link href="/companydeposit">
           <div
             className={
-              splitpath[2] === "companydeposit" ? styles.select : styles.nonselect
+              splitpath[1] === "companydeposit" ? styles.select : styles.nonselect
             }
           >
             <div className={styles.innerContainer}>
-              {splitpath[2] === "companydeposit" ? (
+              {splitpath[1] === "companydeposit" ? (
                 <MdAccountBalance style={iconstyle} />
               ) : (
                 <MdOutlineAccountBalance style={iconstyle} />
