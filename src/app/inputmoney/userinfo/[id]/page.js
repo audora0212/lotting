@@ -142,16 +142,7 @@ function Inputmoney() {
 
             </div>
             <div className={styles.MainContent}>
-              <div
-                className={styles.Content}
-                style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
-              >
-                <div className={styles.ContentTitle}>
-                  <div className={styles.ContentTitleIcon_Y}></div>
-                  <div className={styles.ContentTitleFont}>진행 예정 납부</div>
-                </div>
-                <ChasuPreBody userId={userData.id} />
-              </div>
+
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
@@ -161,6 +152,17 @@ function Inputmoney() {
                   <div className={styles.ContentTitleFont}>진행된 납부</div>
                 </div>
                 <ChasuFinBody userId={userData.id} />
+              </div>
+
+              <div
+                className={styles.Content}
+                style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
+              >
+                <div className={styles.ContentTitle}>
+                  <div className={styles.ContentTitleIcon_Y}></div>
+                  <div className={styles.ContentTitleFont}>진행 예정 납부</div>
+                </div>
+                <ChasuPreBody userId={userData.id} />
               </div>
               <div className={styles.Content}>
                 <div className={styles.ContentTitle}>
