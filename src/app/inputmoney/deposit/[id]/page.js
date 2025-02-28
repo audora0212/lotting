@@ -79,6 +79,7 @@ function DepositAddPage() {
     const loadDeposits = async () => {
       try {
         const data = await fetchDepositHistoriesByCustomerId(userId);
+        console.log(data)
         setDepositData(data);
       } catch (error) {
         console.error("Error fetching deposits:", error);

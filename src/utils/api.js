@@ -1,7 +1,7 @@
 // src/utils/api.js
 import axios from "axios";
-const path = "http://localhost:8080";
-//const path = "http://3.38.181.18:8080";
+//const path = "http://localhost:8080";
+const path = "http://3.38.181.18:8080";
 
 // 고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => {
@@ -441,15 +441,12 @@ export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
 
 
 export async function uploadExcelFileWithProgress(file, onProgress, onComplete, onError) {
-  // onProgress: (progressData) => void  (ex: "3/30")
-  // onComplete: (message) => void       (ex: "Parsing complete")
-  // onError:    (errorMessage) => void  (ex: "Invalid file format")
 
   const formData = new FormData();
   formData.append("file", file);
 
   // 백엔드 URL (직접 상수 혹은 env 등)
-  const backendUrl = "http://localhost:8080/files/uploadExcelWithProgress";
+  const backendUrl = `${path}/files/uploadExcelWithProgress`;
 
   // fetch로 POST
   const response = await fetch(backendUrl, {
