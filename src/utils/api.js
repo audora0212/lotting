@@ -726,3 +726,13 @@ export const downloadDepositHistoryExcel = async (onProgress, onComplete, onErro
     }
   }
 };
+
+export const registerLoan = async (loanData) => {
+  try {
+    const response = await axios.post(`${path}/api/loan/register`, loanData);
+    return response.data;
+  } catch (error) {
+    console.error("대출/자납 등록 오류:", error);
+    throw error;
+  }
+};

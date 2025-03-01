@@ -1,5 +1,4 @@
 "use client";
-// src/app/inputmoney/deposit/[id]/page.js
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/DepositAdd.module.scss";
@@ -22,9 +21,9 @@ const updateNestedField = (state, name, newValue) => {
     return { ...state, [name]: newValue };
   } else {
     const [parent, child] = keys;
-    return { 
-      ...state, 
-      [parent]: { ...state[parent], [child]: newValue }
+    return {
+      ...state,
+      [parent]: { ...state[parent], [child]: newValue },
     };
   }
 };
@@ -34,7 +33,7 @@ const handleMoneyChange = (e, setFormData) => {
   const { name, value } = e.target;
   const numeric = value.replace(/\D/g, "");
   const formatted = numeric ? parseInt(numeric, 10).toLocaleString() : "";
-  setFormData(prev => updateNestedField(prev, name, formatted));
+  setFormData((prev) => updateNestedField(prev, name, formatted));
 };
 
 function DepositAddPage() {
@@ -42,6 +41,7 @@ function DepositAddPage() {
 
   const [isLoanRecord, setIsLoanRecord] = useState(false);
   const [isRecordDeposit, setIsRecordDeposit] = useState(false);
+  // 고객의 대출초과액(loanExceedAmount)을 저장 (예: 500000 등)
   const [statusLoanExceed, setStatusLoanExceed] = useState(0);
 
   const [formData, setFormData] = useState({
@@ -79,7 +79,7 @@ function DepositAddPage() {
     const loadDeposits = async () => {
       try {
         const data = await fetchDepositHistoriesByCustomerId(userId);
-        console.log(data)
+        console.log(data);
         setDepositData(data);
       } catch (error) {
         console.error("Error fetching deposits:", error);
@@ -105,10 +105,18 @@ function DepositAddPage() {
       try {
         const customerData = await fetchCustomerById(userId);
         console.log("Fetched Customer Data:", customerData);
-        setFormData(prev => ({
+        console.log(customerData.status.loanExceedAmount);
+        setFormData((prev) => ({
           ...prev,
-          contractor: customerData.customerData?.name || customerData.name || ""
+          contractor:
+            customerData.customerData?.name || customerData.name || "",
         }));
+        // 고객 데이터에서 loanExceedAmount 값을 가져와 상태에 저장 (없으면 0)
+        setStatusLoanExceed(
+          customerData.status?.loanExceedAmount ||
+            customerData.loanExceedAmmount ||
+            0
+        );
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
@@ -122,38 +130,41 @@ function DepositAddPage() {
   }, [userId, isLoanRecord]);
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, targetPhases: selectedPhases }));
+    setFormData((prev) => ({ ...prev, targetPhases: selectedPhases }));
   }, [selectedPhases]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "loanDate") {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     } else if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [parent]: { ...prev[parent], [child]: value }
+        [parent]: { ...prev[parent], [child]: value },
       }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  // "사용할 대출/자납 합계" = 대출액 + 자납액
   const computedDeposit =
     (Number(formData.loanDetails.loanammount.replace(/,/g, "")) || 0) +
     (Number(formData.loanDetails.selfammount.replace(/,/g, "")) || 0);
+  // 대출/자납 잔액 = 고객의 대출초과액 - computedDeposit
+  const computedLoanBalance = statusLoanExceed - computedDeposit;
+
+  // 선택된 차수의 총 금액
   const selectedPhasesSum = pendingPhases
-    .filter(phase => selectedPhases.includes(phase.phaseNumber))
+    .filter((phase) => selectedPhases.includes(phase.phaseNumber))
     .reduce((acc, phase) => acc + (phase.feesum || 0), 0);
-  const computedLoanBalance = Math.max(
-    0,
-    computedDeposit - selectedPhasesSum + statusLoanExceed
-  );
+
+  // 예상 잔액 = (대출/자납 잔액 - 선택된 차수의 금액) 가 음수면 0으로 처리
   const [remainingAmount, setRemainingAmount] = useState(0);
   useEffect(() => {
-    setRemainingAmount(computedDeposit);
-  }, [computedDeposit]);
+    setRemainingAmount(Math.max(0, computedLoanBalance - selectedPhasesSum));
+  }, [computedLoanBalance, selectedPhasesSum]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -165,32 +176,30 @@ function DepositAddPage() {
       });
       return;
     }
-    
+
     if (isLoanRecord) {
-      if (Number(formData.loanDetails.loanammount.replace(/,/g, "")) > 0 && !formData.loanDetails.loanbank) {
+      // 만약 대출/자납 잔액이 음수라면 제출을 중단
+      if (computedLoanBalance < 0) {
         Swal.fire({
           icon: "warning",
-          title: "필수 입력값 누락",
-          text: "대출액이 양수일 경우 대출은행을 입력해주세요.",
-        });
-        return;
-      }
-      if (Number(formData.loanDetails.selfammount.replace(/,/g, "")) > 0 && !formData.loanDetails.selfdate) {
-        Swal.fire({
-          icon: "warning",
-          title: "필수 입력값 누락",
-          text: "자납액이 양수일 경우 자납일을 입력해주세요.",
+          title: "입력 오류",
+          text: "대출/자납 잔액이 음수입니다. 확인해주세요.",
         });
         return;
       }
     }
     let submitData = { ...formData };
-    const removeCommas = (val) => (typeof val === "string" ? val.replace(/,/g, "") : val);
+    const removeCommas = (val) =>
+      typeof val === "string" ? val.replace(/,/g, "") : val;
     submitData.withdrawnAmount = removeCommas(submitData.withdrawnAmount);
     submitData.depositAmount = removeCommas(submitData.depositAmount);
     submitData.balanceAfter = removeCommas(submitData.balanceAfter);
-    submitData.loanDetails.loanammount = removeCommas(submitData.loanDetails.loanammount);
-    submitData.loanDetails.selfammount = removeCommas(submitData.loanDetails.selfammount);
+    submitData.loanDetails.loanammount = removeCommas(
+      submitData.loanDetails.loanammount
+    );
+    submitData.loanDetails.selfammount = removeCommas(
+      submitData.loanDetails.selfammount
+    );
     submitData.loanDate = formData.loanDate;
     submitData.loanDetails.selfdate = formData.loanDetails.selfdate; // self납일은 selfdate로 저장
     submitData.targetPhases = selectedPhases;
@@ -198,6 +207,7 @@ function DepositAddPage() {
       submitData.withdrawnAmount = "0";
       submitData.depositAmount = computedDeposit.toString();
       submitData.loanDetails.loanselfsum = computedDeposit.toString();
+      // 대출/자납 잔액을 submitData.loanDetails.loanselfcurrent에 저장
       submitData.loanDetails.loanselfcurrent = computedLoanBalance.toString();
       submitData.loanStatus = "o";
     }
@@ -208,11 +218,10 @@ function DepositAddPage() {
         icon: "success",
         title: "저장 완료",
         text: "데이터가 성공적으로 저장되었습니다.",
-      }); 
-      
+      });
+
       setDepositData(await fetchDepositHistoriesByCustomerId(userId));
     } catch (error) {
-      
       console.log("submitData:", submitData);
       console.error("Error creating deposit history:", error);
       Swal.fire({
@@ -220,7 +229,6 @@ function DepositAddPage() {
         title: "저장 실패",
         text: "데이터 저장에 실패했습니다.",
       });
-      
     }
   };
 
@@ -233,9 +241,9 @@ function DepositAddPage() {
   };
 
   const togglePhase = (phaseNumber) => {
-    setSelectedPhases(prev =>
+    setSelectedPhases((prev) =>
       prev.includes(phaseNumber)
-        ? prev.filter(num => num !== phaseNumber)
+        ? prev.filter((num) => num !== phaseNumber)
         : [...prev, phaseNumber]
     );
   };
@@ -275,11 +283,11 @@ function DepositAddPage() {
       }
     });
   };
-  
+
   const handlePhaseSelection = (phase) => {
     const phaseAmount = phase.feesum ?? 0;
     if (selectedPhases.includes(phase.phaseNumber)) {
-      setSelectedPhases(selectedPhases.filter(num => num !== phase.phaseNumber));
+      setSelectedPhases(selectedPhases.filter((num) => num !== phase.phaseNumber));
     } else {
       setSelectedPhases([...selectedPhases, phase.phaseNumber]);
     }
@@ -389,7 +397,7 @@ function DepositAddPage() {
       <h3>입금내역 추가</h3>
       <p></p>
       <form onSubmit={handleSubmit}>
-        {/* 상단 입력란: 거래일시, 적요(-> description), 기재내용, 비고(-> remarks) */}
+        {/* 상단 입력란: 거래일시, 적요, 기재내용, 비고 */}
         <div className={styles.infoContainer}>
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
@@ -430,7 +438,7 @@ function DepositAddPage() {
               />
             </div>
           </div>
-          {/* 추가: 비고 입력란 */}
+          {/* 추가: 비고 */}
           <div className={styles.unitbody}>
             <div className={styles.titlebody}>
               <label className={styles.title}>비고</label>
@@ -460,7 +468,6 @@ function DepositAddPage() {
               />
             </div>
           </div>
-
           {!isLoanRecord && (
             <>
               <div className={styles.unitbody}>
@@ -583,7 +590,7 @@ function DepositAddPage() {
                 onChange={(e) => {
                   setIsRecordDeposit(e.target.checked);
                   if (!e.target.checked) {
-                    setFormData(prev => ({ ...prev, depositPhase1: null }));
+                    setFormData((prev) => ({ ...prev, depositPhase1: null }));
                   }
                 }}
               />
@@ -611,36 +618,10 @@ function DepositAddPage() {
         {isLoanRecord && (
           <>
             <p></p>
-            <h3>대출정보 입력</h3>
+            <h3>사용할 대출정보 입력</h3>
+            {/* "대출일자" 인풋 삭제 */}
             <div className={styles.infoContainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <label className={styles.title}>대출일자</label>
-                </div>
-                <div className={styles.contentbody}>
-                  <InputboxGray
-                    type="datetime-local"
-                    name="loanDate"
-                    value={formData.loanDate}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={styles.infoContainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <label className={styles.title}>대출은행</label>
-                </div>
-                <div className={styles.contentbody}>
-                  <InputboxGray
-                    type="text"
-                    name="loanDetails.loanbank"
-                    value={formData.loanDetails.loanbank}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
+              {/* "대출은행" 인풋 삭제하고 "대출액"만 유지 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <label className={styles.title}>대출액</label>
@@ -657,19 +638,7 @@ function DepositAddPage() {
               </div>
             </div>
             <div className={styles.infoContainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <label className={styles.title}>자납일</label>
-                </div>
-                <div className={styles.contentbody}>
-                  <InputboxGray
-                    type="datetime-local"
-                    name="loanDetails.selfdate"
-                    value={formData.loanDetails.selfdate}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
+              {/* "자납일" 인풋 삭제하고 "자납액"만 유지 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <label className={styles.title}>자납액</label>
@@ -689,7 +658,7 @@ function DepositAddPage() {
               <div className={styles.row}>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
-                    <label className={styles.title}>대출/자납 합계</label>
+                    <label className={styles.title}>사용할 대출/자납 합계</label>
                   </div>
                   <div className={styles.contentbody}>
                     <InputboxGray
@@ -715,11 +684,11 @@ function DepositAddPage() {
                 </div>
               </div>
             </div>
-            <h4>📌 진행 예정 납부 차수 선택</h4>
+            <h4>📌 진행 예정 납부 차수 선택 (복수 선택 가능)</h4>
             <div className={styles.infoContainer}>
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
-                  <span className={styles.title}>금액</span>
+                  <span className={styles.title}>예상 잔액</span>
                 </div>
                 <div className={styles.contentbody}>
                   <p>
@@ -733,14 +702,16 @@ function DepositAddPage() {
                 {pendingPhases.map((phase) => {
                   const phaseAmount = phase.feesum ?? 0;
                   const isSelected = selectedPhases.includes(phase.phaseNumber);
-                  const isDisabled = isLoanRecord ? false : (remainingAmount < phaseAmount && !isSelected);
+                  const isDisabled = isLoanRecord
+                    ? false
+                    : remainingAmount < phaseAmount && !isSelected;
                   return (
                     <li key={phase.phaseNumber}>
                       <div className={styles.infoContainer}>
                         <div className={styles.unitbody}>
                           <div className={styles.titlebody}>
                             <span className={styles.phaseTitle}>
-                              {phase.phaseNumber}차 총액
+                              {phase.phaseNumber}차 총액(잔액)
                             </span>
                           </div>
                           <div
@@ -752,7 +723,10 @@ function DepositAddPage() {
                             }
                           >
                             <div className={styles.phaseAmount}>
-                              {phaseAmount.toLocaleString()}₩
+                              {phaseAmount.toLocaleString()}₩{" "}
+                              {phase.sum != null && (
+                                <span>({Number(phase.sum).toLocaleString()}₩)</span>
+                              )}
                             </div>
                           </div>
                         </div>

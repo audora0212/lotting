@@ -1,231 +1,263 @@
-// src/app/inputmoney/deposit/loan/[id]/page.js
 "use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { fetchPendingPhases, fetchLoanInit } from "@/utils/api";
-import styles from "@/styles/DepositAdd.module.scss";
-import { useRecoilValueLoadable } from "recoil";
-import { userinfoSelector } from "@/utils/selector";
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Swal from "sweetalert2";
+import styles from "@/styles/DepositAdd.module.scss";
+import { InputboxGray } from "@/components/Inputbox";
+import { fetchCustomerById, fetchLoanUpdate } from "@/utils/api";
 
-const LoanApplyDetail = ({ params }) => {
-  const router = useRouter();
-  const { id } = params; // URL에서 회원 ID 가져오기
+// 날짜 포맷팅 헬퍼 함수: "yyyy-MM-dd" 형태의 값에 시간 정보를 추가해 "yyyy-MM-ddT00:00" 형태로 반환
+const formatDateTimeLocal = (dateStr) => {
+  if (!dateStr) return "";
+  if (dateStr.includes("T")) return dateStr;
+  return dateStr + "T00:00";
+};
 
-  // ✅ Recoil 상태 불러오기 (컴포넌트 내부에서 호출)
-  const userselectordata = useRecoilValueLoadable(userinfoSelector);
+// 숫자 입력값에 대해 실시간 포맷팅 (콤마 추가)
+const handleMoneyChange = (e, setLoanData) => {
+  const { name, value } = e.target;
+  const numeric = value.replace(/\D/g, "");
+  const formatted = numeric ? parseInt(numeric, 10).toLocaleString() : "";
+  setLoanData((prev) => ({ ...prev, [name]: formatted }));
+};
 
-  // ✅ 상태 저장 (useState 활용)
-  const [userInfo, setUserInfo] = useState(null);
+function LoanUpdatePage() {
+  const { id: userId } = useParams();
 
-  // ✅ 사용자 정보 불러오기 (useEffect 활용)
+  const [loanData, setLoanData] = useState({
+    loandate: "",
+    loanbank: "",
+    loanammount: "",
+    selfdate: "",
+    selfammount: "",
+  });
+  const [initialLoanData, setInitialLoanData] = useState(null);
+  const [statusLoanExceed, setStatusLoanExceed] = useState("");
+
   useEffect(() => {
-    if (userselectordata.state === "hasValue") {
-      setUserInfo(userselectordata.contents);
-    }
-  }, [userselectordata]); // userselectordata 변경될 때 실행
-
-  // ✅ 대출 관련 상태
-  const [loanAmount, setLoanAmount] = useState(0);
-  const [selfAmount, setSelfAmount] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
-
-  useEffect(() => {
-    const fetchLoanData = async () => {
-      try {
-        console.log("📌 fetchLoanInit 호출됨, id:", id);
-        const loanData = await fetchLoanInit(id);
-        console.log("✅ 대출 데이터 불러오기 성공:", loanData);
-
-        setLoanAmount(loanData.loanammount || 0);
-        setSelfAmount(loanData.selfammount || 0);
-        setTotalAmount((loanData.loanammount || 0) + (loanData.selfammount || 0));
-      } catch (error) {
-        console.error("❌ Error fetching loan data:", error);
-      }
-    };
-
-    if (id) {
-      fetchLoanData();
-    }
-  }, [id]);
-
-  // ✅ 진행 예정 납부 차수 목록
-  const [pendingPhases, setPendingPhases] = useState([]);
-  const [selectedPhases, setSelectedPhases] = useState([]);
-  const [remainingAmount, setRemainingAmount] = useState(0);
-// ✅ totalAmount가 변경될 때 remainingAmount 업데이트
-useEffect(() => {
-    setRemainingAmount(totalAmount);
-  }, [totalAmount]); // totalAmount 변경될 때 실행
-  // ✅ 진행 예정 납부 차수 불러오기
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await fetchPendingPhases(id);
-        console.log("📌 진행 예정 납부 차수 데이터:", fetchedData);
-        setPendingPhases(fetchedData || []);
-      } catch (error) {
-        console.error("❌ Error fetching pending phases:", error);
-        setPendingPhases([]);
-      }
-    };
-
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
-
-  // ✅ 체크박스 선택 핸들러 (차수 선택/해제 시 남은 금액 업데이트)
-  const handleCheckboxChange = (phase) => {
-    const phaseAmount = phase.feesum ?? 0;
-
-    if (selectedPhases.includes(phase.phaseNumber)) {
-      // 선택 해제 (남은 금액 증가)
-      setSelectedPhases(selectedPhases.filter((num) => num !== phase.phaseNumber));
-      setRemainingAmount(remainingAmount + phaseAmount);
-    } else {
-      // 선택 (남은 금액이 충분한 경우만 가능)
-      if (remainingAmount >= phaseAmount) {
-        setSelectedPhases([...selectedPhases, phase.phaseNumber]);
-        setRemainingAmount(remainingAmount - phaseAmount);
-      } else {
-        Swal.fire({
-          icon: "warning",
-          title: "선택 불가",
-          text: "남은 금액이 부족하여 선택할 수 없습니다.",
+    if (userId) {
+      fetchCustomerById(userId)
+        .then((customerData) => {
+          if (customerData.loan) {
+            const fetchedLoanData = {
+              loandate: formatDateTimeLocal(customerData.loan.loandate || ""),
+              loanbank: customerData.loan.loanbank || "",
+              loanammount: customerData.loan.loanammount
+                ? customerData.loan.loanammount.toString()
+                : "",
+              selfdate: formatDateTimeLocal(customerData.loan.selfdate || ""),
+              selfammount: customerData.loan.selfammount
+                ? customerData.loan.selfammount.toString()
+                : "",
+            };
+            setLoanData(fetchedLoanData);
+            setInitialLoanData(fetchedLoanData);
+          }
+          if (
+            customerData.status &&
+            customerData.status.loanExceedAmount != null
+          ) {
+            setStatusLoanExceed(customerData.status.loanExceedAmount.toString());
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching customer data:", error);
         });
-      }
     }
+  }, [userId]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setLoanData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ 선택한 차수 정보 적용 버튼 클릭
-  const handleApply = () => {
-    if (selectedPhases.length === 0) {
+  // 현재 대출/자납 총액: 초기(저장된) 데이터 기준
+  const currentLoanTotal = initialLoanData
+    ? (Number(initialLoanData.loanammount.replace(/,/g, "")) || 0) +
+      (Number(initialLoanData.selfammount.replace(/,/g, "")) || 0)
+    : 0;
+
+  // 예상 대출/자납 총액: 현재 입력된 값
+  const expectedLoanTotal =
+    (Number(loanData.loanammount.replace(/,/g, "")) || 0) +
+    (Number(loanData.selfammount.replace(/,/g, "")) || 0);
+
+  // 현재 대출/자납 잔액: 고객의 대출초과액 (DB에 저장된 값)
+  const currentLoanBalance = statusLoanExceed ? Number(statusLoanExceed) : 0;
+  // 예상 대출/자납 잔액: 고객의 대출초과액에서 예상 총액 차감 (음수면 0)
+  const expectedLoanBalance = Math.max(0, currentLoanBalance - expectedLoanTotal);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!loanData.loandate || !loanData.loanbank || !loanData.loanammount) {
       Swal.fire({
         icon: "warning",
-        title: "차수 선택 필요",
-        text: "적용할 차수를 선택해주세요.",
+        title: "필수 입력값 누락",
+        text: "대출일자, 대출은행, 대출액은 필수 입력값입니다.",
       });
       return;
     }
 
-    console.log("✅ 선택된 차수:", selectedPhases);
-    console.log("📌 적용할 대출금:", loanAmount);
-    console.log("📌 적용할 자납금:", selfAmount);
-    console.log("📌 합계 금액:", totalAmount);
-    console.log("📉 남은 금액:", remainingAmount);
+    const updatedLoan = {
+      loandate: loanData.loandate,
+      loanbank: loanData.loanbank,
+      loanammount: Number(loanData.loanammount.replace(/,/g, "")),
+      selfdate: loanData.selfdate,
+      selfammount: Number(loanData.selfammount.replace(/,/g, "")),
+    };
 
-    // 여기에 선택한 차수를 백엔드에 저장하는 API 호출 로직 추가 가능
+    try {
+      await fetchLoanUpdate(userId, updatedLoan, () => {});
+      Swal.fire({
+        icon: "success",
+        title: "수정 완료",
+        text: "대출/자납 정보가 성공적으로 수정되었습니다.",
+      });
+      const customerData = await fetchCustomerById(userId);
+      if (
+        customerData.status &&
+        customerData.status.loanExceedAmount != null
+      ) {
+        setStatusLoanExceed(customerData.status.loanExceedAmount.toString());
+      }
+    } catch (error) {
+      console.error("Error updating loan data:", error);
+      Swal.fire({
+        icon: "error",
+        title: "수정 실패",
+        text: "대출/자납 정보 수정에 실패했습니다.",
+      });
+    }
   };
+
   return (
-    <div>
-    <p></p>
-        <div className={styles.infoContainer}>
+    <div className={styles.container}>
+      <h2>대출/자납 정보 수정</h2>
+      <div className={styles.infoContainer}>
         <div className={styles.unitbody}>
-            <div className={styles.titlebody}>
+          <div className={styles.titlebody}>
             <span className={styles.title}>관리번호</span>
-            </div>
-            <div className={styles.contentbody}>
-            {userInfo?.id || "정보 없음"}
-            </div>
+          </div>
+          <div className={styles.contentbody}>
+            <span>{userId || "N/A"}</span>
+          </div>
         </div>
-        <div className={styles.unitbody}>
+      </div>
+      <form onSubmit={handleSubmit}>
+        {/* 첫 번째 행: 대출일자 / 대출액 / 대출은행 */}
+        <div className={styles.infoContainer}>
+          <div className={styles.unitbody}>
             <div className={styles.titlebody}>
-            <span className={styles.title}>성명</span>
+              <label className={styles.title}>대출일자</label>
             </div>
             <div className={styles.contentbody}>
-            {userInfo?.customerData?.name || "정보 없음"}
-            </div>
-        </div>
-        </div>
-      <p></p>
-      <h2>대출/자납액 정보</h2>
-      <div className={styles.infoContainer}>
-        <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
-            <span className={styles.title}>대출액</span>
-          </div>
-          <div className={styles.contentbody}>
-          {loanAmount.toLocaleString()}₩
-          </div>
-        </div>
-        <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
-            <span className={styles.title}>자납액</span>
-          </div>
-          <div className={styles.contentbody}>
-          {selfAmount.toLocaleString()}₩
-          </div>
-        </div>
-      </div>
-      <div className={styles.infoContainer}>
-        <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
-            <span className={styles.title}>합계</span>
-          </div>
-          <div className={styles.contentbody}>
-          {totalAmount.toLocaleString()}₩
-          </div>
-        </div>
-      </div>
-
-      <h2>📌 진행 예정 납부 차수 선택</h2>
-      <div className={styles.infoContainer}>
-        <div className={styles.unitbody}>
-          <div className={styles.titlebody}>
-            <span className={styles.title}>합계</span>
-          </div>
-          <div className={styles.contentbody}>
-          <p>💰 남은 금액: <strong>{remainingAmount.toLocaleString()}₩</strong></p>
-          </div>
-        </div>
-      </div>
-      
-
-      {pendingPhases.length > 0 ? (
-  <ul>
-    {pendingPhases.map((phase) => {
-      const phaseAmount = phase.feesum ?? 0;
-      const isSelected = selectedPhases.includes(phase.phaseNumber);
-      const isDisabled = remainingAmount < phaseAmount && !isSelected;
-
-      return (
-        <li key={phase.phaseNumber}>
-          <div className={styles.infoContainer}>
-            <div className={styles.unitbody}>
-              <div className={styles.titlebody}>
-                <span className={styles.phaseTitle}>{phase.phaseNumber}차 총액</span>
-              </div>
-              <div
-                className={`${styles.contentbody2} 
-                            ${isSelected ? styles.selected : ""}
-                            ${isDisabled ? styles.disabledPhase : ""}`}
-                onClick={() => !isDisabled && handleCheckboxChange(phase)}
-              >
-                <div className={styles.phaseAmount}>
-                  {phaseAmount.toLocaleString()}₩
-                </div>
-              </div>
+              <InputboxGray
+                type="datetime-local"
+                name="loandate"
+                value={loanData.loandate}
+                onChange={handleInputChange}
+              />
             </div>
           </div>
-        </li>
-      );
-    })}
-  </ul>
-) : (
-  <p>진행 예정 납부 차수가 없습니다.</p>
-)}
-
-    <p></p>
-      <button className={styles.contractButton}
-        onClick={handleApply}
-      >
-        선택한 차수 적용하기
-      </button>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <label className={styles.title}>대출액</label>
+            </div>
+            <div className={styles.contentbody}>
+              <InputboxGray
+                type="text"
+                name="loanammount"
+                value={loanData.loanammount}
+                onChange={(e) => handleMoneyChange(e, setLoanData)}
+              />
+            </div>
+          </div>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <label className={styles.title}>대출은행</label>
+            </div>
+            <div className={styles.contentbody}>
+              <InputboxGray
+                type="text"
+                name="loanbank"
+                value={loanData.loanbank}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+        </div>
+        {/* 두 번째 행: 자납일 / 자납액 */}
+        <div className={styles.infoContainer}>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <label className={styles.title}>자납일</label>
+            </div>
+            <div className={styles.contentbody}>
+              <InputboxGray
+                type="datetime-local"
+                name="selfdate"
+                value={loanData.selfdate}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <label className={styles.title}>자납액</label>
+            </div>
+            <div className={styles.contentbody}>
+              <InputboxGray
+                type="text"
+                name="selfammount"
+                value={loanData.selfammount}
+                onChange={(e) => handleMoneyChange(e, setLoanData)}
+              />
+            </div>
+          </div>
+        </div>
+        {/* 현재/예상 대출/자납 정보 표기 (수정하기 버튼 바로 위) */}
+        <div className={styles.infoContainer}>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <span className={styles.title}>현재 대출/자납 총액</span>
+            </div>
+            <div className={styles.contentbody}>
+              <span>{currentLoanTotal.toLocaleString()}₩</span>
+            </div>
+          </div>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <span className={styles.title}>현재 대출/자납 잔액</span>
+            </div>
+            <div className={styles.contentbody}>
+              <span>{currentLoanBalance.toLocaleString()}₩</span>
+            </div>
+          </div>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <span className={styles.title}>예상 대출/자납 총액</span>
+            </div>
+            <div className={styles.contentbody}>
+              <span>{expectedLoanTotal.toLocaleString()}₩</span>
+            </div>
+          </div>
+          <div className={styles.unitbody}>
+            <div className={styles.titlebody}>
+              <span className={styles.title}>예상 대출/자납 잔액</span>
+            </div>
+            <div className={styles.contentbody}>
+              <span>{expectedLoanBalance.toLocaleString()}₩</span>
+            </div>
+          </div>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button type="submit" className={styles.contractButton}>
+            수정하기
+          </button>
+        </div>
+      </form>
     </div>
   );
-};
+}
 
-export default LoanApplyDetail;
+export default LoanUpdatePage;
