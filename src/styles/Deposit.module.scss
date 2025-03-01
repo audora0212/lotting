@@ -1,338 +1,301 @@
 /* styles/Deposit.module.scss */
 
-/* 공통 레이아웃 스타일 */
-.flexContainer {
-  width: 30%; /* 기존 1100px의 50% */
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 5px; /* 기존 10px의 50% */
-}
-
-.headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 550px; /* 기존 1100px의 50% */
-  margin-top: 10px; /* 기존 20px의 50% */
-  font-size: 12px; /* 글자 크기 절반 */
-}
-
-.exportContainer {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* 기존 10px의 50% */
-}
-
-.printIcon {
-  font-size: 12px; /* 기존 18px의 50% */
-  cursor: pointer;
-}
-
-.exportButton {
-  background-color: #a48ff8;
-  color: #fff;
-  padding: 4px 8px; /* 기존 8px 12px의 50% */
-  border: none;
-  border-radius: 4px;
-  font-size: 13px; /* 버튼 텍스트 절반 */
-  cursor: pointer;
-
-  &:hover {
-    background-color: #5c41c2;
-  }
-}
-
-/* 테이블 전체를 감싸는 래퍼: 가로 스크롤 가능하게 설정 */
-.tableWrapper {
-  margin: 15px 0; /* 기존 30px의 50% */
-  overflow-x: auto;
-  width: 100%; /* 추가: 부모 요소에 맞추기 */
-  /* 스크롤바 스타일링 */
-
-  /* Firefox용 스크롤바 색상 */
-  scrollbar-width: thin; /* 스크롤바 너비를 얇게 설정 */
-  scrollbar-color: #beb2f1 transparent; /* 스크롤바 thumb 색상과 track 색상 설정 */
-
-  /* WebKit 기반 브라우저용 스크롤바 스타일 */
-  &::-webkit-scrollbar {
-    height: 8px; /* 가로 스크롤바 높이 설정 */
-    background: transparent; /* 스크롤바 트랙 배경색 */
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #7152f3; /* 스크롤바 thumb 색상 */
-    border-radius: 4px; /* 스크롤바 thumb 모서리 둥글게 */
-    border: 2px solid transparent; /* thumb과 track 사이 여백 */
-    background-clip: content-box; /* thumb 내부 내용 클리핑 */
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent; /* 스크롤바 트랙 배경색 */
-  }
-}
-
-/* ===== 테이블 헤더 ===== */
-.tablecontainer {
-  width: 100%; /* 추가: 테이블 최대 너비 지정 */
-  display: table;
-  border-top: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
-  background-color: #a48ff8; /* 헤더 배경색 */
-  font-weight: 600; /* 헤더 텍스트 굵게 */
-  font-size: 12px; /* 헤더 폰트 크기 절반 */
-  border-radius: 8px; /* 곡률 추가 */
-  overflow: hidden; /* 곡률 안쪽 내용 잘리게 설정 */
-}
-
-/* 헤더 각 칸(열) 스타일 */
-.unitContainer {
-  width: auto; /* 기존 150px의 50% */
-  padding: 4px; /* 기존 8px의 50% */
-  text-align: center;
-  border-right: 2px solid #ffffff; /* 열 경계선 추가 */
-  font-size: 12px; /* 본문 폰트 크기 절반 */
-  /* New Styles for Consistent Row Height */
-  min-height: 40px; /* Adjust as needed to fit two lines */
-  white-space: normal; /* Allow text to wrap */
-  display: table-cell;
-  align-items: center; /* Vertically center content */
-  justify-content: center; /* Horizontally center content */
-}
-
-.tablecontainer .unitContainer:last-child {
-  border-right: none; /* 마지막 열은 오른쪽 경계선 제거 */
-}
-
-.tablecontainer .unitContainer {
-  color: #fff;
-  flex: 1;
-  min-width: 75px;
-  box-sizing: border-box;
-}
-
-/* ===== 테이블 바디 ===== */
-.maincontainer {
-  display: table-row;
-  width: 100%;
-  border-bottom: 1px solid #e2e2e2; /* 각 행 사이 구분선 */
-}
-
-.maincontainer:nth-child(odd) {
-  background-color: #f5f5f5; /* 홀수 행 배경색 */
-}
-
-.maincontainer:nth-child(even) {
-  background-color: #ffffff; /* 짝수 행 배경색 */
-}
-
-/* ===== 테이블 바디 ===== */
-.rowContainer {
-  display: flex;
-}
-
-/* 데이터 셀(각 열) */
-.rowContainer .unitContainer {
-  min-width: 75px; /* 헤더와 동일하게 75px */
-  flex: 1;
-  padding: 4px;
-  text-align: center;
-  border-right: 1px solid #e2e2e2;
-  font-size: 12px; /* 본문 폰트 크기 */
-  white-space: normal; /* Allow text to wrap */
-  display: flex;
-  align-items: center; /* 수직 가운데 정렬 */
-  justify-content: center; /* 수평 가운데 정렬 */
-  box-sizing: border-box;
-}
-
-.rowContainer .unitContainer:last-child {
-  border-right: none;
-}
-
-/* 링크 스타일 */
-.link {
-  color: #000;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-/* 정렬 아이콘 스타일 */
-.sortIcon {
-  margin-left: 2px; /* 약간의 간격 */
-  cursor: pointer;
-  font-size: 10px; /* 크기 조정 */
-  display: inline-flex;
-  align-items: center;
-  color: #ffffff; /* 아이콘 색상을 흰색으로 설정 */
-}
-
-.container {
-  padding: 20px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.description {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.input {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.submitButton {
-  padding: 10px 20px;
-  background-color: #7152f3;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-
-  &:hover {
-    background-color: #5c41c2;
-  }
-}
-
-.stickyHeader {
-  position: sticky;
-  top: 0;
-  background-color: #a48ff8; // 헤더의 원래 배경색과 동일하게 설정
-  z-index: 10;
-}
-
 /* =============================
-   여기부터 새로 추가한 스타일
+   공통 레이아웃 및 기타 스타일
    ============================= */
-
-/* 새 테이블 래퍼 (DepositList.jsx 전용) */
-.depositListWrapper {
-  margin: 15px 0; /* 기존 30px의 50% */
-  overflow-x: auto;
-  width: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: #beb2f1 transparent;
-
-  &::-webkit-scrollbar {
-    height: 8px;
-    background: transparent;
+   .flexContainer {
+    width: 30%; /* 기존 1100px의 50% */
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px; /* 기존 10px의 50% */
   }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #7152f3;
+  
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 550px; /* 기존 1100px의 50% */
+    margin-top: 10px; /* 기존 20px의 50% */
+    font-size: 12px; /* 글자 크기 절반 */
+  }
+  
+  .exportContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 기존 10px의 50% */
+  }
+  
+  .printIcon {
+    font-size: 12px; /* 기존 18px의 50% */
+    cursor: pointer;
+  }
+  
+  .exportButton {
+    background-color: #a48ff8;
+    color: #fff;
+    padding: 4px 8px; /* 기존 8px 12px의 50% */
+    border: none;
     border-radius: 4px;
-    border: 2px solid transparent;
-    background-clip: content-box;
+    font-size: 13px; /* 버튼 텍스트 절반 */
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #5c41c2;
+    }
   }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
+  
+  /* (사용 여부에 따라 필요하면 유지)
+  .tableWrapper {
+    margin: 15px 0;
+    overflow-x: auto;
+    width: 100%;
+  } */
+  
+  /* (사용 여부에 따라 필요하면 유지)
+  .tablecontainer {
+    width: 100%;
+    display: table;
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background-color: #a48ff8;
+    font-weight: 600;
+    font-size: 12px;
+    border-radius: 8px;
+    overflow: hidden;
   }
-}
-
-/* 전체 테이블 (헤더+바디) */
-.depositListTable {
-  width: 100%;
-  display: table;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 8px; /* 테두리 둥글게 */
-  overflow: hidden;   /* 둥근 모서리 안쪽 내용 잘리게 */
-}
-
-/* 헤더 영역 */
-.depositListHeader {
-  display: table-header-group;
-  background-color: #a48ff8; /* 기존 헤더 배경 */
-  height:35px;
-  font-weight: 600;
-  font-size: 12px;
-  color: #ffffff;
-  border-top: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
-  text-align: center;
-}
-
-/* 헤더 셀 */
-.depositListHeaderCell {
-  display: table-cell;
-  padding: 4px;
-  text-align: center;
-  align-items: center;
-  vertical-align: middle;    // 수직 가운데 정렬
-  border-right: 2px solid #ffffff;
-  min-width: 75px;
-  box-sizing: border-box;
-}
-
-.depositListHeaderCell:last-child {
-  border-right: none;
-}
-
-/* 바디 영역 */
-.depositListBody {
-  display: table-row-group;
-}
-
-/* 바디 각 행 */
-.depositListBodyRow {
-  display: table-row;
-  border-bottom: 1px solid #e2e2e2;
-}
-
-.depositListBodyRow:nth-child(odd) {
-  background-color: #f5f5f5;
-}
-
-.depositListBodyRow:nth-child(even) {
-  background-color: #ffffff;
-}
-
-/* 바디 각 셀 */
-.depositListBodyCell {
-  display: table-cell;
-  padding: 4px;
-  height:35px;
-  vertical-align: middle;    // 수직 가운데 정렬
-  text-align: center;
-  border-right: 1px solid #e2e2e2;
-  font-size: 12px;
-  white-space: normal;
-  box-sizing: border-box;
-  min-width: 75px;
-}
-
-.depositListBodyCell:last-child {
-  border-right: none;
-}
+  
+  .unitContainer {
+    width: auto;
+    padding: 4px;
+    text-align: center;
+    border-right: 2px solid #ffffff;
+    font-size: 12px;
+    min-height: 40px;
+    white-space: normal;
+    display: table-cell;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .tablecontainer .unitContainer:last-child {
+    border-right: none;
+  }
+  
+  .tablecontainer .unitContainer {
+    color: #fff;
+    flex: 1;
+    min-width: 75px;
+    box-sizing: border-box;
+  }
+  
+  .maincontainer {
+    display: table-row;
+    width: 100%;
+    border-bottom: 1px solid #e2e2e2;
+  }
+  
+  .maincontainer:nth-child(odd) {
+    background-color: #f5f5f5;
+  }
+  
+  .maincontainer:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .rowContainer {
+    display: flex;
+  }
+  
+  .rowContainer .unitContainer {
+    min-width: 75px;
+    flex: 1;
+    padding: 4px;
+    text-align: center;
+    border-right: 1px solid #e2e2e2;
+    font-size: 12px;
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  .rowContainer .unitContainer:last-child {
+    border-right: none;
+  }
+  */
+  
+  /* 링크 스타일 */
+  .link {
+    color: #000;
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  /* 정렬 아이콘 스타일 */
+  .sortIcon {
+    margin-left: 2px;
+    cursor: pointer;
+    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    /* 기존 헤더 색상을 흰색으로 쓰시려면 아래 색상 사용 */
+    color: #ffffff;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .input {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .submitButton {
+    padding: 10px 20px;
+    background-color: #7152f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  
+    &:hover {
+      background-color: #5c41c2;
+    }
+  }
+  
+  .stickyHeader {
+    position: sticky;
+    top: 0;
+    background-color: #a48ff8;
+    z-index: 10;
+  }
+  
+  /* =====================================
+     DepositList.jsx 테이블 전용 스타일
+     ===================================== */
+  
+  /* 1) 테이블 래퍼: IE 포함 모든 브라우저에서 기본 스크롤바 사용 */
+  .depositListWrapper {
+    margin: 15px 0; 
+    width: 120%;
+    overflow-x: auto; 
+  }
+  
+  /* 2) 테이블 자체: 스크롤이 생기도록 min-width 지정 */
+  .depositListTable {
+    display: table;
+    width: 100%;
+    /* 화면이 좁아져도 좌우 스크롤이 생길 수 있도록 충분히 넓은 min-width */
+    min-width: 1500px;
+  
+    /* 테두리 및 배경 설정 */
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* 테이블 헤더 그룹 */
+  .depositListHeader {
+    display: table-header-group;
+    background-color: #a48ff8;
+    height: 35px;
+    font-weight: 600;
+    font-size: 12px;
+    color: #ffffff;
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    text-align: center;
+  }
+  
+  /* 헤더 셀 */
+  .depositListHeaderCell {
+    display: table-cell;
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle; /* 수직 가운데 정렬 */
+    border-right: 2px solid #ffffff;
+    min-width: 75px;
+    box-sizing: border-box;
+  }
+  
+  .depositListHeaderCell:last-child {
+    border-right: none;
+  }
+  
+  /* 테이블 바디 */
+  .depositListBody {
+    display: table-row-group;
+  }
+  
+  /* 바디 행 */
+  .depositListBodyRow {
+    display: table-row;
+    border-bottom: 1px solid #e2e2e2;
+  }
+  
+  .depositListBodyRow:nth-child(odd) {
+    background-color: #f5f5f5;
+  }
+  
+  .depositListBodyRow:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  /* 바디 셀 */
+  .depositListBodyCell {
+    display: table-cell;
+    padding: 4px;
+    height: 35px;
+    vertical-align: middle; /* 수직 가운데 정렬 */
+    text-align: center;
+    border-right: 1px solid #e2e2e2;
+    font-size: 12px;
+    white-space: normal;
+    box-sizing: border-box;
+    min-width: 75px;
+  }
+  
+  .depositListBodyCell:last-child {
+    border-right: none;
+  }
+  
