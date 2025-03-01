@@ -689,7 +689,7 @@ function DepositAddPage() {
               <div className={styles.row}>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
-                    <label className={styles.title}>대출 합계</label>
+                    <label className={styles.title}>대출/자납 합계</label>
                   </div>
                   <div className={styles.contentbody}>
                     <InputboxGray
@@ -702,7 +702,7 @@ function DepositAddPage() {
                 </div>
                 <div className={styles.unitbody}>
                   <div className={styles.titlebody}>
-                    <label className={styles.title}>대출 잔액</label>
+                    <label className={styles.title}>대출/자납 잔액</label>
                   </div>
                   <div className={styles.contentbody}>
                     <InputboxGray

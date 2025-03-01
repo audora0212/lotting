@@ -71,6 +71,7 @@ function Inputmoney() {
     console.log("Updated loanex:", loanex);
   }, [loanex]);
 
+  // 기존 해약 로직은 그대로 유지합니다.
   const handleCancel = () => {
     MySwal.fire({
       title: "해약하시겠습니까?",
@@ -107,6 +108,11 @@ function Inputmoney() {
     });
   };
 
+  // 대출추가 버튼 클릭 시 지정된 경로로 이동하는 함수
+  const handleLoanAdd = () => {
+    router.push(`/inputmoney/loan/${userData.id}`);
+  };
+
   return (
     <>
       {userselectordata.state === "hasValue" && userData && (
@@ -139,10 +145,8 @@ function Inputmoney() {
                   입금내역 확인/추가
                 </button>
               </Link>
-
             </div>
             <div className={styles.MainContent}>
-
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
@@ -153,7 +157,6 @@ function Inputmoney() {
                 </div>
                 <ChasuFinBody userId={userData.id} />
               </div>
-
               <div
                 className={styles.Content}
                 style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
@@ -198,7 +201,11 @@ function Inputmoney() {
                       </div>
                     </div>
                   </div>
+                  {/* 대출추가 버튼: 클릭 시 deposit/loan/[id] 페이지로 이동 */}
                   <div className={styles.CBBottonBody}>
+                    <ModifyButton onClick={handleLoanAdd}>
+                      <div className={styles.CBBottonFont}>대출추가</div>
+                    </ModifyButton>
                   </div>
                   <div className={styles.CBSum}>
                     <div className={styles.CBMoneyImg}>

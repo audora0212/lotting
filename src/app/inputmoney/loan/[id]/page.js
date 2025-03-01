@@ -1,3 +1,4 @@
+// src/app/inputmoney/deposit/loan/[id]/page.js
 "use client";
 
 import { useRouter } from "next/navigation";
