@@ -74,6 +74,8 @@ function DepositAddPage() {
   const [depositData, setDepositData] = useState([]);
   const [pendingPhases, setPendingPhases] = useState([]);
   const [selectedPhases, setSelectedPhases] = useState([]);
+  // expandedDeposits: { [depositId]: boolean }
+  const [expandedDeposits, setExpandedDeposits] = useState({});
 
   useEffect(() => {
     const loadDeposits = async () => {
@@ -166,6 +168,28 @@ function DepositAddPage() {
     setRemainingAmount(Math.max(0, computedLoanBalance - selectedPhasesSum));
   }, [computedLoanBalance, selectedPhasesSum]);
 
+  // 토글 함수: 해당 deposit id에 대해 확장 여부를 토글
+  const toggleExpanded = (id) => {
+    setExpandedDeposits((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  // allocationDetail JSON 문자열을 사람이 읽기 좋은 형식으로 변환하는 헬퍼 함수
+  const formatAllocationDetail = (allocationDetail) => {
+    if (!allocationDetail) return "";
+    try {
+      const data = JSON.parse(allocationDetail);
+      // 예: { "phase6": { "allocated":1245000, "remainingNeeded":14655000 } }
+      return Object.entries(data)
+        .map(([key, value]) => {
+          const phaseNum = key.replace("phase", "");
+          return `${phaseNum}차 납입 : ${Number(value.allocated).toLocaleString()}  ${phaseNum}차 완납까지 : ${Number(value.remainingNeeded).toLocaleString()}`;
+        })
+        .join("\n");
+    } catch (e) {
+      return allocationDetail;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.transactionDateTime) {
@@ -232,30 +256,6 @@ function DepositAddPage() {
     }
   };
 
-  const handleLoanAlert = () => {
-    Swal.fire({
-      icon: "warning",
-      title: "수정 불가",
-      text: "대출 기록은 수정할 수 없습니다. 삭제 후 재입력해주세요.",
-    });
-  };
-
-  const togglePhase = (phaseNumber) => {
-    setSelectedPhases((prev) =>
-      prev.includes(phaseNumber)
-        ? prev.filter((num) => num !== phaseNumber)
-        : [...prev, phaseNumber]
-    );
-  };
-
-  const chunkArray = (arr, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-      chunks.push(arr.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
   const handleDeleteDeposit = async (depositId) => {
     Swal.fire({
       icon: "warning",
@@ -285,12 +285,19 @@ function DepositAddPage() {
   };
 
   const handlePhaseSelection = (phase) => {
-    const phaseAmount = phase.feesum ?? 0;
     if (selectedPhases.includes(phase.phaseNumber)) {
       setSelectedPhases(selectedPhases.filter((num) => num !== phase.phaseNumber));
     } else {
       setSelectedPhases([...selectedPhases, phase.phaseNumber]);
     }
+  };
+
+  const chunkArray = (arr, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      chunks.push(arr.slice(i, i + chunkSize));
+    }
+    return chunks;
   };
 
   return (
@@ -328,68 +335,77 @@ function DepositAddPage() {
           <div className={styles.unitContainer}>거래 후 잔액</div>
           <div className={styles.unitContainer}>취급점</div>
           <div className={styles.unitContainer}>계좌</div>
-          <div className={styles.unitContainer}>수정/삭제</div>
+          <div className={styles.unitContainer}>삭제</div>
         </div>
         {depositData.map((item, index) => (
-          <div className={styles.maincontainer} key={index}>
-            <div className={styles.rowContainer}>
-              <div className={styles.unitContainer}>
-                {item.transactionDateTime || "."}
+          <div key={index}>
+            <div className={styles.maincontainer}>
+              <div className={styles.rowContainer}>
+                <div className={styles.unitContainer}>
+                  {item.transactionDateTime || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.description || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.details || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.remarks || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.contractor || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.withdrawnAmount
+                    ? Number(item.withdrawnAmount).toLocaleString()
+                    : "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.depositAmount
+                    ? Number(item.depositAmount).toLocaleString()
+                    : "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.balanceAfter
+                    ? Number(item.balanceAfter).toLocaleString()
+                    : "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.branch || "."}
+                </div>
+                <div className={styles.unitContainer}>
+                  {item.account || "."}
+                </div>
               </div>
               <div className={styles.unitContainer}>
-                {item.description || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.details || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.remarks || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.contractor || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.withdrawnAmount
-                  ? Number(item.withdrawnAmount).toLocaleString()
-                  : "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.depositAmount
-                  ? Number(item.depositAmount).toLocaleString()
-                  : "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.balanceAfter
-                  ? Number(item.balanceAfter).toLocaleString()
-                  : "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.branch || "."}
-              </div>
-              <div className={styles.unitContainer}>
-                {item.account || "."}
-              </div>
-            </div>
-            <div className={styles.unitContainer}>
-              {item.loanStatus === "o" ? (
+                {item.loanStatus === "o" ? (
+                  <button
+                    className={styles.TableButton2}
+                    onClick={() => toggleExpanded(item.id)}
+                  >
+                    {expandedDeposits[item.id] ? "숨기기" : "상세보기"}
+                  </button>
+                ) : (
+                  <Link href={`/inputmoney/deposit/modify/${item.id}`}>
+                    <button className={styles.TableButton}>수정하기</button>
+                  </Link>
+                )}
                 <button
                   className={styles.TableButton}
-                  onClick={handleLoanAlert}
+                  onClick={() => handleDeleteDeposit(item.id)}
                 >
-                  수정불가
+                  삭제하기
                 </button>
-              ) : (
-                <Link href={`/inputmoney/deposit/modify/${item.id}`}>
-                  <button className={styles.TableButton}>수정하기</button>
-                </Link>
-              )}
-              <button
-                className={styles.TableButton}
-                onClick={() => handleDeleteDeposit(item.id)}
-              >
-                삭제하기
-              </button>
+              </div>
             </div>
+            {item.loanStatus === "o" && expandedDeposits[item.id] && item.allocationDetail && (
+              <div className={styles.allocationDetail}>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                  {formatAllocationDetail(item.allocationDetail)}
+                </pre>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -619,9 +635,7 @@ function DepositAddPage() {
           <>
             <p></p>
             <h3>사용할 대출정보 입력</h3>
-            {/* "대출일자" 인풋 삭제 */}
             <div className={styles.infoContainer}>
-              {/* "대출은행" 인풋 삭제하고 "대출액"만 유지 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <label className={styles.title}>대출액</label>
@@ -638,7 +652,6 @@ function DepositAddPage() {
               </div>
             </div>
             <div className={styles.infoContainer}>
-              {/* "자납일" 인풋 삭제하고 "자납액"만 유지 */}
               <div className={styles.unitbody}>
                 <div className={styles.titlebody}>
                   <label className={styles.title}>자납액</label>

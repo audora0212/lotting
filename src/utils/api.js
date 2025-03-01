@@ -736,3 +736,13 @@ export const registerLoan = async (loanData) => {
     throw error;
   }
 };
+
+export const getPhaseSummaries = async () => {
+  try {
+    const response = await axios.get(`${path}/deposit/phase-summary`);
+    return response.data; // 백엔드가 반환하는 데이터 배열
+  } catch (error) {
+    console.error("Error fetching phase summaries:", error);
+    throw error;
+  }
+};
