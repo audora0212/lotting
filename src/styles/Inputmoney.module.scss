@@ -6,8 +6,8 @@
 }
 .Mainbody{
     margin-top:45px;
-    width: 1080px;
-    height: 922px;
+    width: 1150px;
+    height: auto;
     flex-shrink: 0;
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
@@ -142,7 +142,7 @@
 
 .Content{
     width: 350px;
-    height: 100vh;
+    height: 785px;
     flex-shrink: 0;
     margin-left:20px;
     border-radius: 10px;
