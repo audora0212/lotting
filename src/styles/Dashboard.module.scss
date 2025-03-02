@@ -221,7 +221,7 @@
   
   .ClientBody {
     width: 663.874px;
-    height: 534px;
+    height: auto;
     flex-shrink: 0;
     border-radius: 10px;
     border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
@@ -231,7 +231,7 @@
   
   .ClientContents {
     width: 547px;
-    height: 494px;
+    height: auto;
     flex-shrink: 0;
     padding-left: 16px;
   }
@@ -460,7 +460,8 @@
   // 아래부터 공지사항
   
   .Notice {
-    width: 100%;
+    width: auto;
+    height:auto;
     padding: 20px;
     border: 1px solid rgba(162, 161, 168, 0.2);
     border-radius: 10px;
