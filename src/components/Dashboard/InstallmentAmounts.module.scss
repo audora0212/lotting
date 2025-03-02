@@ -1,0 +1,43 @@
+.installmentContainer {
+    width: 50%;
+    padding: 20px;
+    border: 1px solid rgba(162, 161, 168, 0.2);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(162, 161, 168, 0.2);
+    text-align: center;
+  }
+  
+  .row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(162, 161, 168, 0.1);
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .row:last-child {
+    border-bottom: none;
+  }
+  
+  .installment {
+    font-weight: 600;
+  }
+  
+  .paid {
+    color: #30BE82;
+  }
+  
+  .unpaid {
+    color: #F45B69;
+  }
+  

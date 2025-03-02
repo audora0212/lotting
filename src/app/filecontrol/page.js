@@ -8,7 +8,7 @@ import {
   uploadExcelFileWithProgress,          // 고객 파일 업로드용 API
   uploadDepositHistoryExcelWithProgress, // 입금내역 업로드용 API
   downloadRegFile,                       // Reg 파일 다운로드용 API
-  downloadDepositHistoryExcel            // 추가: 입금내역 엑셀 다운로드용 API
+  downloadDepositHistoryExcel            // 입금내역 엑셀 다운로드용 API
 } from "@/utils/api";
 
 function FilecontrolPage() {
@@ -29,6 +29,24 @@ function FilecontrolPage() {
   // 4) 입금내역 엑셀 다운로드 관련 state
   const [depDownloadProgress, setDepDownloadProgress] = useState("");
   const [depDownloadMessage, setDepDownloadMessage] = useState("");
+
+  // ─────────────────────────────
+  // 헬퍼 함수: "현재/전체" 형태의 문자열을 파싱하여 progress bar 생성
+  const renderProgressBar = (progress) => {
+    if (!progress || !progress.includes('/')) return null;
+    const parts = progress.split('/');
+    if (parts.length !== 2) return null;
+    const current = parseInt(parts[0], 10);
+    const total = parseInt(parts[1], 10);
+    if (isNaN(current) || isNaN(total)) return null;
+    return (
+      <progress 
+        value={current} 
+        max={total} 
+        style={{ width: "30%", marginTop: "0.5rem" }}
+      />
+    );
+  };
 
   // ─────────────────────────────
   // (A) 고객 파일 업로드 핸들러
@@ -158,63 +176,87 @@ function FilecontrolPage() {
 
   return (
     <div className={styles.mainbody}>
-    <p></p>
-    <div className={styles.rowContainer}>
-      <div className={styles.excelcontainer}>
-      {/* ─────────────────────────────
-          1) 고객 파일 업로드 섹션
-          ───────────────────────────── */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h3>고객 파일 업로드 (엑셀, SSE 진행도)</h3>
-        <ExcelFileInputbox
-          name="customerFileUpload"
-          handleChange={handleCustomerFileChange}
-          value={customerFile ? customerFile.name : ""}
-          isupload={!!customerFile}
-        />
-        <p></p>
-        <button className = {styles.contractButton}
-        onClick={handleCustomerUpload}>고객 파일 업로드</button>
-        {customerMessage && <p>{customerMessage}</p>}
-        {customerProgress && <p>진행도: {customerProgress}</p>}
-      </div>
-      </div>
+      <p></p>
+      <div className={styles.rowContainer}>
+        <div className={styles.excelcontainer}>
+          {/* ─────────────────────────────
+              1) 고객 파일 업로드 섹션
+              ───────────────────────────── */}
+          <div style={{ marginBottom: "2rem" }}>
+            <h3>고객 파일 업로드 (엑셀, SSE 진행도)</h3>
+            <ExcelFileInputbox
+              name="customerFileUpload"
+              handleChange={handleCustomerFileChange}
+              value={customerFile ? customerFile.name : ""}
+              isupload={!!customerFile}
+            />
+            <p></p>
+            <button className={styles.contractButton} onClick={handleCustomerUpload}>
+              고객 파일 업로드
+            </button>
+            {customerMessage && <p>{customerMessage}</p>}
+            {customerProgress && (
+              <>
+                <p>진행도: {customerProgress}</p>
+                {renderProgressBar(customerProgress)}
+              </>
+            )}
+          </div>
+        </div>
 
-      <div className={styles.excelcontainer}>
-      <div style={{ marginBottom: "2rem" }}>
-        <h3>고객 파일 다운로드</h3>
-        <button className = {styles.editButton}
-        onClick={handleRegFileDownload}>고객 파일 다운로드</button>
-        {regMessage && <p>{regMessage}</p>}
-        {regProgress && <p>진행도: {regProgress}</p>}
-      </div>
-      </div>
+        <div className={styles.excelcontainer}>
+          <div style={{ marginBottom: "2rem" }}>
+            <h3>고객 파일 다운로드</h3>
+            <button className={styles.editButton} onClick={handleRegFileDownload}>
+              고객 파일 다운로드
+            </button>
+            {regMessage && <p>{regMessage}</p>}
+            {regProgress && (
+              <>
+                <p>진행도: {regProgress}</p>
+                {renderProgressBar(regProgress)}
+              </>
+            )}
+          </div>
+        </div>
       </div>
       <hr></hr>
       <p></p>
       <div className={styles.rowContainer}>
-      <div style={{ marginBottom: "2rem" }}>
-        <h3>입금내역 업로드 (엑셀, SSE 진행도)</h3>
-        <ExcelFileInputbox
-          name="depositFileUpload"
-          handleChange={handleDepositFileChange}
-          value={depositFile ? depositFile.name : ""}
-          isupload={!!depositFile}
-        />
-        <p></p>
-        <button className = {styles.contractButton}
-        onClick={handleDepositUpload}>입금내역 업로드</button>
-        {depositMessage && <p>{depositMessage}</p>}
-        {depositProgress && <p>진행도: {depositProgress}</p>}
-      </div>
+        <div style={{ marginBottom: "2rem" }}>
+          <h3>입금내역 업로드 (엑셀, SSE 진행도)</h3>
+          <ExcelFileInputbox
+            name="depositFileUpload"
+            handleChange={handleDepositFileChange}
+            value={depositFile ? depositFile.name : ""}
+            isupload={!!depositFile}
+          />
+          <p></p>
+          <button className={styles.contractButton} onClick={handleDepositUpload}>
+            입금내역 업로드
+          </button>
+          {depositMessage && <p>{depositMessage}</p>}
+          {depositProgress && (
+            <>
+              <p>진행도: {depositProgress}</p>
+              {renderProgressBar(depositProgress)}
+            </>
+          )}
+        </div>
       </div>
 
       <div>
-        <h3>입금내역 엑셀 다운로드 (SSE 진행도)</h3>
-        <button className = {styles.editButton}
-        onClick={handleDepDownload}>입금내역 다운로드</button>
+        <h3>입금내역 엑셀 다운로드</h3>
+        <button className={styles.editButton} onClick={handleDepDownload}>
+          입금내역 다운로드
+        </button>
         {depDownloadMessage && <p>{depDownloadMessage}</p>}
-        {depDownloadProgress && <p>진행도: {depDownloadProgress}</p>}
+        {depDownloadProgress && (
+          <>
+            <p>진행도: {depDownloadProgress}</p>
+            {renderProgressBar(depDownloadProgress)}
+          </>
+        )}
       </div>
     </div>
   );

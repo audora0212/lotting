@@ -1,5 +1,9 @@
 // src/utils/api.js
 import axios from "axios";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0da427383596ed6b658c21e4a3c7442c7d6b26f7
 //const path = "http://localhost:8080";
 const path = "http://3.38.181.18:8080";
 
@@ -723,5 +727,25 @@ export const downloadDepositHistoryExcel = async (onProgress, onComplete, onErro
     if (onError) {
       onError(error);
     }
+  }
+};
+
+export const registerLoan = async (loanData) => {
+  try {
+    const response = await axios.post(`${path}/api/loan/register`, loanData);
+    return response.data;
+  } catch (error) {
+    console.error("대출/자납 등록 오류:", error);
+    throw error;
+  }
+};
+
+export const getPhaseSummaries = async () => {
+  try {
+    const response = await axios.get(`${path}/deposit/phase-summary`);
+    return response.data; // 백엔드가 반환하는 데이터 배열
+  } catch (error) {
+    console.error("Error fetching phase summaries:", error);
+    throw error;
   }
 };

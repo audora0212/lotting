@@ -247,8 +247,28 @@
 }
 
 .TableButton:hover {
-  background-color: #7152F3;
+  background-color: #a189ff;
 }
+
+.TableButton2 {
+  background-color: #70f7a8;
+  color: rgb(0, 0, 0);
+  padding: 5px 5px;
+  border: none;
+  border-radius: 5px; /* 둥근 모서리로 변경 */
+  cursor: pointer;
+  margin-bottom: 3px;
+  display: flex;
+  margin-right:5px;
+  margin-left:15px;
+  align-items: center;
+  font-size: 10px; /* 기존보다 작은 글씨 크기 */
+}
+
+.TableButton2:hover {
+  background-color: #a0fcc6;
+}
+
 .inputBox {
   width: 100%; /* unitContainer 안에서 꽉 차도록 설정 */
   height: 100%; /* unitContainer 높이에 맞춤 */
@@ -272,3 +292,5 @@
   pointer-events: none; // 클릭 비활성화
   opacity: 0.6; // 반투명 효과
 }
+
+
