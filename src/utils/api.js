@@ -1,10 +1,6 @@
 // src/utils/api.js
 import axios from "axios";
-<<<<<<< HEAD
-// const path = "http://localhost:8080";
-=======
 //const path = "http://localhost:8080";
->>>>>>> c518df6c94411da8bee67fc7b5c66ef37c3df339
 const path = "http://3.38.181.18:8080";
 
 // 고객 추가 페이지 새로운 아이디 받아오기
