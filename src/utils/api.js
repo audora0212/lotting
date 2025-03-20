@@ -19,8 +19,8 @@ export const newIdGenerate = () => {
 export const createFile = (file, custId) => {
   const formData = new FormData();
   const originalName = file.name;
-  const extension = originalName.split('.').pop();
-  const baseName = originalName.substring(0, originalName.lastIndexOf('.'));
+  const extension = originalName.split(".").pop();
+  const baseName = originalName.substring(0, originalName.lastIndexOf("."));
   const newFileName = `${custId}_${baseName}.${extension}`;
   formData.append("file", file, newFileName);
   return axios.post(`${path}/files/upload`, formData, {
@@ -101,7 +101,9 @@ export const fetchCustomerById = (id) => {
 // 납부 전 차수 데이터 조회
 export const fetchPendingPhases = async (userId) => {
   try {
-    const response = await axios.get(`${path}/customers/${userId}/pending-phases`);
+    const response = await axios.get(
+      `${path}/customers/${userId}/pending-phases`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching pending phases:", error);
@@ -112,7 +114,9 @@ export const fetchPendingPhases = async (userId) => {
 // 납부 후 차수 데이터 조회
 export const fetchCompletedPhases = async (userId) => {
   try {
-    const response = await axios.get(`${path}/customers/${userId}/completed-phases`);
+    const response = await axios.get(
+      `${path}/customers/${userId}/completed-phases`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching completed phases:", error);
@@ -432,7 +436,10 @@ axios.interceptors.request.use(
 // 특정 차수 데이터 부분 업데이트 (부담금, 업무대행비, 할인액, 면제액, 이동만)
 export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
   return axios
-    .put(`${path}/phases/customer/${customerId}/phase/${phaseNumber}/modify`, data)
+    .put(
+      `${path}/phases/customer/${customerId}/phase/${phaseNumber}/modify`,
+      data
+    )
     .then((result) => result.data)
     .catch((error) => {
       console.error("Error updating phase partial data:", error);
@@ -440,9 +447,12 @@ export const updatePhaseDataPartial = (customerId, phaseNumber, data) => {
     });
 };
 
-
-export async function uploadExcelFileWithProgress(file, onProgress, onComplete, onError) {
-
+export async function uploadExcelFileWithProgress(
+  file,
+  onProgress,
+  onComplete,
+  onError
+) {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -506,7 +516,7 @@ export async function uploadExcelFileWithProgress(file, onProgress, onComplete, 
         } else if (currentEvent === "complete" && onComplete) {
           onComplete(data); // 예: "Parsing complete"
         } else if (currentEvent === "error" && onError) {
-          onError(data);    // 예: "Some error occurred"
+          onError(data); // 예: "Some error occurred"
         }
       }
     }
@@ -532,25 +542,29 @@ export async function uploadExcelFileWithProgress(file, onProgress, onComplete, 
   }
 }
 
-
 // SSE 엔드포인트를 통해 진행 상황과 최종 fileId를 받고, 그 후 실제 파일 다운로드 요청을 하는 함수
 export const downloadRegFile = async (onProgress, onComplete, onError) => {
   try {
-    const eventSource = new EventSource(`${path}/files/regfiledownload/progress`);
-    
+    const eventSource = new EventSource(
+      `${path}/files/regfiledownload/progress`
+    );
+
     eventSource.addEventListener("progress", (event) => {
       if (onProgress) {
         onProgress(event.data); // 예: "3/48"
       }
     });
-    
+
     eventSource.addEventListener("complete", async (event) => {
       // complete 이벤트 데이터에는 fileId가 들어있음
       const fileId = event.data;
       try {
-        const response = await axios.get(`${path}/files/regfiledownload/file?fileId=${fileId}`, {
-          responseType: "blob",
-        });
+        const response = await axios.get(
+          `${path}/files/regfiledownload/file?fileId=${fileId}`,
+          {
+            responseType: "blob",
+          }
+        );
         const disposition = response.headers["content-disposition"];
         let fileName = "regfile_download.xlsx";
         if (disposition && disposition.indexOf("filename=") !== -1) {
@@ -582,14 +596,13 @@ export const downloadRegFile = async (onProgress, onComplete, onError) => {
         eventSource.close();
       }
     });
-    
+
     eventSource.addEventListener("error", (event) => {
       if (onError) {
         onError("SSE 연결 중 오류가 발생했습니다.");
       }
       eventSource.close();
     });
-    
   } catch (error) {
     if (onError) {
       onError(error);
@@ -597,7 +610,12 @@ export const downloadRegFile = async (onProgress, onComplete, onError) => {
   }
 };
 
-export async function uploadDepositHistoryExcelWithProgress(file, onProgress, onComplete, onError) {
+export async function uploadDepositHistoryExcelWithProgress(
+  file,
+  onProgress,
+  onComplete,
+  onError
+) {
   const formData = new FormData();
   formData.append("file", file);
   // 입금 기록 업로드 백엔드 URL
@@ -664,23 +682,32 @@ export async function uploadDepositHistoryExcelWithProgress(file, onProgress, on
     }
   }
 }
-export const downloadDepositHistoryExcel = async (onProgress, onComplete, onError) => {
+export const downloadDepositHistoryExcel = async (
+  onProgress,
+  onComplete,
+  onError
+) => {
   try {
-    const eventSource = new EventSource(`${path}/api/deposithistory/excel/download/progress`);
-    
+    const eventSource = new EventSource(
+      `${path}/api/deposithistory/excel/download/progress`
+    );
+
     eventSource.addEventListener("progress", (event) => {
       if (onProgress) {
         onProgress(event.data); // 예: "3/48"
       }
     });
-    
+
     eventSource.addEventListener("complete", async (event) => {
       // complete 이벤트 데이터에는 fileId가 들어있음
       const fileId = event.data;
       try {
-        const response = await axios.get(`${path}/api/deposithistory/excel/download/file?fileId=${fileId}`, {
-          responseType: "blob",
-        });
+        const response = await axios.get(
+          `${path}/api/deposithistory/excel/download/file?fileId=${fileId}`,
+          {
+            responseType: "blob",
+          }
+        );
         const disposition = response.headers["content-disposition"];
         let fileName = "deposit_histories.xlsx";
         if (disposition && disposition.indexOf("filename=") !== -1) {
@@ -712,14 +739,13 @@ export const downloadDepositHistoryExcel = async (onProgress, onComplete, onErro
         eventSource.close();
       }
     });
-    
+
     eventSource.addEventListener("error", (event) => {
       if (onError) {
         onError("SSE 연결 중 오류가 발생했습니다.");
       }
       eventSource.close();
     });
-    
   } catch (error) {
     if (onError) {
       onError(error);

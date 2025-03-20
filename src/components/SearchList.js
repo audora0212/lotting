@@ -63,15 +63,11 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     setNumberState(searchnumber);
   }, [searchname, searchnumber, setNameState, setNumberState]);
 
-  let searchdata = useRecoilValueLoadable(namesearchSelector);
+  const searchdata = useRecoilValueLoadable(namesearchSelector);
 
-  if (searchdata.state === "loading") {
-    return null;
-  }
-
-  if (searchdata.state === "hasError") {
-    return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
-  }
+  // 조건부 렌더링을 위한 변수 (모든 훅은 항상 호출)
+  const isLoading = searchdata.state === "loading";
+  const isError = searchdata.state === "hasError";
 
   // droplistdata의 리스트들을 사용하여 uniqueValues 생성
   const uniqueValues = {
@@ -160,15 +156,25 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
   };
 
   const filteredData = () => {
-    let data = [...searchdata.contents];
+    let data = isLoading || isError ? [] : [...searchdata.contents];
 
     // 필터 적용
     Object.keys(filters).forEach((key) => {
       if (filters[key].length > 0) {
-        data = data.filter((item) => {
-          const itemValue = item[key];
-          return filters[key].includes(itemValue);
-        });
+        if (key === "customertype") {
+          // 선택된 코드들을 해당하는 분류명으로 변환
+          const selectedCategories = filters.customertype.map(
+            (code) => categoryMapping[code]
+          );
+          data = data.filter((item) =>
+            selectedCategories.includes(categoryMapping[item.customertype])
+          );
+        } else {
+          data = data.filter((item) => {
+            const itemValue = item[key];
+            return filters[key].includes(itemValue);
+          });
+        }
       }
     });
 
@@ -236,314 +242,352 @@ const SearchList = ({ name, number, categoryFilter, linkBase }) => {
     setIsModalOpen(false);
   };
 
+  // customertype 필터가 변경될 때마다 해당 필터의 분류명과 필터에 해당하는 회원들을 콘솔에 출력
+  useEffect(() => {
+    if (!isLoading && !isError && searchdata.state === "hasValue") {
+      if (filters.customertype.length > 0) {
+        const selectedCategories = filters.customertype.map(
+          (code) => categoryMapping[code]
+        );
+        const filteredMembers = searchdata.contents.filter((customer) =>
+          selectedCategories.includes(categoryMapping[customer.customertype])
+        );
+      }
+    }
+  }, [filters.customertype, searchdata, isLoading, isError]);
+
   return (
     <div>
-      <div className={styles.tablecontainer}>
-        {/* 테이블 헤더 */}
-        {/* 관리번호 */}
-        <div className={styles.unitContainer}>
-          <span>
-            관리번호
-            <span className={styles.sortIcon} onClick={() => handleSort("id")}>
-              {getSortIcon("id")}
-            </span>
-          </span>
-        </div>
-        {/* 성명 */}
-        <div className={styles.unitContainer}>
-          <span>
-            성명
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("customerData.name")}
-            >
-              {getSortIcon("customerData.name")}
-            </span>
-          </span>
-        </div>
-        {/* 타입 */}
-        <div className={styles.unitContainer}>
-          <span>
-            <span onClick={() => toggleDropdown("type")}>타입</span>
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("type")}
-            >
-              {getSortIcon("type")}
-            </span>
-          </span>
-          {/* 드롭다운 메뉴 */}
-          {dropdownOpen.type && (
-            <div
-              className={styles.dropdown}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={filters.type.length === uniqueValues.type.length}
-                    onChange={() => handleFilterAllChange("type")}
-                  />
-                  전체
-                </label>
-              </div>
-              {uniqueValues.type.map((option) => (
-                <div key={option.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.type.includes(option.value)}
-                      onChange={() => handleFilterChange("type", option.value)}
-                    />
-                    {option.item}
-                  </label>
-                </div>
-              ))}
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>데이터를 불러오는 중 오류가 발생했습니다.</div>}
+      {!isLoading && !isError && (
+        <>
+          <div className={styles.tablecontainer}>
+            {/* 테이블 헤더 */}
+            {/* 관리번호 */}
+            <div className={styles.unitContainer}>
+              <span>
+                관리번호
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("id")}
+                >
+                  {getSortIcon("id")}
+                </span>
+              </span>
             </div>
-          )}
-        </div>
-        {/* 군 */}
-        <div className={styles.unitContainer}>
-          <span>
-            <span onClick={() => toggleDropdown("groupname")}>군</span>
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("groupname")}
-            >
-              {getSortIcon("groupname")}
-            </span>
-          </span>
-          {dropdownOpen.groupname && (
-            <div
-              className={styles.dropdown}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={
-                      filters.groupname.length === uniqueValues.groupname.length
-                    }
-                    onChange={() => handleFilterAllChange("groupname")}
-                  />
-                  전체
-                </label>
-              </div>
-              {uniqueValues.groupname.map((option) => (
-                <div key={option.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.groupname.includes(option.value)}
-                      onChange={() =>
-                        handleFilterChange("groupname", option.value)
-                      }
-                    />
-                    {option.item}
-                  </label>
-                </div>
-              ))}
+            {/* 성명 */}
+            <div className={styles.unitContainer}>
+              <span>
+                성명
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("customerData.name")}
+                >
+                  {getSortIcon("customerData.name")}
+                </span>
+              </span>
             </div>
-          )}
-        </div>
-        {/* 순번 */}
-        <div className={styles.unitContainer}>
-          <span>
-            <span onClick={() => toggleDropdown("turn")}>순번</span>
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("turn")}
-            >
-              {getSortIcon("turn")}
-            </span>
-          </span>
-          {dropdownOpen.turn && (
-            <div
-              className={styles.dropdown}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={filters.turn.length === uniqueValues.turn.length}
-                    onChange={() => handleFilterAllChange("turn")}
-                  />
-                  전체
-                </label>
-              </div>
-              {uniqueValues.turn.map((option) => (
-                <div key={option.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.turn.includes(option.value)}
-                      onChange={() => handleFilterChange("turn", option.value)}
-                    />
-                    {option.item}
-                  </label>
+            {/* 타입 */}
+            <div className={styles.unitContainer}>
+              <span>
+                <span onClick={() => toggleDropdown("type")}>타입</span>
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("type")}
+                >
+                  {getSortIcon("type")}
+                </span>
+              </span>
+              {/* 드롭다운 메뉴 */}
+              {dropdownOpen.type && (
+                <div
+                  className={styles.dropdown}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters.type.length === uniqueValues.type.length
+                        }
+                        onChange={() => handleFilterAllChange("type")}
+                      />
+                      전체
+                    </label>
+                  </div>
+                  {uniqueValues.type.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={filters.type.includes(option.value)}
+                          onChange={() =>
+                            handleFilterChange("type", option.value)
+                          }
+                        />
+                        {option.item}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-        {/* 가입 차순 */}
-        <div className={styles.unitContainer}>
-          <span>
-            <span onClick={() => toggleDropdown("batch")}>가입 차순</span>
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("batch")}
-            >
-              {getSortIcon("batch")}
-            </span>
-          </span>
-          {dropdownOpen.batch && (
-            <div
-              className={styles.dropdown}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={filters.batch.length === uniqueValues.batch.length}
-                    onChange={() => handleFilterAllChange("batch")}
-                  />
-                  전체
-                </label>
-              </div>
-              {uniqueValues.batch.map((option) => (
-                <div key={option.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.batch.includes(option.value)}
-                      onChange={() => handleFilterChange("batch", option.value)}
-                    />
-                    {option.item}
-                  </label>
+            {/* 군 */}
+            <div className={styles.unitContainer}>
+              <span>
+                <span onClick={() => toggleDropdown("groupname")}>군</span>
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("groupname")}
+                >
+                  {getSortIcon("groupname")}
+                </span>
+              </span>
+              {dropdownOpen.groupname && (
+                <div
+                  className={styles.dropdown}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters.groupname.length ===
+                          uniqueValues.groupname.length
+                        }
+                        onChange={() => handleFilterAllChange("groupname")}
+                      />
+                      전체
+                    </label>
+                  </div>
+                  {uniqueValues.groupname.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={filters.groupname.includes(option.value)}
+                          onChange={() =>
+                            handleFilterChange("groupname", option.value)
+                          }
+                        />
+                        {option.item}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-        {/* 가입 날짜 */}
-        <div className={styles.unitContainer}>
-          <span>
-            가입 날짜
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("registerdate")}
-            >
-              {getSortIcon("registerdate")}
-            </span>
-          </span>
-        </div>
-        {/* 분류 */}
-        <div className={styles.unitContainer}>
-          <div className={styles.headerWithReset}>
-            <span onClick={() => toggleDropdown("customertype")}>분류</span>
-            <span
-              className={styles.sortIcon}
-              onClick={() => handleSort("customertype")}
-            >
-              {getSortIcon("customertype")}
-            </span>
+            {/* 순번 */}
+            <div className={styles.unitContainer}>
+              <span>
+                <span onClick={() => toggleDropdown("turn")}>순번</span>
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("turn")}
+                >
+                  {getSortIcon("turn")}
+                </span>
+              </span>
+              {dropdownOpen.turn && (
+                <div
+                  className={styles.dropdown}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters.turn.length === uniqueValues.turn.length
+                        }
+                        onChange={() => handleFilterAllChange("turn")}
+                      />
+                      전체
+                    </label>
+                  </div>
+                  {uniqueValues.turn.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={filters.turn.includes(option.value)}
+                          onChange={() =>
+                            handleFilterChange("turn", option.value)
+                          }
+                        />
+                        {option.item}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* 가입 차순 */}
+            <div className={styles.unitContainer}>
+              <span>
+                <span onClick={() => toggleDropdown("batch")}>가입 차순</span>
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("batch")}
+                >
+                  {getSortIcon("batch")}
+                </span>
+              </span>
+              {dropdownOpen.batch && (
+                <div
+                  className={styles.dropdown}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters.batch.length === uniqueValues.batch.length
+                        }
+                        onChange={() => handleFilterAllChange("batch")}
+                      />
+                      전체
+                    </label>
+                  </div>
+                  {uniqueValues.batch.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={filters.batch.includes(option.value)}
+                          onChange={() =>
+                            handleFilterChange("batch", option.value)
+                          }
+                        />
+                        {option.item}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* 가입 날짜 */}
+            <div className={styles.unitContainer}>
+              <span>
+                가입 날짜
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("registerdate")}
+                >
+                  {getSortIcon("registerdate")}
+                </span>
+              </span>
+            </div>
+            {/* 분류 */}
+            <div className={styles.unitContainer}>
+              <div className={styles.headerWithReset}>
+                <span onClick={() => toggleDropdown("customertype")}>분류</span>
+                <span
+                  className={styles.sortIcon}
+                  onClick={() => handleSort("customertype")}
+                >
+                  {getSortIcon("customertype")}
+                </span>
+              </div>
+              {dropdownOpen.customertype && (
+                <div
+                  className={styles.dropdown}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters.customertype.length ===
+                          uniqueValues.customertype.length
+                        }
+                        onChange={() => handleFilterAllChange("customertype")}
+                      />
+                      전체
+                    </label>
+                  </div>
+                  {uniqueValues.customertype.map((option) => (
+                    <div key={option.value}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={filters.customertype.includes(option.value)}
+                          onChange={() =>
+                            handleFilterChange("customertype", option.value)
+                          }
+                        />
+                        {option.item}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          {dropdownOpen.customertype && (
-            <div
-              className={styles.dropdown}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={
-                      filters.customertype.length ===
-                      uniqueValues.customertype.length
-                    }
-                    onChange={() => handleFilterAllChange("customertype")}
-                  />
-                  전체
-                </label>
-              </div>
-              {uniqueValues.customertype.map((option) => (
-                <div key={option.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.customertype.includes(option.value)}
-                      onChange={() =>
-                        handleFilterChange("customertype", option.value)
-                      }
-                    />
-                    {option.item}
-                  </label>
+
+          {filteredData().map((customer) => {
+            return (
+              <div className={styles.maincontainer} key={customer.id}>
+                <Link
+                  href={`${linkBase}${customer.id}`}
+                  className={styles.link}
+                >
+                  <div className={styles.rowContainer}>
+                    <div className={styles.unitContainer}>{customer.id}</div>
+                    <div className={styles.unitContainer}>
+                      {customer.customerData?.name || "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {customer.type || "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {customer.groupname || "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {customer.turn || "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {customer.batch || "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {customer.registerdate
+                        ? customer.registerdate.slice(0, 10)
+                        : "N/A"}
+                    </div>
+                    <div className={styles.unitContainer}>
+                      {categoryMapping[customer.customertype] || "N/A"}
+                    </div>
+                  </div>
+                </Link>
+                <div className={styles.actionButtonsContainer}>
+                  {/* 수정 (Modify) Button */}
+                  <ModifyButton className={styles.editButton}>
+                    <Link href={`/modify/${customer.id}`}>
+                      <div className={styles.CBBottonFont}>수정</div>
+                    </Link>
+                  </ModifyButton>
+
+                  {/* 삭제 (Delete) Button */}
+                  <ModifyButton onClick={() => openConfirmation(customer.id)}>
+                    <div className={styles.CBBottonFont}>삭제</div>
+                  </ModifyButton>
                 </div>
-              ))}
-            </div>
+              </div>
+            );
+          })}
+          {isModalOpen && (
+            <ConfirmationModal
+              message="삭제하시겠습니까?"
+              onConfirm={confirmDelete}
+              onCancel={cancelDelete}
+            />
           )}
-        </div>
-      </div>
-
-      {searchdata.state === "hasValue" &&
-        filteredData().map((customer) => {
-          return (
-            <div className={styles.maincontainer} key={customer.id}>
-              <Link href={`${linkBase}${customer.id}`} className={styles.link}>
-                <div className={styles.rowContainer}>
-                  <div className={styles.unitContainer}>{customer.id}</div>
-                  <div className={styles.unitContainer}>
-                    {customer.customerData?.name || "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {customer.type || "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {customer.groupname || "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {customer.turn || "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {customer.batch || "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {customer.registerdate
-                      ? customer.registerdate.slice(0, 10)
-                      : "N/A"}
-                  </div>
-                  <div className={styles.unitContainer}>
-                    {categoryMapping[customer.customertype] || "N/A"}
-                  </div>
-                </div>
-              </Link>
-              <div className={styles.actionButtonsContainer}>
-                {/* 수정 (Modify) Button */}
-                <ModifyButton className={styles.editButton}>
-                  <Link href={`/modify/${customer.id}`}>
-                    <div className={styles.CBBottonFont}>수정</div>
-                  </Link>
-                </ModifyButton>
-
-                {/* 삭제 (Delete) Button */}
-                <ModifyButton onClick={() => openConfirmation(customer.id)}>
-                  <div className={styles.CBBottonFont}>삭제</div>
-                </ModifyButton>
-              </div>
-            </div>
-          );
-        })}
-      {isModalOpen && (
-        <ConfirmationModal
-          message="삭제하시겠습니까?"
-          onConfirm={confirmDelete}
-          onCancel={cancelDelete}
-        />
+        </>
       )}
     </div>
   );
