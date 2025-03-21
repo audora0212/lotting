@@ -1,8 +1,8 @@
 // src/utils/api.js
 import axios from "axios";
 
-//const path = "http://localhost:8080";
-const path = "http://3.38.181.18:8080";
+const path = "http://localhost:8080";
+//const path = "http://3.38.181.18:8080";
 
 // 고객 추가 페이지 새로운 아이디 받아오기
 export const newIdGenerate = () => {
@@ -770,5 +770,118 @@ export const getPhaseSummaries = async () => {
   } catch (error) {
     console.error("Error fetching phase summaries:", error);
     throw error;
+  }
+};
+
+
+// 환불 파일 업로드
+export async function uploadRefundFileWithProgress(
+  file,
+  onProgress,
+  onComplete,
+  onError
+) {
+  const formData = new FormData();
+  formData.append("file", file);
+  const backendUrl = `${path}/api/refunds/excel/upload`;
+  const response = await fetch(backendUrl, {
+    method: "POST",
+    headers: { Accept: "text/event-stream" },
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error("서버 응답 에러: " + response.statusText);
+  }
+  if (!response.body) {
+    throw new Error("ReadableStream을 가져올 수 없습니다");
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+  let currentEvent = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split(/\r?\n/);
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+      if (!line) {
+        currentEvent = "";
+        continue;
+      }
+      if (line.startsWith("event:")) {
+        currentEvent = line.slice("event:".length).trim();
+      } else if (line.startsWith("data:")) {
+        const data = line.slice("data:".length).trim();
+        if (currentEvent === "progress" && onProgress) onProgress(data);
+        else if (currentEvent === "complete" && onComplete) onComplete(data);
+        else if (currentEvent === "error" && onError) onError(data);
+      }
+    }
+    buffer = lines[lines.length - 1];
+  }
+  if (buffer) {
+    const line = buffer.trim();
+    if (line.startsWith("event:")) {
+      currentEvent = line.slice("event:".length).trim();
+    } else if (line.startsWith("data:")) {
+      const data = line.slice("data:".length).trim();
+      if (currentEvent === "progress" && onProgress) onProgress(data);
+      else if (currentEvent === "complete" && onComplete) onComplete(data);
+      else if (currentEvent === "error" && onError) onError(data);
+    }
+  }
+}
+
+// 환불 파일 다운로드
+export const downloadRefundFile = async (onProgress, onComplete, onError) => {
+  try {
+    const eventSource = new EventSource(
+      `${path}/api/refunds/excel/download/progress`
+    );
+    eventSource.addEventListener("progress", (event) => {
+      if (onProgress) onProgress(event.data);
+    });
+    eventSource.addEventListener("complete", async (event) => {
+      const fileId = event.data;
+      try {
+        const response = await axios.get(
+          `${path}/api/refunds/excel/download/file?fileId=${fileId}`,
+          { responseType: "blob" }
+        );
+        const disposition = response.headers["content-disposition"];
+        let fileName = "refund_file.xlsx";
+        if (disposition && disposition.indexOf("filename=") !== -1) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(disposition);
+          if (matches != null && matches[1]) {
+            fileName = matches[1].replace(/['"]/g, "");
+          }
+        }
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        if (onComplete) onComplete(fileName);
+      } catch (downloadError) {
+        if (onError) onError(downloadError);
+      } finally {
+        eventSource.close();
+      }
+    });
+    eventSource.addEventListener("error", (event) => {
+      if (onError) onError("SSE 연결 중 오류가 발생했습니다.");
+      eventSource.close();
+    });
+  } catch (error) {
+    if (onError) onError(error);
   }
 };

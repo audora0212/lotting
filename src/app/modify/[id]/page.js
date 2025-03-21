@@ -67,10 +67,8 @@ function Modify({ params }) {
 
   const [initialLegalPostNumber, setInitialLegalPostNumber] = useState("");
   const [initialLegalAddress, setInitialLegalAddress] = useState("");
-  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] =
-    useState("");
-  const [initialPostreceiveAddress, setInitialPostreceiveAddress] =
-    useState("");
+  const [initialPostreceivePostNumber, setInitialPostreceivePostNumber] = useState("");
+  const [initialPostreceiveAddress, setInitialPostreceiveAddress] = useState("");
 
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
@@ -92,26 +90,21 @@ function Modify({ params }) {
     const formattedValue = formatNumberWithCommas(e.target.value);
     setFormattedDepositAmmount(formattedValue);
     const rawValue = formattedValue.replace(/,/g, "");
-    setValue(
-      "deposits.depositammount",
-      rawValue ? parseInt(rawValue, 10) : null
-    );
+    setValue("deposits.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
   useEffect(() => {
     const getData = async () => {
       try {
         const customer = await fetchCustomerById(id);
-        console.log("받은값값");
-        console.log(customer);
+        console.log("받은 고객 데이터:", customer);
         if (customer) {
           setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
           setInitialLegalAddress(customer.legalAddress.post || "");
-          setInitialPostreceivePostNumber(
-            customer.postreceive.postnumberreceive || ""
-          );
+          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
           setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
 
+          // reset 시 기존 해지(cancel) 정보와 추가 해지정보(cancelInfo) 초기값 설정
           reset({
             customertype: customer.customertype,
             type: customer.type,
@@ -121,7 +114,6 @@ function Modify({ params }) {
             registerdate: customer.registerdate,
             registerprice: customer.registerprice,
             registerpath: customer.registerpath,
-            // 비고 -> additional 로 변경
             additional: customer.additional || "",
             prizewinning: customer.prizewinning,
             CustomerData: {
@@ -163,58 +155,56 @@ function Modify({ params }) {
             secondemp: customer.secondemp,
             meetingattend: customer.meetingattend,
             agenda: customer.agenda,
-            // 체크박스 관련 값
             exemption7: customer.attachments?.exemption7,
             investmentfile: customer.attachments?.investmentfile,
             contract: customer.attachments?.contract,
             agreement: customer.attachments?.agreement,
             preferenceattachment: customer.attachments?.preferenceattachment,
             prizeattachment: customer.attachments?.prizeattachment,
-            sealcertificateprovided:
-              customer.attachments?.sealcertificateprovided,
-            selfsignatureconfirmationprovided:
-              customer.attachments?.selfsignatureconfirmationprovided,
-            commitmentletterprovided:
-              customer.attachments?.commitmentletterprovided,
+            sealcertificateprovided: customer.attachments?.sealcertificateprovided,
+            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided,
+            commitmentletterprovided: customer.attachments?.commitmentletterprovided,
             idcopyprovided: customer.attachments?.idcopyprovided,
             freeoption: customer.attachments?.freeoption,
             forfounding: customer.attachments?.forfounding,
-            // 사은품 관련
             prizename: customer.attachments?.prizename,
             prizedate: customer.attachments?.prizedate,
+            // 기존 해지 정보
+            cancel: {
+              canceldate: customer.cancel?.canceldate || "",
+              refunddate: customer.cancel?.refunddate || "",
+              refundamount: customer.cancel?.refundamount || "",
+            },
+            // 추가 해지정보 (고객 수정 시 새로 입력할 값)
+            cancelInfo: {
+              reason: "",
+              remarks: "",
+              source: "",
+            },
           });
 
           // 금액 포맷팅
           if (customer?.registerprice) {
-            setFormattedRegisterPrice(
-              customer.registerprice.toLocaleString()
-            );
+            setFormattedRegisterPrice(customer.registerprice.toLocaleString());
           }
           if (customer.deposits?.depositammount) {
-            setFormattedDepositAmmount(
-              customer.deposits.depositammount.toLocaleString()
-            );
+            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
           }
-          // 기존 파일 정보도 설정 (있다면)
+          // 기존 파일 정보 설정 (있다면)
           if (customer.attachments && customer.attachments.fileinfo) {
             setExistingFileInfo(customer.attachments.fileinfo);
           }
-
           // 체크박스 초기값
           setIsupload({
             isuploaded: false,
-            sealcertificateprovided:
-              customer.attachments?.sealcertificateprovided || false,
-            selfsignatureconfirmationprovided:
-              customer.attachments?.selfsignatureconfirmationprovided || false,
-            commitmentletterprovided:
-              customer.attachments?.commitmentletterprovided || false,
+            sealcertificateprovided: customer.attachments?.sealcertificateprovided || false,
+            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided || false,
+            commitmentletterprovided: customer.attachments?.commitmentletterprovided || false,
             idcopyprovided: customer.attachments?.idcopyprovided || false,
             freeoption: customer.attachments?.freeoption || false,
             forfounding: customer.attachments?.forfounding || false,
             agreement: customer.attachments?.agreement || false,
-            preferenceattachment:
-              customer.attachments?.preferenceattachment || false,
+            preferenceattachment: customer.attachments?.preferenceattachment || false,
             prizeattachment: customer.attachments?.prizeattachment || false,
             exemption7: customer.attachments?.exemption7 || false,
             investmentfile: customer.attachments?.investmentfile || false,
@@ -277,6 +267,9 @@ function Modify({ params }) {
 
   const onSubmit = async (data) => {
     try {
+      // cancelInfo가 없으면 기본값을 넣어줍니다.
+      const cancelInfo = data.cancelInfo || { reason: "", remarks: "" , source: ""};
+  
       const parsedData = {
         ...data,
         CustomerData: {
@@ -289,8 +282,14 @@ function Modify({ params }) {
           ...data.deposits,
           depositammount: parseInt(data.deposits.depositammount),
         },
+        // ensure cancelInfo fields exist
+        cancelInfo: {
+          reason: cancelInfo.reason || "",
+          remarks: cancelInfo.remarks || "",
+          source: cancelInfo.source || "",
+        },
       };
-
+  
       let uploadedFileInfo = existingFileInfo;
       if (file) {
         if (existingFileInfo) {
@@ -299,14 +298,14 @@ function Modify({ params }) {
         const uploadResponse = await createFile(file, parseInt(id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
-
+  
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
         prizename: data.prizename,
         prizedate: data.prizedate,
       };
-
+  
       const customerData = {
         id: parseInt(id),
         customertype: parsedData.customertype,
@@ -338,21 +337,22 @@ function Modify({ params }) {
         preferenceattachment: parsedData.preferenceattachment,
         prizeattachment: parsedData.prizeattachment,
         sealcertificateprovided: parsedData.sealcertificateprovided,
-        selfsignatureconfirmationprovided:
-          parsedData.selfsignatureconfirmationprovided,
+        selfsignatureconfirmationprovided: parsedData.selfsignatureconfirmationprovided,
         commitmentletterprovided: parsedData.commitmentletterprovided,
         idcopyprovided: parsedData.idcopyprovided,
         freeoption: parsedData.freeoption,
         forfounding: parsedData.forfounding,
-        // 변경된 비고 필드: additional
         additional: parsedData.additional,
+        // 해지 정보
+        cancel: parsedData.cancel,
+        cancelInfo: parsedData.cancelInfo, // cancelInfo에 reason, remarks가 포함됨
       };
-
+  
       console.log("수정할 데이터:");
       console.log(customerData);
-
+  
       const updateUserResponse = await updateUser(id, customerData);
-
+  
       Swal.fire({
         icon: "success",
         title: "회원정보가 수정되었습니다.",
@@ -362,7 +362,7 @@ function Modify({ params }) {
           "/ 회원명 : " +
           parsedData.CustomerData.name,
       });
-
+  
       reset();
       setFile(null);
       setIsupload({
@@ -393,8 +393,10 @@ function Modify({ params }) {
       });
     }
   };
+  
 
   const prizeattachmentChecked = watch("prizeattachment", false);
+  const customerType = watch("customertype");
 
   return (
     <div>
@@ -448,8 +450,7 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>이메일</div>
             <Inputbox
               type="email"
-              register={register("CustomerData.email", {
-              })}
+              register={register("CustomerData.email", {})}
               isError={!!errors.CustomerData?.email}
             />
           </div>
@@ -467,8 +468,7 @@ function Modify({ params }) {
             <div className={styles.inputLabel}>가입경로</div>
             <Inputbox
               type="text"
-              register={register("registerpath", {
-              })}
+              register={register("registerpath", {})}
               isError={!!errors.registerpath}
             />
           </div>
@@ -555,6 +555,73 @@ function Modify({ params }) {
             </div>
           </div>
         </div>
+
+        {/* 해지/환불 정보: 고객 분류가 "x"인 경우 렌더링 */}
+        {customerType?.toLowerCase() === "x" && (
+          <>
+            <h3>해지/환불 정보</h3>
+            <div className={styles.content_container}>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>해지일자 *</div>
+                <Inputbox
+                  type="date"
+                  register={register("cancel.canceldate", {
+                    required: "해지일자를 입력해주세요.",
+                  })}
+                  isError={!!errors.cancel?.canceldate}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>환급일자 *</div>
+                <Inputbox
+                  type="date"
+                  register={register("cancel.refunddate", {
+                    required: "환급일자를 입력해주세요.",
+                  })}
+                  isError={!!errors.cancel?.refunddate}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>환급액 *</div>
+                <Inputbox
+                  type="number"
+                  register={register("cancel.refundamount", {
+                    required: "환급액을 입력해주세요.",
+                  })}
+                  isError={!!errors.cancel?.refundamount}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>사유 *</div>
+                <Inputbox
+                  type="text"
+                  register={register("cancelInfo.reason", {
+                    required: "해지 사유를 입력해주세요.",
+                  })}
+                  isError={!!errors.cancelInfo?.reason}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>출처 *</div>
+                <Inputbox
+                  type="text"
+                  register={register("cancelInfo.source", {
+                    required: "출처를 입력해주세요.",
+                  })}
+                  isError={!!errors.cancelInfo?.source}
+                />
+              </div>
+              <div className={styles.inputRow}>
+                <div className={styles.inputLabel}>비고</div>
+                <Inputbox
+                  type="text"
+                  register={register("cancelInfo.remarks")}
+                  isError={!!errors.cancelInfo?.remarks}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* 다힘 (dahim) */}
         <h3>다힘</h3>
@@ -681,282 +748,6 @@ function Modify({ params }) {
 
         {/* 관리 정보 */}
         <h3>관리 정보</h3>
-        <div className={styles.mainbody}>
-          <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>제출 순번 *</div>
-                <DropInputbox
-                  list={typeidlist}
-                  register={register("batch", {
-                    required: "제출 순번을 선택해주세요.",
-                  })}
-                  isError={!!errors.batch}
-                />
-              </div>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>유형 *</div>
-                <DropInputbox
-                  list={typelist}
-                  register={register("type", {
-                    required: "유형을 선택해주세요.",
-                  })}
-                  isError={!!errors.type}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>그룹 *</div>
-                <DropInputbox
-                  list={grouplist}
-                  register={register("groupname", {
-                    required: "그룹을 선택해주세요.",
-                  })}
-                  isError={!!errors.groupname}
-                />
-              </div>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>순번 *</div>
-                <DropInputbox
-                  list={turnlist}
-                  register={register("turn", {
-                    required: "순번을 선택해주세요.",
-                  })}
-                  isError={!!errors.turn}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>가입일자 *</div>
-                <div className={styles.dateInputContainer}>
-                  <Inputbox
-                    type="date"
-                    register={register("registerdate", {
-                      required: "가입일자를 입력해주세요.",
-                    })}
-                    isError={!!errors.registerdate}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>가입가 *</div>
-                <Inputbox
-                  type="text"
-                  value={formattedRegisterPrice}
-                  onChange={handleRegisterPriceChange}
-                  isError={!!errors.registerprice}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>예약금 납입일자 *</div>
-                <div className={styles.dateInputContainer}>
-                  <Inputbox
-                    type="date"
-                    register={register("deposits.depositdate", {
-                      required: "예약금 납입일자를 입력해주세요.",
-                    })}
-                    isError={!!errors.deposits?.depositdate}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>예약금 *</div>
-                <Inputbox
-                  type="text"
-                  value={formattedDepositAmmount}
-                  onChange={handleDepositAmmountChange}
-                  isError={!!errors.deposits?.depositammount}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 신탁사 제출일자 -> Financial.trustcompanydate 로 매핑 */}
-          <div className={styles.content_body}>
-            <div className={styles.content_body2}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>신탁사 제출일자 *</div>
-                <div className={styles.dateInputContainer}>
-                  <Inputbox
-                    type="date"
-                    register={register("Financial.trustcompanydate", {
-                    })}
-                    isError={!!errors.Financial?.trustcompanydate}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.content_body}>
-            <div className={styles.content_body3}>
-              <Checkbox
-                label="7차 면제"
-                name="exemption7"
-                checked={isupload.exemption7}
-                onChange={handleCheckboxChange}
-                register={register("exemption7")}
-                isError={!!errors.exemption7}
-              />
-            </div>
-            <div className={styles.content_body3}>
-              <Checkbox
-                label="출자금"
-                name="investmentfile"
-                checked={isupload.investmentfile}
-                onChange={handleCheckboxChange}
-                register={register("investmentfile")}
-                isError={!!errors.investmentfile}
-              />
-            </div>
-            <div className={styles.content_body3}>
-              <Checkbox
-                label="지산A동 계약서"
-                name="contract"
-                checked={isupload.contract}
-                onChange={handleCheckboxChange}
-                register={register("contract")}
-                isError={!!errors.contract}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* 부속서류 */}
-        <h3>부속서류</h3>
-        <div className={styles.attachmentContainer}>
-          <div className={styles.attachmentGrid}>
-            <Checkbox
-              label="인감증명서"
-              name="sealcertificateprovided"
-              checked={isupload.sealcertificateprovided}
-              onChange={handleCheckboxChange}
-              register={register("sealcertificateprovided")}
-              isError={!!errors.sealcertificateprovided}
-            />
-            <Checkbox
-              label="본인서명확인서"
-              name="selfsignatureconfirmationprovided"
-              checked={isupload.selfsignatureconfirmationprovided}
-              onChange={handleCheckboxChange}
-              register={register("selfsignatureconfirmationprovided")}
-              isError={!!errors.selfsignatureconfirmationprovided}
-            />
-            <Checkbox
-              label="확약서"
-              name="commitmentletterprovided"
-              checked={isupload.commitmentletterprovided}
-              onChange={handleCheckboxChange}
-              register={register("commitmentletterprovided")}
-              isError={!!errors.commitmentletterprovided}
-            />
-            <Checkbox
-              label="신분증"
-              name="idcopyprovided"
-              checked={isupload.idcopyprovided}
-              onChange={handleCheckboxChange}
-              register={register("idcopyprovided")}
-              isError={!!errors.idcopyprovided}
-            />
-            <Checkbox
-              label="무상옵션"
-              name="freeoption"
-              checked={isupload.freeoption}
-              onChange={handleCheckboxChange}
-              register={register("freeoption")}
-              isError={!!errors.freeoption}
-            />
-            <Checkbox
-              label="창준위용"
-              name="forfounding"
-              checked={isupload.forfounding}
-              onChange={handleCheckboxChange}
-              register={register("forfounding")}
-              isError={!!errors.forfounding}
-            />
-            <Checkbox
-              label="총회동의서"
-              name="agreement"
-              checked={isupload.agreement}
-              onChange={handleCheckboxChange}
-              register={register("agreement")}
-              isError={!!errors.agreement}
-            />
-            <Checkbox
-              label="선호도조사"
-              name="preferenceattachment"
-              checked={isupload.preferenceattachment}
-              onChange={handleCheckboxChange}
-              register={register("preferenceattachment")}
-              isError={!!errors.preferenceattachment}
-            />
-            <Checkbox
-              label="사은품"
-              name="prizeattachment"
-              checked={isupload.prizeattachment}
-              onChange={handleCheckboxChange}
-              register={register("prizeattachment")}
-              isError={!!errors.prizeattachment}
-            />
-          </div>
-          {prizeattachmentChecked && (
-            <div className={styles.prizeRow}>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>사은품명</div>
-                <Inputbox
-                  type="text"
-                  register={register("prizename")}
-                  isError={!!errors.prizename}
-                />
-              </div>
-              <div className={styles.inputRow}>
-                <div className={styles.inputLabel}>지급일자</div>
-                <div className={styles.dateInputContainer}>
-                  <Inputbox
-                    type="date"
-                    register={register("prizedate")}
-                    isError={!!errors.prizedate}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className={styles.content_container}>
-          <div className={styles.inputRow}>
-            <FileInputbox
-              name="fileupload"
-              handleChange={handleFileChange}
-              register={register("fileupload")}
-              isupload={isupload.isuploaded}
-              value={file ? file.name : ""}
-              isError={!!errors.fileupload}
-            />
-          </div>
-          {existingFileInfo && (
-            <div className={styles.existingFile}>
-              기존 파일: {existingFileInfo}
-            </div>
-          )}
-        </div>
-
-        {/* 담당자 정보 */}
-        <h3>담당자 정보</h3>
         <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
           <div className={styles.responsibleRow}>
             <div className={styles.inputColumnRow}>

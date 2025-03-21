@@ -1,61 +1,66 @@
+// src/app/modify/[id]/page.js
 "use client";
 
 import { useState } from "react";
 import styles from "@/styles/Userinfo.module.scss";
 import withAuth from "@/utils/hoc/withAuth";
 import { ExcelFileInputbox } from "@/components/Inputbox";
+import { Button_Y } from "@/components/Button";
+import { useRouter } from "next/navigation";
 import {
-  uploadExcelFileWithProgress,          // 고객 파일 업로드용 API
-  uploadDepositHistoryExcelWithProgress, // 입금내역 업로드용 API
-  downloadRegFile,                       // Reg 파일 다운로드용 API
-  downloadDepositHistoryExcel            // 입금내역 엑셀 다운로드용 API
+  uploadExcelFileWithProgress,
+  downloadRegFile,
+  uploadDepositHistoryExcelWithProgress,
+  downloadDepositHistoryExcel,
+  uploadRefundFileWithProgress,
+  downloadRefundFile,
 } from "@/utils/api";
 
 function FilecontrolPage() {
-  // 1) 고객 파일 업로드 관련 state
+  const router = useRouter();
+
+  // 고객 파일 업로드/다운로드 상태
   const [customerFile, setCustomerFile] = useState(null);
   const [customerProgress, setCustomerProgress] = useState("");
   const [customerMessage, setCustomerMessage] = useState("");
 
-  // 2) 입금 기록(Deposit) 업로드 관련 state
+  const [regProgress, setRegProgress] = useState("");
+  const [regMessage, setRegMessage] = useState("");
+
+  // 입금내역 파일 업로드/다운로드 상태
   const [depositFile, setDepositFile] = useState(null);
   const [depositProgress, setDepositProgress] = useState("");
   const [depositMessage, setDepositMessage] = useState("");
 
-  // 3) Reg 파일 다운로드 관련 state
-  const [regProgress, setRegProgress] = useState("");
-  const [regMessage, setRegMessage] = useState("");
-
-  // 4) 입금내역 엑셀 다운로드 관련 state
   const [depDownloadProgress, setDepDownloadProgress] = useState("");
   const [depDownloadMessage, setDepDownloadMessage] = useState("");
 
-  // ─────────────────────────────
-  // 헬퍼 함수: "현재/전체" 형태의 문자열을 파싱하여 progress bar 생성
+  // 환불 파일 업로드/다운로드 상태
+  const [refundFile, setRefundFile] = useState(null);
+  const [refundProgress, setRefundProgress] = useState("");
+  const [refundMessage, setRefundMessage] = useState("");
+
+  const [refundDownloadProgress, setRefundDownloadProgress] = useState("");
+  const [refundDownloadMessage, setRefundDownloadMessage] = useState("");
+
+  // 진행률 바 렌더링 헬퍼
   const renderProgressBar = (progress) => {
     if (!progress || !progress.includes('/')) return null;
-    const parts = progress.split('/');
-    if (parts.length !== 2) return null;
-    const current = parseInt(parts[0], 10);
-    const total = parseInt(parts[1], 10);
+    const [current, total] = progress.split('/').map(Number);
     if (isNaN(current) || isNaN(total)) return null;
     return (
-      <progress 
-        value={current} 
-        max={total} 
+      <progress
+        value={current}
+        max={total}
         style={{ width: "30%", marginTop: "0.5rem" }}
       />
     );
   };
 
-  // ─────────────────────────────
-  // (A) 고객 파일 업로드 핸들러
-  // ─────────────────────────────
+  // ────────────── 고객 파일 업로드/다운로드 ──────────────
   const handleCustomerFileChange = (e) => {
     const { files } = e.target;
-    if (files && files.length > 0) {
-      setCustomerFile(files[0]);
-    }
+    if (files && files.length > 0) setCustomerFile(files[0]);
   };
 
   const handleCustomerUpload = async () => {
@@ -63,25 +68,14 @@ function FilecontrolPage() {
       setCustomerMessage("고객 파일을 선택해주세요.");
       return;
     }
-    // 초기화
     setCustomerMessage("고객 파일 업로드 시작...");
     setCustomerProgress("");
-
     try {
       await uploadExcelFileWithProgress(
         customerFile,
-        (prog) => {
-          // progress 콜백
-          setCustomerProgress(prog); // 예: "3/30"
-        },
-        (msg) => {
-          // complete 콜백
-          setCustomerMessage("고객 파일 업로드 완료: " + msg);
-        },
-        (err) => {
-          // error 콜백
-          setCustomerMessage("고객 파일 업로드 실패: " + err);
-        }
+        (prog) => setCustomerProgress(prog),
+        (msg) => setCustomerMessage("고객 파일 업로드 완료: " + msg),
+        (err) => setCustomerMessage("고객 파일 업로드 실패: " + err)
       );
     } catch (error) {
       console.error("고객 파일 업로드 오류:", error);
@@ -89,14 +83,25 @@ function FilecontrolPage() {
     }
   };
 
-  // ─────────────────────────────
-  // (B) 입금 기록(Deposit) 업로드 핸들러
-  // ─────────────────────────────
+  const handleRegFileDownload = async () => {
+    setRegMessage("고객 파일 다운로드 시작...");
+    setRegProgress("");
+    try {
+      await downloadRegFile(
+        (prog) => setRegProgress(prog),
+        (fileName) => setRegMessage("다운로드 완료: " + fileName),
+        (err) => setRegMessage("다운로드 실패: " + err)
+      );
+    } catch (error) {
+      console.error("고객 파일 다운로드 실패:", error);
+      setRegMessage("다운로드 중 오류 발생: " + error.message);
+    }
+  };
+
+  // ────────────── 입금내역 파일 업로드/다운로드 ──────────────
   const handleDepositFileChange = (e) => {
     const { files } = e.target;
-    if (files && files.length > 0) {
-      setDepositFile(files[0]);
-    }
+    if (files && files.length > 0) setDepositFile(files[0]);
   };
 
   const handleDepositUpload = async () => {
@@ -106,19 +111,12 @@ function FilecontrolPage() {
     }
     setDepositMessage("입금내역 업로드 시작...");
     setDepositProgress("");
-
     try {
       await uploadDepositHistoryExcelWithProgress(
         depositFile,
-        (prog) => {
-          setDepositProgress(prog);
-        },
-        (msg) => {
-          setDepositMessage("입금내역 업로드 완료: " + msg);
-        },
-        (err) => {
-          setDepositMessage("입금내역 업로드 실패: " + err);
-        }
+        (prog) => setDepositProgress(prog),
+        (msg) => setDepositMessage("입금내역 업로드 완료: " + msg),
+        (err) => setDepositMessage("입금내역 업로드 실패: " + err)
       );
     } catch (error) {
       console.error("입금내역 업로드 오류:", error);
@@ -126,47 +124,14 @@ function FilecontrolPage() {
     }
   };
 
-  // ─────────────────────────────
-  // (C) Reg 파일 다운로드 핸들러
-  // ─────────────────────────────
-  const handleRegFileDownload = async () => {
-    setRegMessage("고객 파일 다운로드 시작...");
-    setRegProgress("");
-    try {
-      await downloadRegFile(
-        (prog) => {
-          setRegProgress(prog);
-        },
-        (fileName) => {
-          setRegMessage("다운로드 완료: " + fileName);
-        },
-        (err) => {
-          setRegMessage("다운로드 실패: " + err);
-        }
-      );
-    } catch (error) {
-      console.error("고객 파일 다운로드 실패:", error);
-      setRegMessage("다운로드 중 오류 발생: " + error.message);
-    }
-  };
-
-  // ─────────────────────────────
-  // (D) 입금내역 엑셀 다운로드 핸들러
-  // ─────────────────────────────
   const handleDepDownload = async () => {
     setDepDownloadMessage("입금내역 엑셀 다운로드 시작...");
     setDepDownloadProgress("");
     try {
       await downloadDepositHistoryExcel(
-        (prog) => {
-          setDepDownloadProgress(prog);
-        },
-        (fileName) => {
-          setDepDownloadMessage("다운로드 완료: " + fileName);
-        },
-        (err) => {
-          setDepDownloadMessage("다운로드 실패: " + err);
-        }
+        (prog) => setDepDownloadProgress(prog),
+        (fileName) => setDepDownloadMessage("다운로드 완료: " + fileName),
+        (err) => setDepDownloadMessage("다운로드 실패: " + err)
       );
     } catch (error) {
       console.error("입금내역 다운로드 오류:", error);
@@ -174,56 +139,87 @@ function FilecontrolPage() {
     }
   };
 
+  // ────────────── 환불 파일 업로드/다운로드 ──────────────
+  const handleRefundFileChange = (e) => {
+    const { files } = e.target;
+    if (files && files.length > 0) setRefundFile(files[0]);
+  };
+
+  const handleRefundUpload = async () => {
+    if (!refundFile) {
+      setRefundMessage("환불 파일을 선택해주세요.");
+      return;
+    }
+    setRefundMessage("환불 파일 업로드 시작...");
+    setRefundProgress("");
+    try {
+      await uploadRefundFileWithProgress(
+        refundFile,
+        (prog) => setRefundProgress(prog),
+        (msg) => setRefundMessage("환불 파일 업로드 완료: " + msg),
+        (err) => setRefundMessage("환불 파일 업로드 실패: " + err)
+      );
+    } catch (error) {
+      console.error("환불 파일 업로드 오류:", error);
+      setRefundMessage("업로드 중 오류 발생: " + error.message);
+    }
+  };
+
+  const handleRefundDownload = async () => {
+    setRefundDownloadMessage("환불 파일 다운로드 시작...");
+    setRefundDownloadProgress("");
+    try {
+      await downloadRefundFile(
+        (prog) => setRefundDownloadProgress(prog),
+        (fileName) => setRefundDownloadMessage("다운로드 완료: " + fileName),
+        (err) => setRefundDownloadMessage("다운로드 실패: " + err)
+      );
+    } catch (error) {
+      console.error("환불 파일 다운로드 오류:", error);
+      setRefundDownloadMessage("다운로드 중 오류 발생: " + error.message);
+    }
+  };
+
   return (
     <div className={styles.mainbody}>
-      <p></p>
+      {/* 고객 파일 섹션 */}
       <div className={styles.rowContainer}>
         <div className={styles.excelcontainer}>
-          {/* ─────────────────────────────
-              1) 고객 파일 업로드 섹션
-              ───────────────────────────── */}
-          <div style={{ marginBottom: "2rem" }}>
-            <h3>고객 파일 업로드 (엑셀, SSE 진행도)</h3>
-            <ExcelFileInputbox
-              name="customerFileUpload"
-              handleChange={handleCustomerFileChange}
-              value={customerFile ? customerFile.name : ""}
-              isupload={!!customerFile}
-            />
-            <p></p>
-            <button className={styles.contractButton} onClick={handleCustomerUpload}>
-              고객 파일 업로드
-            </button>
-            {customerMessage && <p>{customerMessage}</p>}
-            {customerProgress && (
-              <>
-                <p>진행도: {customerProgress}</p>
-                {renderProgressBar(customerProgress)}
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.excelcontainer}>
-          <div style={{ marginBottom: "2rem" }}>
-            <h3>고객 파일 다운로드</h3>
-            <button className={styles.editButton} onClick={handleRegFileDownload}>
-              고객 파일 다운로드
-            </button>
-            {regMessage && <p>{regMessage}</p>}
-            {regProgress && (
-              <>
-                <p>진행도: {regProgress}</p>
-                {renderProgressBar(regProgress)}
-              </>
-            )}
-          </div>
+          <h3>고객 파일 업로드 (엑셀, SSE 진행도)</h3>
+          <ExcelFileInputbox
+            name="customerFileUpload"
+            handleChange={handleCustomerFileChange}
+            value={customerFile ? customerFile.name : ""}
+            isupload={!!customerFile}
+          />
+          <button className={styles.contractButton} onClick={handleCustomerUpload}>
+            고객 파일 업로드
+          </button>
+          {customerMessage && <p>{customerMessage}</p>}
+          {customerProgress && (
+            <>
+              <p>진행도: {customerProgress}</p>
+              {renderProgressBar(customerProgress)}
+            </>
+          )}
+          <h3>고객 파일 다운로드</h3>
+          <button className={styles.editButton} onClick={handleRegFileDownload}>
+            고객 파일 다운로드
+          </button>
+          {regMessage && <p>{regMessage}</p>}
+          {regProgress && (
+            <>
+              <p>진행도: {regProgress}</p>
+              {renderProgressBar(regProgress)}
+            </>
+          )}
         </div>
       </div>
-      <hr></hr>
-      <p></p>
+      <hr />
+
+      {/* 입금내역 파일 섹션 */}
       <div className={styles.rowContainer}>
-        <div style={{ marginBottom: "2rem" }}>
+        <div className={styles.excelcontainer}>
           <h3>입금내역 업로드 (엑셀, SSE 진행도)</h3>
           <ExcelFileInputbox
             name="depositFileUpload"
@@ -231,7 +227,6 @@ function FilecontrolPage() {
             value={depositFile ? depositFile.name : ""}
             isupload={!!depositFile}
           />
-          <p></p>
           <button className={styles.contractButton} onClick={handleDepositUpload}>
             입금내역 업로드
           </button>
@@ -242,21 +237,53 @@ function FilecontrolPage() {
               {renderProgressBar(depositProgress)}
             </>
           )}
+          <h3>입금내역 엑셀 다운로드</h3>
+          <button className={styles.editButton} onClick={handleDepDownload}>
+            입금내역 다운로드
+          </button>
+          {depDownloadMessage && <p>{depDownloadMessage}</p>}
+          {depDownloadProgress && (
+            <>
+              <p>진행도: {depDownloadProgress}</p>
+              {renderProgressBar(depDownloadProgress)}
+            </>
+          )}
         </div>
       </div>
+      <hr />
 
-      <div>
-        <h3>입금내역 엑셀 다운로드</h3>
-        <button className={styles.editButton} onClick={handleDepDownload}>
-          입금내역 다운로드
-        </button>
-        {depDownloadMessage && <p>{depDownloadMessage}</p>}
-        {depDownloadProgress && (
-          <>
-            <p>진행도: {depDownloadProgress}</p>
-            {renderProgressBar(depDownloadProgress)}
-          </>
-        )}
+      {/* 환불 파일 섹션 */}
+      <div className={styles.rowContainer}>
+        <div className={styles.excelcontainer}>
+          <h3>환불 파일 업로드 (엑셀, SSE 진행도)</h3>
+          <ExcelFileInputbox
+            name="refundFileUpload"
+            handleChange={handleRefundFileChange}
+            value={refundFile ? refundFile.name : ""}
+            isupload={!!refundFile}
+          />
+          <button className={styles.contractButton} onClick={handleRefundUpload}>
+            환불 파일 업로드
+          </button>
+          {refundMessage && <p>{refundMessage}</p>}
+          {refundProgress && (
+            <>
+              <p>진행도: {refundProgress}</p>
+              {renderProgressBar(refundProgress)}
+            </>
+          )}
+          <h3>환불 파일 다운로드</h3>
+          <button className={styles.editButton} onClick={handleRefundDownload}>
+            환불 파일 다운로드
+          </button>
+          {refundDownloadMessage && <p>{refundDownloadMessage}</p>}
+          {refundDownloadProgress && (
+            <>
+              <p>진행도: {refundDownloadProgress}</p>
+              {renderProgressBar(refundDownloadProgress)}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
