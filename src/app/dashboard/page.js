@@ -1,9 +1,12 @@
+// src/app/dashboard/page.js
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   fetchContractedCustomers,
   fetchFullyPaidCustomers,
   getPhaseSummaries,
+  fetchNotices,
 } from "@/utils/api";
 import { BsBagDash, BsDatabase } from "react-icons/bs";
 import { BiGroup } from "react-icons/bi";
@@ -16,34 +19,27 @@ import styles from "../../styles/Dashboard.module.scss";
 const Dashboard = () => {
   const [contractedCount, setContractedCount] = useState("loading...");
   const [fullyPaidCount, setFullyPaidCount] = useState("loading...");
-
-  // 계약금액, 확입금액
   const [contractAmount, setContractAmount] = useState("loading...");
   const [confirmDepositAmount, setConfirmDepositAmount] = useState("loading...");
-
-  // (추가) 차수별 요약 데이터 & 로딩 상태
   const [phaseSummaries, setPhaseSummaries] = useState([]);
   const [phaseLoading, setPhaseLoading] = useState(true);
+  const [notices, setNotices] = useState([]);
 
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        // 한 번에 모두 호출
-        const [contracted, fullyPaid, summary] = await Promise.all([
+        const [contracted, fullyPaid, summary, noticeData] = await Promise.all([
           fetchContractedCustomers(),
           fetchFullyPaidCustomers(),
-          getPhaseSummaries(), // /phase-summary
+          getPhaseSummaries(),
+          fetchNotices(),
         ]);
 
-        // 정계약 / 완납
         setContractedCount(contracted);
         setFullyPaidCount(fullyPaid);
-
-        // 차수별 요약
         setPhaseSummaries(summary);
         setPhaseLoading(false);
 
-        // 총 납입액, 총 미납액
         const totalDeposited = summary.reduce(
           (acc, cur) => acc + (cur.totalDeposited || 0),
           0
@@ -52,10 +48,10 @@ const Dashboard = () => {
           (acc, cur) => acc + (cur.totalUnpaid || 0),
           0
         );
-
-        // 계약금액(= 납입 + 미납), 확입금액(= 납입만)
         setContractAmount(totalDeposited + totalUnpaid);
         setConfirmDepositAmount(totalDeposited);
+
+        setNotices(noticeData);
       } catch (error) {
         console.error("Error fetching counts:", error);
       }
@@ -64,12 +60,11 @@ const Dashboard = () => {
     fetchCounts();
   }, []);
 
-  // 숫자 → '1,234 ₩' 형식 변환 (JS 전용)
   const formatWon = (value) => {
     if (typeof value === "number") {
       return value.toLocaleString() + " ₩";
     }
-    return value; // "loading..." 등 문자열 그대로
+    return value;
   };
 
   // 임시 미납자 목록
@@ -79,14 +74,11 @@ const Dashboard = () => {
   ];
 
   return (
-    <>
-    <p></p>
     <div className={styles.container}>
       <div className={styles.MainTitle}>
         <div className={styles.TwoColumnContainer}>
           {/* 왼쪽 컬럼 */}
           <div className={styles.LeftColumn}>
-            {/* 계약건수 & 완납인원 */}
             <div className={styles.Row}>
               <ContractSummary
                 icon={<BsBagDash style={{ width: "100%", height: "100%" }} />}
@@ -106,7 +98,6 @@ const Dashboard = () => {
               />
             </div>
 
-            {/* 계약금액 & 확입금액 */}
             <div className={styles.Row}>
               <ContractAmount
                 icon={<BsDatabase style={{ width: "100%", height: "100%" }} />}
@@ -124,17 +115,43 @@ const Dashboard = () => {
               />
             </div>
 
-            {/* 미납자 명단 */}
             <div className={styles.Row}>
               <ClientList clients={clients} />
             </div>
 
-            {/* 공지사항 */}
+            {/* 공지사항 영역 - 세로로 쌓이고 각 항목 사이에 구분선 추가 */}
             <div className={styles.Row}>
               <div className={styles.Notice}>
                 <div className={styles.NoticeTitle}>공지사항</div>
                 <div className={styles.NoticeContent}>
-                  [임시공지사항] 시스템 점검 예정
+                  {notices.length === 0 ? (
+                    "[ loading... ]"
+                  ) : (
+                    notices.map((notice, index) => (
+                      <React.Fragment key={notice.id}>
+                        <Link
+                          href={`/dashboard/notice/${notice.id}`}
+                          className={styles.NoticeItem}
+                        >
+                          <div>
+                            <strong>{notice.title}</strong>
+                          </div>
+                          <div className={styles.NoticeMeta}>
+                            <span>
+                              수정일:{" "}
+                              {new Date(notice.updatedAt).toLocaleDateString()}
+                            </span>
+                            <span>
+                              작성자: {notice.author || "관리자"}
+                            </span>
+                          </div>
+                        </Link>
+                        {index !== notices.length - 1 && (
+                          <hr className={styles.NoticeDivider} />
+                        )}
+                      </React.Fragment>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -142,7 +159,6 @@ const Dashboard = () => {
 
           {/* 오른쪽 컬럼 - 차수별 납입/미납 금액 */}
           <div className={styles.RightColumn}>
-            {/* InstallmentAmounts에 props로 전달 */}
             <InstallmentAmounts
               phaseSummaries={phaseSummaries}
               loading={phaseLoading}
@@ -151,7 +167,6 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-    </>
   );
 };
 

@@ -885,3 +885,36 @@ export const downloadRefundFile = async (onProgress, onComplete, onError) => {
     if (onError) onError(error);
   }
 };
+
+
+// 전체 공지사항 목록 조회
+export const fetchNotices = async () => {
+  try {
+    const response = await axios.get(`${path}/api/notices`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching notices:", error);
+    throw error;
+  }
+};
+
+// 특정 공지사항 상세 조회
+export const fetchNoticeDetail = async (id) => {
+  try {
+    const response = await axios.get(`${path}/api/notices/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching notice detail:", error);
+    throw error;
+  }
+};
+
+export const createNotice = async (noticeData) => {
+  try {
+    const response = await axios.post(`${path}/api/notices`, noticeData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating notice:", error);
+    throw error;
+  }
+};

@@ -25,7 +25,7 @@ const Header = () => {
     filecontrol: "엑셀 관리"
   };
   const subtitle = {
-    dashboard: "덕소 리버 베르데포레 [개발중]",
+    dashboard: "덕소 리버 베르데포레 ",
     search: "회원정보를 한번에 확인할 수 있는 페이지입니다.",
     create: "신규 회원정보를 생성할 수 있는 페이지입니다.",
     createwithdraw: "해약 회원정보를 생성할 수 있는 페이지입니다.",

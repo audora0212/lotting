@@ -39,6 +39,11 @@ function Search() {
     downloadFormat2(userid);
   };
 
+  const formatPhoneNumber = (phone) => {
+    if (!phone || phone.length !== 8) return phone || "정보 없음";
+    return `010)${phone.slice(0, 4)}-${phone.slice(4)}`;
+  };
+
   useEffect(() => {
     if (userid) {
       setIdState(userid);
@@ -153,7 +158,11 @@ function Search() {
                   <span className={styles.title}>휴대전화</span>
                 </div>
                 <div className={styles.contentbody}>
-                  <span>{userdata.customerData?.phone || "정보 없음"}</span>
+                <span>
+                    {userdata.customerData?.phone
+                      ? formatPhoneNumber(userdata.customerData.phone)
+                      : "정보 없음"}
+                  </span>
                 </div>
               </div>
             </div>

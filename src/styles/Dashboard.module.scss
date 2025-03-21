@@ -13,17 +13,25 @@
     gap: 20px;
   }
   
-  .Notice {
-    display: inline-flex;
+
+  .NoticeContent {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 1080px;
-    height: 522px;
-    border-radius: 10px;
-    border: 1px solid var(--gray-gray-20, rgba(162, 161, 168, 0.20));
+    gap: 8px;
   }
   
+  .NoticeItem {
+    text-decoration: none;
+    color: inherit;
+    padding: 8px 0;
+  }
+  
+  .NoticeDivider {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 8px 0;
+  }
+
   .Date {
     width: 414px;
     height: 882px;
@@ -460,7 +468,7 @@
   // 아래부터 공지사항
   
   .Notice {
-    width: auto;
+    width: 630px;
     height:auto;
     padding: 20px;
     border: 1px solid rgba(162, 161, 168, 0.2);

@@ -1,4 +1,3 @@
-// src/app/modify/[id]/page.js
 "use client";
 import styles from "@/styles/Create.module.scss";
 import Swal from "sweetalert2";
@@ -14,7 +13,7 @@ import {
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 import {
   updateUser,
@@ -43,6 +42,7 @@ function Modify({ params }) {
     reset,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm();
 
@@ -73,6 +73,9 @@ function Modify({ params }) {
   const [formattedRegisterPrice, setFormattedRegisterPrice] = useState("");
   const [formattedDepositAmmount, setFormattedDepositAmmount] = useState("");
 
+  // 휴대폰 번호 화면 표시값 (기본 접두사 "010)" 제공)
+  const [phoneDisplay, setPhoneDisplay] = useState("010)");
+
   const formatNumberWithCommas = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
     if (!numericValue) return "";
@@ -93,6 +96,28 @@ function Modify({ params }) {
     setValue("deposits.depositammount", rawValue ? parseInt(rawValue, 10) : null);
   };
 
+  // 휴대폰 번호 포맷팅 핸들러 (Modify 페이지)
+  const handlePhoneNumberChange = (e, onChange) => {
+    let value = e.target.value;
+    if (value === "010)") {
+      setPhoneDisplay("010)");
+      onChange("");
+      return;
+    }
+    if (value.startsWith("010)")) {
+      value = value.slice(4);
+    }
+    let digits = value.replace(/\D/g, "");
+    digits = digits.substring(0, 8);
+    let formatted = digits;
+    if (digits.length > 4) {
+      formatted = digits.slice(0, 4) + "-" + digits.slice(4);
+    }
+    const displayValue = "010)" + formatted;
+    setPhoneDisplay(displayValue);
+    onChange(digits);
+  };
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -104,7 +129,7 @@ function Modify({ params }) {
           setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
           setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
 
-          // reset 시 기존 해지(cancel) 정보와 추가 해지정보(cancelInfo) 초기값 설정
+          // reset 시 기존 해지 정보와 추가 해지정보 초기값 설정
           reset({
             customertype: customer.customertype,
             type: customer.type,
@@ -210,13 +235,22 @@ function Modify({ params }) {
             investmentfile: customer.attachments?.investmentfile || false,
             contract: customer.attachments?.contract || false,
           });
+          // 휴대폰 번호 화면값 설정 (저장된 값은 하이픈 없는 숫자이므로 포맷 적용)
+          if (customer.customerData && customer.customerData.phone) {
+            const digits = customer.customerData.phone;
+            let formatted = digits;
+            if (digits.length > 4) {
+              formatted = digits.slice(0, 4) + "-" + digits.slice(4);
+            }
+            setPhoneDisplay("010)" + formatted);
+          }
         }
       } catch (error) {
         console.error("고객 정보를 가져오는데 실패했습니다:", error);
       }
     };
     getData();
-  }, [id, reset]);
+  }, [id, reset, setValue]);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -268,8 +302,8 @@ function Modify({ params }) {
   const onSubmit = async (data) => {
     try {
       // cancelInfo가 없으면 기본값을 넣어줍니다.
-      const cancelInfo = data.cancelInfo || { reason: "", remarks: "" , source: ""};
-  
+      const cancelInfo = data.cancelInfo || { reason: "", remarks: "", source: "" };
+
       const parsedData = {
         ...data,
         CustomerData: {
@@ -282,14 +316,13 @@ function Modify({ params }) {
           ...data.deposits,
           depositammount: parseInt(data.deposits.depositammount),
         },
-        // ensure cancelInfo fields exist
         cancelInfo: {
           reason: cancelInfo.reason || "",
           remarks: cancelInfo.remarks || "",
           source: cancelInfo.source || "",
         },
       };
-  
+
       let uploadedFileInfo = existingFileInfo;
       if (file) {
         if (existingFileInfo) {
@@ -298,14 +331,14 @@ function Modify({ params }) {
         const uploadResponse = await createFile(file, parseInt(id, 10));
         uploadedFileInfo = uploadResponse.data;
       }
-  
+
       const attachments = {
         ...isupload,
         fileinfo: uploadedFileInfo,
         prizename: data.prizename,
         prizedate: data.prizedate,
       };
-  
+
       const customerData = {
         id: parseInt(id),
         customertype: parsedData.customertype,
@@ -343,16 +376,15 @@ function Modify({ params }) {
         freeoption: parsedData.freeoption,
         forfounding: parsedData.forfounding,
         additional: parsedData.additional,
-        // 해지 정보
         cancel: parsedData.cancel,
-        cancelInfo: parsedData.cancelInfo, // cancelInfo에 reason, remarks가 포함됨
+        cancelInfo: parsedData.cancelInfo,
       };
-  
+
       console.log("수정할 데이터:");
       console.log(customerData);
-  
+
       const updateUserResponse = await updateUser(id, customerData);
-  
+
       Swal.fire({
         icon: "success",
         title: "회원정보가 수정되었습니다.",
@@ -362,7 +394,7 @@ function Modify({ params }) {
           "/ 회원명 : " +
           parsedData.CustomerData.name,
       });
-  
+
       reset();
       setFile(null);
       setIsupload({
@@ -382,6 +414,7 @@ function Modify({ params }) {
       });
       setFormattedRegisterPrice("");
       setFormattedDepositAmmount("");
+      setPhoneDisplay("010)");
       window.scrollTo(0, 0);
       router.push(`/search/${id}`);
     } catch (error) {
@@ -393,7 +426,6 @@ function Modify({ params }) {
       });
     }
   };
-  
 
   const prizeattachmentChecked = watch("prizeattachment", false);
   const customerType = watch("customertype");
@@ -418,12 +450,20 @@ function Modify({ params }) {
           </div>
           <div className={styles.inputRow}>
             <div className={styles.inputLabel}>휴대폰 번호 *</div>
-            <Inputbox
-              type="tel"
-              register={register("CustomerData.phone", {
-                required: "휴대폰 번호를 입력해주세요.",
-              })}
-              isError={!!errors.CustomerData?.phone}
+            <Controller
+              name="CustomerData.phone"
+              control={control}
+              defaultValue=""
+              rules={{ required: "휴대폰 번호를 입력해주세요." }}
+              render={({ field: { onChange } }) => (
+                <Inputbox
+                  type="tel"
+                  placeholder="휴대폰 번호 *"
+                  value={phoneDisplay}
+                  onChange={(e) => handlePhoneNumberChange(e, onChange)}
+                  isError={!!errors.CustomerData?.phone}
+                />
+              )}
             />
           </div>
           <div className={styles.inputRow}>
