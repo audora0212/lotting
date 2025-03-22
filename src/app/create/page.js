@@ -655,6 +655,158 @@ function Create() {
           </div>
         </div>
 
+
+        {/* 4. 부속서류 */}
+        <h3>부속서류</h3>
+        <div className={styles.attachmentContainer}>
+          <div className={styles.attachmentGrid}>
+            <Checkbox
+              label="인감증명서"
+              name="sealcertificateprovided"
+              onChange={handleCheckboxChange}
+              register={register("sealcertificateprovided")}
+              isError={!!errors.sealcertificateprovided}
+            />
+            <Checkbox
+              label="본인서명확인서"
+              name="selfsignatureconfirmationprovided"
+              onChange={handleCheckboxChange}
+              register={register("selfsignatureconfirmationprovided")}
+              isError={!!errors.selfsignatureconfirmationprovided}
+            />
+            <Checkbox
+              label="확약서"
+              name="commitmentletterprovided"
+              onChange={handleCheckboxChange}
+              register={register("commitmentletterprovided")}
+              isError={!!errors.commitmentletterprovided}
+            />
+            <Checkbox
+              label="신분증"
+              name="idcopyprovided"
+              onChange={handleCheckboxChange}
+              register={register("idcopyprovided")}
+              isError={!!errors.idcopyprovided}
+            />
+            <Checkbox
+              label="무상옵션"
+              name="freeoption"
+              onChange={handleCheckboxChange}
+              register={register("freeoption")}
+              isError={!!errors.freeoption}
+            />
+            <Checkbox
+              label="창준위용"
+              name="forfounding"
+              onChange={handleCheckboxChange}
+              register={register("forfounding")}
+              isError={!!errors.forfounding}
+            />
+            <Checkbox
+              label="총회동의서"
+              name="generalmeetingconsentformprovided"
+              onChange={handleCheckboxChange}
+              register={register("generalmeetingconsentformprovided")}
+              isError={!!errors.generalmeetingconsentformprovided}
+            />
+            <Checkbox
+              label="선호도조사"
+              name="preferenceattachment"
+              onChange={handleCheckboxChange}
+              register={register("preferenceattachment")}
+              isError={!!errors.preferenceattachment}
+            />
+            <Checkbox
+              label="사은품"
+              name="prizeattachment"
+              onChange={handleCheckboxChange}
+              register={register("prizeattachment")}
+              isError={!!errors.prizeattachment}
+            />
+          </div>
+
+          {/* 사은품 관련 */}
+          {prizeattachmentChecked && (
+            <div className={styles.prizeRow}>
+              <Inputbox
+                type="text"
+                placeholder="사은품명"
+                register={register("prizename")}
+                isError={!!errors.prizename}
+              />
+              <div className={styles.dateInputContainer}>
+                <label className={styles.dateLabel}>지급일자</label>
+                <Inputbox
+                  type="date"
+                  register={register("prizedate")}
+                  isError={!!errors.prizedate}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className={styles.content_container}>
+          <div>
+            <span>파일업로드</span>
+            <FileInputbox
+              name="fileupload"
+              handleChange={handleFileChange}
+              register={register("fileupload")}
+              isupload={isupload.isuploaded}
+              value={file ? file.name : ""}
+              isError={!!errors.fileupload}
+            />
+          </div>
+        </div>
+
+        {/* 11. 비고 (additional) */}
+        <h3>비고</h3>
+        <div className={styles.content_container}>
+          <InputAreabox
+            type="text"
+            placeholder="비고를 입력하세요"
+            register={register("additional")}
+            isError={!!errors.additional}
+          />
+        </div>
+        {/* 5. 담당자 */}
+        <h3>담당자</h3>
+        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
+          <MGMInputbox
+            type="text"
+            placeholder="총괄 *"
+            register={register("responsible.generalmanagement", {
+              required: "총괄을 입력해주세요.",
+            })}
+            isError={!!errors.responsible?.generalmanagement}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="본부 *"
+            register={register("responsible.division", {
+              required: "본부를 입력해주세요.",
+            })}
+            isError={!!errors.responsible?.division}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="팀 *"
+            register={register("responsible.team", {
+              required: "팀을 입력해주세요.",
+            })}
+            isError={!!errors.responsible?.team}
+          />
+          <MGMInputbox
+            type="text"
+            placeholder="성명 *"
+            register={register("responsible.managername", {
+              required: "성명을 입력해주세요.",
+            })}
+            isError={!!errors.responsible?.managername}
+          />
+        </div>
+
+        
         {/* 3. 다힘 */}
         <h3>다힘</h3>
         <div className={styles.mainbody}>
@@ -764,146 +916,6 @@ function Create() {
               />
             </div>
           </div>
-        </div>
-
-        {/* 4. 부속서류 */}
-        <h3>부속서류</h3>
-        <div className={styles.attachmentContainer}>
-          <div className={styles.attachmentGrid}>
-            <Checkbox
-              label="인감증명서"
-              name="sealcertificateprovided"
-              onChange={handleCheckboxChange}
-              register={register("sealcertificateprovided")}
-              isError={!!errors.sealcertificateprovided}
-            />
-            <Checkbox
-              label="본인서명확인서"
-              name="selfsignatureconfirmationprovided"
-              onChange={handleCheckboxChange}
-              register={register("selfsignatureconfirmationprovided")}
-              isError={!!errors.selfsignatureconfirmationprovided}
-            />
-            <Checkbox
-              label="확약서"
-              name="commitmentletterprovided"
-              onChange={handleCheckboxChange}
-              register={register("commitmentletterprovided")}
-              isError={!!errors.commitmentletterprovided}
-            />
-            <Checkbox
-              label="신분증"
-              name="idcopyprovided"
-              onChange={handleCheckboxChange}
-              register={register("idcopyprovided")}
-              isError={!!errors.idcopyprovided}
-            />
-            <Checkbox
-              label="무상옵션"
-              name="freeoption"
-              onChange={handleCheckboxChange}
-              register={register("freeoption")}
-              isError={!!errors.freeoption}
-            />
-            <Checkbox
-              label="창준위용"
-              name="forfounding"
-              onChange={handleCheckboxChange}
-              register={register("forfounding")}
-              isError={!!errors.forfounding}
-            />
-            <Checkbox
-              label="총회동의서"
-              name="generalmeetingconsentformprovided"
-              onChange={handleCheckboxChange}
-              register={register("generalmeetingconsentformprovided")}
-              isError={!!errors.generalmeetingconsentformprovided}
-            />
-            <Checkbox
-              label="선호도조사"
-              name="preferenceattachment"
-              onChange={handleCheckboxChange}
-              register={register("preferenceattachment")}
-              isError={!!errors.preferenceattachment}
-            />
-            <Checkbox
-              label="사은품"
-              name="prizeattachment"
-              onChange={handleCheckboxChange}
-              register={register("prizeattachment")}
-              isError={!!errors.prizeattachment}
-            />
-          </div>
-
-          {/* 사은품 관련 */}
-          {prizeattachmentChecked && (
-            <div className={styles.prizeRow}>
-              <Inputbox
-                type="text"
-                placeholder="사은품명"
-                register={register("prizename")}
-                isError={!!errors.prizename}
-              />
-              <div className={styles.dateInputContainer}>
-                <label className={styles.dateLabel}>지급일자</label>
-                <Inputbox
-                  type="date"
-                  register={register("prizedate")}
-                  isError={!!errors.prizedate}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className={styles.content_container}>
-          <div>
-            <span>파일업로드</span>
-            <FileInputbox
-              name="fileupload"
-              handleChange={handleFileChange}
-              register={register("fileupload")}
-              isupload={isupload.isuploaded}
-              value={file ? file.name : ""}
-              isError={!!errors.fileupload}
-            />
-          </div>
-        </div>
-
-        {/* 5. 담당자 */}
-        <h3>담당자</h3>
-        <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
-          <MGMInputbox
-            type="text"
-            placeholder="총괄 *"
-            register={register("responsible.generalmanagement", {
-              required: "총괄을 입력해주세요.",
-            })}
-            isError={!!errors.responsible?.generalmanagement}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="본부 *"
-            register={register("responsible.division", {
-              required: "본부를 입력해주세요.",
-            })}
-            isError={!!errors.responsible?.division}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="팀 *"
-            register={register("responsible.team", {
-              required: "팀을 입력해주세요.",
-            })}
-            isError={!!errors.responsible?.team}
-          />
-          <MGMInputbox
-            type="text"
-            placeholder="성명 *"
-            register={register("responsible.managername", {
-              required: "성명을 입력해주세요.",
-            })}
-            isError={!!errors.responsible?.managername}
-          />
         </div>
 
         {/* 6. MGM */}
@@ -1166,16 +1178,7 @@ function Create() {
           </div>
         </div>
 
-        {/* 11. 비고 (additional) */}
-        <h3>비고</h3>
-        <div className={styles.content_container}>
-          <InputAreabox
-            type="text"
-            placeholder="비고를 입력하세요"
-            register={register("additional")}
-            isError={!!errors.additional}
-          />
-        </div>
+
 
         <p></p>
         <Button_Y type="submit" disabled={idExists || checkingId}>
