@@ -383,127 +383,7 @@ function Search() {
 
             {/* 다힘 */}
             <hr />
-            <h3>다힘</h3>
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>시상</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimsisang || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>일자</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimdate || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>6/30선지급</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimprepaid || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-            </div>
 
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>1회차청구</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimfirst || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>금액(만원)</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimfirstpay || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>일자</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimdate2 || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>출처</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimsource || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>2회차청구</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimsecond || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>금액(만원)</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimsecondpay || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>일자</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {userdata.dahim?.dahimdate3 || "정보 없음"}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.unitbody}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>합계(만원)</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>
-                    {totalLoanSelf != null
-                      ? formatNumberWithComma(totalLoanSelf)
-                      : "정보 없음"}
-                  </span>
-                </div>
-              </div>
-            </div>
 
             {/* 납입금 관리 */}
             <hr />
@@ -853,6 +733,21 @@ function Search() {
               </div>
             </div>
 
+            
+            {/* 비고 */}
+            <hr />
+            <h3>비고</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody} style={{ width: "100%" }}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>기타</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>{userdata.additional || "정보 없음"}</span>
+                </div>
+              </div>
+            </div>
+
             {/* 사은품명 / 지급일자 표시 */}
             {userdata.attachments?.prizeattachment && (
               <div className={styles.rowcontainer}>
@@ -880,7 +775,128 @@ function Search() {
                 </div>
               </div>
             )}
+            <hr />
+            <h3>다힘</h3>
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>시상</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsisang || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimdate || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>6/30선지급</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimprepaid || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>1회차청구</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimfirst || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>금액(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimfirstpay || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimdate2 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>출처</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsource || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.rowcontainer}>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>2회차청구</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsecond || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>금액(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimsecondpay || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>일자</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {userdata.dahim?.dahimdate3 || "정보 없음"}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>합계(만원)</span>
+                </div>
+                <div className={styles.contentbody}>
+                  <span>
+                    {totalLoanSelf != null
+                      ? formatNumberWithComma(totalLoanSelf)
+                      : "정보 없음"}
+                  </span>
+                </div>
+              </div>
+            </div>
             <hr />
 
             {/* MGM */}
@@ -919,6 +935,7 @@ function Search() {
                 </div>
               </div>
             </div>
+            
             <hr />
 
             {/* 1차(직원) */}
@@ -973,19 +990,6 @@ function Search() {
             </div>
             <hr />
 
-            {/* 비고 */}
-            <h3>비고</h3>
-            <div className={styles.rowcontainer}>
-              <div className={styles.unitbody} style={{ width: "100%" }}>
-                <div className={styles.titlebody}>
-                  <span className={styles.title}>기타</span>
-                </div>
-                <div className={styles.contentbody}>
-                  <span>{userdata.additional || "정보 없음"}</span>
-                </div>
-              </div>
-            </div>
-            <hr />
 
             {/* 총회 참석여부 */}
             <h3>총회 참석 여부</h3>
