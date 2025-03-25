@@ -1,4 +1,3 @@
-// src/app/dashboard/notice/[id]/page.js
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -24,10 +23,8 @@ export default function NoticePage({ params }) {
       <div className={styles.MainTitle}>
         <div className={styles.Notice}>
           <div className={styles.NoticeTitle}>{notice.title}</div>
-          <div
-            className={styles.NoticeContent}
-            style={{ whiteSpace: "pre-wrap" }}
-          >
+          {/* 기존 NoticeContent 대신 NoticeDetailContent 사용 */}
+          <div className={styles.NoticeDetailContent}>
             {notice.content}
           </div>
           <div style={{ marginTop: "10px", display: "flex", gap: "16px" }}>

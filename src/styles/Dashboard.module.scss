@@ -663,3 +663,14 @@
     gap: 20px;
   }
   
+
+  /* 공지사항 페이지 전용 상세 내용 스타일 */
+.NoticeDetailContent {
+  font-size: 16px;
+  color: #333;
+  padding: 10px 20px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
