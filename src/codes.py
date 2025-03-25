@@ -3,7 +3,7 @@ import json
 import argparse
 
 # 포함할 파일 확장자
-INCLUDE_CONTENT_EXTENSIONS = {'.js'}
+INCLUDE_CONTENT_EXTENSIONS = {'.js','scss'}
 
 def build_tree_with_contents(root_dir):
     """
@@ -19,7 +19,7 @@ def build_tree_with_contents(root_dir):
             current = tree
             for part in rel_path.split(os.sep):
                 current = current.setdefault(part, {})
-        
+
         current_files = {}
         for file in filenames:
             file_ext = os.path.splitext(file)[1].lower()
@@ -49,7 +49,7 @@ def main(src_directory, output_file):
     if not os.path.isdir(src_directory):
         print(f"에러: '{src_directory}' 디렉토리가 존재하지 않습니다.")
         return
-    
+
     tree = build_tree_with_contents(src_directory)
     save_json(tree, output_file)
     print(f"디렉토리 구조가 '{output_file}'에 저장되었습니다.")
@@ -59,8 +59,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--src",
         type=str,
-        default="utils",
-        help="탐색할 utils 디렉토리 경로 (기본값: utils)"
+        default="./src",
+        help="탐색할 src 디렉토리 경로 (기본값: src)"
     )
     parser.add_argument(
         "--output",
@@ -68,6 +68,6 @@ if __name__ == "__main__":
         default="directory_structure.json",
         help="저장할 JSON 파일 이름 (기본값: directory_structure.json)"
     )
-    
+
     args = parser.parse_args()
     main(args.src, args.output)

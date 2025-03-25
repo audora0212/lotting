@@ -379,10 +379,16 @@ function Search() {
                   )}
                 </div>
               </div>
+              <div className={styles.unitbody}>
+                <div className={styles.titlebody}>
+                  <span className={styles.title}>경품당첨</span>
+                </div>
+                <div className={styles.contentbody}>
+                <span>{userdata.prizewinning|| "정보 없음"}</span>
+                </div>
+              </div>
             </div>
 
-            {/* 다힘 */}
-            <hr />
 
 
             {/* 납입금 관리 */}

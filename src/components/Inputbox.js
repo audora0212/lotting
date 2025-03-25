@@ -88,6 +88,33 @@ export const MGMInputbox = (props) => {
     />
   );
 };
+export const MGMInputbox2 = (props) => {
+  const {
+    type,
+    placeholder,
+    onChange,
+    name,
+    defaultValue,
+    value,
+    register,
+    isError,
+    ...rest
+  } = props;
+
+  return (
+    <input
+      className={`${styles.mgmInputContainer2} ${isError ? styles.errorInput : ''}`}
+      type={type}
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      value={value}
+      {...register}
+      {...rest}
+    />
+  );
+};
 
 export const InputboxSmall = (props) => {
   const {

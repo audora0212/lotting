@@ -9,6 +9,7 @@ import {
   FileInputbox,
   Checkbox,
   MGMInputbox,
+  MGMInputbox2,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
@@ -60,7 +61,7 @@ function Create() {
     idcopyprovided: false,
     freeoption: false,
     forfounding: false,
-    generalmeetingconsentformprovided: false,
+    agreement: false,
     preferenceattachment: false,
     prizeattachment: false,
     exemption7: false,
@@ -294,7 +295,7 @@ function Create() {
         idcopyprovided: false,
         freeoption: false,
         forfounding: false,
-        generalmeetingconsentformprovided: false,
+        agreement: false,
         preferenceattachment: false,
         prizeattachment: false,
         exemption7: false,
@@ -571,6 +572,10 @@ function Create() {
                 </div>
               </div>
               <div className={styles.content_body2}>
+                
+              <div className={styles.dateInputContainer}>
+
+<div className={styles.inputColumnLabel}>가입가 *</div>
                 <Inputbox
                   type="text"
                   placeholder="가입가 *"
@@ -578,6 +583,7 @@ function Create() {
                   onChange={handleRegisterPriceChange}
                   isError={!!errors.registerprice}
                 />
+                </div>
               </div>
             </div>
 
@@ -596,6 +602,10 @@ function Create() {
                 </div>
               </div>
               <div className={styles.content_body2}>
+                
+              <div className={styles.dateInputContainer}>
+
+<div className={styles.inputColumnLabel}>예약금 *</div>
                 <Inputbox
                   type="text"
                   placeholder="예약금 *"
@@ -604,23 +614,26 @@ function Create() {
                   isError={!!errors.deposits?.depositammount}
                 />
               </div>
-            </div>
-
-            {/* 신탁사 제출일자 -> Financial.trustcompanydate */}
-            <div className={styles.content_body}>
-              <div className={styles.content_body2}>
-                <div className={styles.inputRow}>
-                  <div className={styles.inputLabel}>신탁사 제출일자 *</div>
-                  <div className={styles.dateInputContainer}>
-                    <Inputbox
-                      type="date"
-                      register={register("Financial.trustcompanydate", {})}
-                      isError={!!errors.Financial?.trustcompanydate}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
+
+
+
+            <div className={styles.content_body}>
+  <div className={styles.content_body2}>
+    <div className={styles.dateInputContainer}>
+      <label className={styles.dateLabel}>신탁사 제출일자 *</label>
+      <Inputbox
+        type="date"
+        register={register("Financial.trustcompanydate", {
+          required: "신탁사 제출일자를 입력해주세요.",
+        })}
+        isError={!!errors.Financial?.trustcompanydate}
+      />
+    </div>
+  </div>
+</div>
+
 
             {/* 체크박스들 */}
             <div className={styles.content_body}>
@@ -650,6 +663,15 @@ function Create() {
                   register={register("contract")}
                   isError={!!errors.contract}
                 />
+              </div>
+
+              <div className={styles.content_body3}>
+              <MGMInputbox2
+                type="text"
+                placeholder="경품 당첨"
+                register={register("prizewinning")}
+                isError={!!errors.prizewinning}
+              />
               </div>
             </div>
           </div>
@@ -704,10 +726,10 @@ function Create() {
             />
             <Checkbox
               label="총회동의서"
-              name="generalmeetingconsentformprovided"
+              name="agreement"
               onChange={handleCheckboxChange}
-              register={register("generalmeetingconsentformprovided")}
-              isError={!!errors.generalmeetingconsentformprovided}
+              register={register("agreement")}
+              isError={!!errors.agreement}
             />
             <Checkbox
               label="선호도조사"

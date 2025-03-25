@@ -9,6 +9,7 @@ import {
   FileInputbox,
   Checkbox,
   MGMInputbox,
+  MGMInputbox2,
 } from "@/components/Inputbox";
 import { Button_Y } from "@/components/Button";
 import withAuth from "@/utils/hoc/withAuth";
@@ -61,7 +62,6 @@ function Modify({ params }) {
     investmentfile: false,
     contract: false,
   });
-
   const [file, setFile] = useState(null);
   const [existingFileInfo, setExistingFileInfo] = useState("");
 
@@ -118,140 +118,7 @@ function Modify({ params }) {
     onChange(digits);
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const customer = await fetchCustomerById(id);
-        console.log("받은 고객 데이터:", customer);
-        if (customer) {
-          setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
-          setInitialLegalAddress(customer.legalAddress.post || "");
-          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
-          setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
-
-          // reset 시 기존 해지 정보와 추가 해지정보 초기값 설정
-          reset({
-            customertype: customer.customertype,
-            type: customer.type,
-            groupname: customer.groupname,
-            turn: customer.turn,
-            batch: customer.batch,
-            registerdate: customer.registerdate,
-            registerprice: customer.registerprice,
-            registerpath: customer.registerpath,
-            additional: customer.additional || "",
-            prizewinning: customer.prizewinning,
-            CustomerData: {
-              name: customer.customerData.name,
-              phone: customer.customerData.phone,
-              resnumfront: customer.customerData.resnumfront,
-              resnumback: customer.customerData.resnumback,
-              email: customer.customerData.email,
-            },
-            LegalAddress: {
-              postnumber: customer.legalAddress.postnumber,
-              post: customer.legalAddress.post,
-              detailaddress: customer.legalAddress.detailaddress,
-            },
-            Postreceive: {
-              postnumberreceive: customer.postreceive.postnumberreceive,
-              postreceive: customer.postreceive.postreceive,
-              detailaddressreceive: customer.postreceive.detailaddressreceive,
-            },
-            Financial: {
-              bankname: customer.financial.bankname,
-              accountnum: customer.financial.accountnum,
-              accountholder: customer.financial.accountholder,
-              trustcompanydate: customer.financial.trustcompanydate,
-            },
-            deposits: {
-              depositdate: customer.deposits?.depositdate,
-              depositammount: customer.deposits?.depositammount,
-            },
-            responsible: {
-              generalmanagement: customer.responsible?.generalmanagement || "",
-              division: customer.responsible?.division || "",
-              team: customer.responsible?.team || "",
-              managername: customer.responsible?.managername || "",
-            },
-            MGM: customer.mgm,
-            dahim: customer.dahim,
-            firstemp: customer.firstemp,
-            secondemp: customer.secondemp,
-            meetingattend: customer.meetingattend,
-            agenda: customer.agenda,
-            exemption7: customer.attachments?.exemption7,
-            investmentfile: customer.attachments?.investmentfile,
-            contract: customer.attachments?.contract,
-            agreement: customer.attachments?.agreement,
-            preferenceattachment: customer.attachments?.preferenceattachment,
-            prizeattachment: customer.attachments?.prizeattachment,
-            sealcertificateprovided: customer.attachments?.sealcertificateprovided,
-            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided,
-            commitmentletterprovided: customer.attachments?.commitmentletterprovided,
-            idcopyprovided: customer.attachments?.idcopyprovided,
-            freeoption: customer.attachments?.freeoption,
-            forfounding: customer.attachments?.forfounding,
-            prizename: customer.attachments?.prizename,
-            prizedate: customer.attachments?.prizedate,
-            // 기존 해지 정보
-            cancel: {
-              canceldate: customer.cancel?.canceldate || "",
-              refunddate: customer.cancel?.refunddate || "",
-              refundamount: customer.cancel?.refundamount || "",
-            },
-            // 추가 해지정보 (고객 수정 시 새로 입력할 값)
-            cancelInfo: {
-              reason: "",
-              remarks: "",
-              source: "",
-            },
-          });
-
-          // 금액 포맷팅
-          if (customer?.registerprice) {
-            setFormattedRegisterPrice(customer.registerprice.toLocaleString());
-          }
-          if (customer.deposits?.depositammount) {
-            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
-          }
-          // 기존 파일 정보 설정 (있다면)
-          if (customer.attachments && customer.attachments.fileinfo) {
-            setExistingFileInfo(customer.attachments.fileinfo);
-          }
-          // 체크박스 초기값
-          setIsupload({
-            isuploaded: false,
-            sealcertificateprovided: customer.attachments?.sealcertificateprovided || false,
-            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided || false,
-            commitmentletterprovided: customer.attachments?.commitmentletterprovided || false,
-            idcopyprovided: customer.attachments?.idcopyprovided || false,
-            freeoption: customer.attachments?.freeoption || false,
-            forfounding: customer.attachments?.forfounding || false,
-            agreement: customer.attachments?.agreement || false,
-            preferenceattachment: customer.attachments?.preferenceattachment || false,
-            prizeattachment: customer.attachments?.prizeattachment || false,
-            exemption7: customer.attachments?.exemption7 || false,
-            investmentfile: customer.attachments?.investmentfile || false,
-            contract: customer.attachments?.contract || false,
-          });
-          // 휴대폰 번호 화면값 설정 (저장된 값은 하이픈 없는 숫자이므로 포맷 적용)
-          if (customer.customerData && customer.customerData.phone) {
-            const digits = customer.customerData.phone;
-            let formatted = digits;
-            if (digits.length > 4) {
-              formatted = digits.slice(0, 4) + "-" + digits.slice(4);
-            }
-            setPhoneDisplay("010)" + formatted);
-          }
-        }
-      } catch (error) {
-        console.error("고객 정보를 가져오는데 실패했습니다:", error);
-      }
-    };
-    getData();
-  }, [id, reset, setValue]);
-
+  // 체크박스 변화
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
     setIsupload((prev) => ({
@@ -260,6 +127,7 @@ function Modify({ params }) {
     }));
   };
 
+  // 파일 업로드 변화
   const handleFileChange = (e) => {
     const { files } = e.target;
     if (files && files.length > 0) {
@@ -291,19 +159,137 @@ function Modify({ params }) {
         }
       }
     }
-    const errorMessage = errorMessages.join("\n");
     Swal.fire({
       icon: "warning",
       title: "필수 항목 누락",
-      text: errorMessage,
+      text: errorMessages.join("\n"),
     });
   };
 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const customer = await fetchCustomerById(id);
+        console.log("받은 고객 데이터:", customer);
+        if (customer) {
+          setInitialLegalPostNumber(customer.legalAddress.postnumber || "");
+          setInitialLegalAddress(customer.legalAddress.post || "");
+          setInitialPostreceivePostNumber(customer.postreceive.postnumberreceive || "");
+          setInitialPostreceiveAddress(customer.postreceive.postreceive || "");
+
+          // reset 시 기존 값 불러오기 (해지/환불 정보는 빈 값으로 처리)
+          reset({
+            customertype: customer.customertype,
+            registerpath: customer.registerpath,
+            registerdate: customer.registerdate,
+            registerprice: customer.registerprice,
+            additional: customer.additional || "",
+            prizewinning: customer.prizewinning,
+            batch: customer.batch,
+            type: customer.type,
+            groupname: customer.groupname,
+            turn: customer.turn,
+            // 회원정보
+            CustomerData: {
+              name: customer.customerData.name,
+              phone: customer.customerData.phone,
+              resnumfront: customer.customerData.resnumfront,
+              resnumback: customer.customerData.resnumback,
+              email: customer.customerData.email,
+            },
+            // 주소
+            LegalAddress: {
+              postnumber: customer.legalAddress.postnumber,
+              post: customer.legalAddress.post,
+              detailaddress: customer.legalAddress.detailaddress,
+            },
+            Postreceive: {
+              postnumberreceive: customer.postreceive.postnumberreceive,
+              postreceive: customer.postreceive.postreceive,
+              detailaddressreceive: customer.postreceive.detailaddressreceive,
+            },
+            // 금융정보
+            Financial: {
+              bankname: customer.financial.bankname,
+              accountnum: customer.financial.accountnum,
+              accountholder: customer.financial.accountholder,
+              trustcompanydate: customer.financial.trustcompanydate,
+            },
+            // 예약금
+            deposits: {
+              depositdate: customer.deposits?.depositdate,
+              depositammount: customer.deposits?.depositammount,
+            },
+            // 담당자
+            responsible: {
+              generalmanagement: customer.responsible?.generalmanagement || "",
+              division: customer.responsible?.division || "",
+              team: customer.responsible?.team || "",
+              managername: customer.responsible?.managername || "",
+            },
+            // MGM, 다힘, 직원, 총회참석, 안건 등 나머지 값은 그대로 불러옴
+            MGM: customer.mgm,
+            dahim: customer.dahim,
+            firstemp: customer.firstemp,
+            secondemp: customer.secondemp,
+            meetingattend: customer.meetingattend,
+            agenda: customer.agenda,
+            // 부속서류 (파일 관련 값은 따로 처리)
+            exemption7: customer.attachments?.exemption7,
+            investmentfile: customer.attachments?.investmentfile,
+            contract: customer.attachments?.contract,
+            agreement: customer.attachments?.agreement,
+            preferenceattachment: customer.attachments?.preferenceattachment,
+            prizeattachment: customer.attachments?.prizeattachment,
+            sealcertificateprovided: customer.attachments?.sealcertificateprovided,
+            selfsignatureconfirmationprovided: customer.attachments?.selfsignatureconfirmationprovided,
+            commitmentletterprovided: customer.attachments?.commitmentletterprovided,
+            idcopyprovided: customer.attachments?.idcopyprovided,
+            freeoption: customer.attachments?.freeoption,
+            forfounding: customer.attachments?.forfounding,
+            prizename: customer.attachments?.prizename,
+            prizedate: customer.attachments?.prizedate,
+            // 해지/환불 정보는 불러오지 않고 빈 값으로 처리
+            cancel: {
+              canceldate: "",
+              refunddate: "",
+              refundamount: "",
+            },
+            cancelInfo: {
+              reason: "",
+              remarks: "",
+              source: "",
+            },
+          });
+
+          if (customer.registerprice) {
+            setFormattedRegisterPrice(customer.registerprice.toLocaleString());
+          }
+          if (customer.deposits?.depositammount) {
+            setFormattedDepositAmmount(customer.deposits.depositammount.toLocaleString());
+          }
+          if (customer.customerData && customer.customerData.phone) {
+            const digits = customer.customerData.phone;
+            let formatted = digits;
+            if (digits.length > 4) {
+              formatted = digits.slice(0, 4) + "-" + digits.slice(4);
+            }
+            setPhoneDisplay("010)" + formatted);
+          }
+          if (customer.attachments && customer.attachments.fileinfo) {
+            setExistingFileInfo(customer.attachments.fileinfo);
+          }
+        }
+      } catch (error) {
+        console.error("고객 정보를 가져오는데 실패했습니다:", error);
+      }
+    };
+    getData();
+  }, [id, reset, setValue]);
+
   const onSubmit = async (data) => {
     try {
-      // cancelInfo가 없으면 기본값을 넣어줍니다.
-      const cancelInfo = data.cancelInfo || { reason: "", remarks: "", source: "" };
-
+      // cancelInfo는 새로 입력받도록 유지
       const parsedData = {
         ...data,
         CustomerData: {
@@ -315,11 +301,6 @@ function Modify({ params }) {
         deposits: {
           ...data.deposits,
           depositammount: parseInt(data.deposits.depositammount),
-        },
-        cancelInfo: {
-          reason: cancelInfo.reason || "",
-          remarks: cancelInfo.remarks || "",
-          source: cancelInfo.source || "",
         },
       };
 
@@ -343,18 +324,18 @@ function Modify({ params }) {
         id: parseInt(id),
         customertype: parsedData.customertype,
         registerpath: parsedData.registerpath,
+        registerdate: parsedData.registerdate,
+        registerprice: parsedData.registerprice,
+        additional: parsedData.additional,
+        prizewinning: parsedData.prizewinning,
+        batch: parsedData.batch,
         type: parsedData.type,
         groupname: parsedData.groupname,
         turn: parsedData.turn,
-        batch: parsedData.batch,
-        registerdate: parsedData.registerdate,
-        registerprice: parsedData.registerprice,
         CustomerData: parsedData.CustomerData,
         Financial: parsedData.Financial,
         LegalAddress: { ...parsedData.LegalAddress },
         Postreceive: { ...parsedData.Postreceive },
-        MGM: parsedData.MGM,
-        responsible: parsedData.responsible,
         deposits: parsedData.deposits,
         attachments: attachments,
         dahim: parsedData.dahim,
@@ -362,27 +343,13 @@ function Modify({ params }) {
         secondemp: parsedData.secondemp,
         meetingattend: parsedData.meetingattend,
         agenda: parsedData.agenda,
-        prizewinning: parsedData.prizewinning,
-        exemption7: parsedData.exemption7,
-        investmentfile: parsedData.investmentfile,
-        contract: parsedData.contract,
-        agreement: parsedData.agreement,
-        preferenceattachment: parsedData.preferenceattachment,
-        prizeattachment: parsedData.prizeattachment,
-        sealcertificateprovided: parsedData.sealcertificateprovided,
-        selfsignatureconfirmationprovided: parsedData.selfsignatureconfirmationprovided,
-        commitmentletterprovided: parsedData.commitmentletterprovided,
-        idcopyprovided: parsedData.idcopyprovided,
-        freeoption: parsedData.freeoption,
-        forfounding: parsedData.forfounding,
-        additional: parsedData.additional,
         cancel: parsedData.cancel,
         cancelInfo: parsedData.cancelInfo,
+        MGM: parsedData.MGM,
+        responsible: parsedData.responsible,
       };
 
-      console.log("수정할 데이터:");
-      console.log(customerData);
-
+      console.log("수정할 데이터:", customerData);
       const updateUserResponse = await updateUser(id, customerData);
 
       Swal.fire({
@@ -433,7 +400,7 @@ function Modify({ params }) {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        {/* 1. 회원정보 수정 */}
+        {/* 회원 정보 수정 */}
         <h3>회원 정보 수정</h3>
         <div className={styles.content_container}>
           <div className={styles.Font}>관리번호 : {id}</div>
@@ -542,61 +509,321 @@ function Modify({ params }) {
               isError={!!errors.Financial?.accountholder}
             />
           </div>
-          <div className={styles.InputboxField}>
-            <div className={styles.InputFont}>법정주소 *</div>
-            <PostInputbox2
-              register={register}
-              setValue={setValue}
-              namePrefix="LegalAddress"
-              postcodeName="LegalAddress.postnumber"
-              addressName="LegalAddress.post"
-              initialPostNumber={initialLegalPostNumber}
-              initialAddress={initialLegalAddress}
-              isError={
-                !!errors.LegalAddress?.postnumber ||
-                !!errors.LegalAddress?.post ||
-                !!errors.LegalAddress?.detailaddress
-              }
+
+        {/* 주소 */}
+        <div className={styles.InputboxField}>
+          <div className={styles.InputFont}>법정주소 *</div>
+          <PostInputbox2
+            register={register}
+            setValue={setValue}
+            namePrefix="LegalAddress"
+            postcodeName="LegalAddress.postnumber"
+            addressName="LegalAddress.post"
+            initialPostNumber={initialLegalPostNumber}
+            initialAddress={initialLegalAddress}
+            isError={
+              !!errors.LegalAddress?.postnumber ||
+              !!errors.LegalAddress?.post ||
+              !!errors.LegalAddress?.detailaddress
+            }
+          />
+          <div className={styles.inputRow}>
+            <Inputbox
+              type="text"
+              register={register("LegalAddress.detailaddress", {
+                required: "법정주소를 입력해주세요.",
+              })}
+              isError={!!errors.LegalAddress?.detailaddress}
             />
-            <div className={styles.inputRow}>
-              <Inputbox
-                type="text"
-                register={register("LegalAddress.detailaddress", {
-                  required: "법정주소를 입력해주세요.",
+          </div>
+        </div>
+        <div className={styles.InputboxField}>
+          <div className={styles.InputFont}>우편물 주소지 *</div>
+          <PostInputbox2
+            register={register}
+            setValue={setValue}
+            namePrefix="Postreceive"
+            postcodeName="Postreceive.postnumberreceive"
+            addressName="Postreceive.postreceive"
+            initialPostNumber={initialPostreceivePostNumber}
+            initialAddress={initialPostreceiveAddress}
+            isError={
+              !!errors.Postreceive?.postnumberreceive ||
+              !!errors.Postreceive?.postreceive ||
+              !!errors.Postreceive?.detailaddressreceive
+            }
+          />
+          <div className={styles.inputRow}>
+            <Inputbox
+              type="text"
+              register={register("Postreceive.detailaddressreceive", {
+                required: "우편물 주소지를 입력해주세요.",
+              })}
+              isError={!!errors.Postreceive?.detailaddressreceive}
+            />
+          </div>
+        </div>
+        
+        </div>
+
+        {/* 관리정보 섹션 */}
+        <h3>관리정보</h3>
+        <div className={styles.mainbody}>
+          <div className={styles.content_body}>
+            <div className={styles.content_body2}>
+              <DropInputbox
+                list={typeidlist}
+                register={register("batch", {
+                  required: "제출 순번을 선택해주세요.",
                 })}
-                isError={!!errors.LegalAddress?.detailaddress}
+                placeholder="제출 순번 *"
+                isError={!!errors.batch}
+              />
+              <DropInputbox
+                list={typelist}
+                register={register("type", {
+                  required: "유형을 선택해주세요.",
+                })}
+                placeholder="유형 *"
+                isError={!!errors.type}
+              />
+            </div>
+            <div className={styles.content_body2}>
+              <DropInputbox
+                list={grouplist}
+                register={register("groupname", {
+                  required: "그룹을 선택해주세요.",
+                })}
+                placeholder="그룹 *"
+                isError={!!errors.groupname}
+              />
+              <DropInputbox
+                list={turnlist}
+                register={register("turn", {
+                  required: "순번을 선택해주세요.",
+                })}
+                placeholder="순번 *"
+                isError={!!errors.turn}
               />
             </div>
           </div>
-          <div className={styles.InputboxField}>
-            <div className={styles.InputFont}>우편물 주소지 *</div>
-            <PostInputbox2
-              register={register}
-              setValue={setValue}
-              namePrefix="Postreceive"
-              postcodeName="Postreceive.postnumberreceive"
-              addressName="Postreceive.postreceive"
-              initialPostNumber={initialPostreceivePostNumber}
-              initialAddress={initialPostreceiveAddress}
-              isError={
-                !!errors.Postreceive?.postnumberreceive ||
-                !!errors.Postreceive?.postreceive ||
-                !!errors.Postreceive?.detailaddressreceive
-              }
-            />
-            <div className={styles.inputRow}>
-              <Inputbox
+
+          {/* 가입일자 및 가입가 */}
+          <div className={styles.mainbody}>
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <div className={styles.dateInputContainer}>
+                  <label className={styles.dateLabel}>가입일자 *</label>
+                  <Inputbox
+                    type="date"
+                    register={register("registerdate", {
+                      required: "가입일자를 입력해주세요.",
+                    })}
+                    isError={!!errors.registerdate}
+                  />
+                </div>
+              </div>
+              <div className={styles.content_body2}>
+              <div className={styles.dateInputContainer}>
+
+              <div className={styles.inputColumnLabel}>가입가 *</div>
+                <Inputbox
+                  type="text"
+                  placeholder="가입가 *"
+                  value={formattedRegisterPrice}
+                  onChange={handleRegisterPriceChange}
+                  isError={!!errors.registerprice}
+                />
+              </div>
+              </div>
+            </div>
+            <div className={styles.content_body}>
+              <div className={styles.content_body2}>
+                <div className={styles.dateInputContainer}>
+                  <label className={styles.dateLabel}>예약금 납입일자 *</label>
+                  <Inputbox
+                    type="date"
+                    register={register("deposits.depositdate", {
+                      required: "예약금 납입일자를 입력해주세요.",
+                    })}
+                    isError={!!errors.deposits?.depositdate}
+                  />
+                </div>
+              </div>
+              
+              <div className={styles.content_body2}>
+                
+              <div className={styles.dateInputContainer}>
+
+<div className={styles.inputColumnLabel}>예약금 *</div>
+                <Inputbox
+                  type="text"
+                  placeholder="예약금 *"
+                  value={formattedDepositAmmount}
+                  onChange={handleDepositAmmountChange}
+                  isError={!!errors.deposits?.depositammount}
+                />
+              </div>
+              </div>
+            </div>
+            <div className={styles.content_body2}>
+              <div className={styles.dateInputContainer}>
+                <label className={styles.dateLabel}>신탁사 제출일자 *</label>
+                <Inputbox
+                  type="date"
+                  register={register("Financial.trustcompanydate", {
+                    required: "신탁사 제출일자를 입력해주세요.",
+                  })}
+                  isError={!!errors.Financial?.trustcompanydate}
+                />
+              </div>
+            </div>
+
+          {/* 추가 체크박스: 7차 면제, 출자금, 지산A동 계약서 및 경품 당첨 입력필드 */}
+          <div className={styles.content_body}>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="7차 면제"
+                name="exemption7"
+                onChange={handleCheckboxChange}
+                register={register("exemption7")}
+                isError={!!errors.exemption7}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="출자금"
+                name="investmentfile"
+                onChange={handleCheckboxChange}
+                register={register("investmentfile")}
+                isError={!!errors.investmentfile}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <Checkbox
+                label="지산A동 계약서"
+                name="contract"
+                onChange={handleCheckboxChange}
+                register={register("contract")}
+                isError={!!errors.contract}
+              />
+            </div>
+            <div className={styles.content_body3}>
+              <MGMInputbox2
                 type="text"
-                register={register("Postreceive.detailaddressreceive", {
-                  required: "우편물 주소지를 입력해주세요.",
-                })}
-                isError={!!errors.Postreceive?.detailaddressreceive}
+                placeholder="경품 당첨"
+                register={register("prizewinning")}
+                isError={!!errors.prizewinning}
               />
             </div>
           </div>
         </div>
+        </div>
 
-        {/* 해지/환불 정보: 고객 분류가 "x"인 경우 렌더링 */}
+        {/* 부속서류 */}
+        <h3>부속서류</h3>
+        <div className={styles.attachmentContainer}>
+          <div className={styles.attachmentGrid}>
+            <Checkbox
+              label="인감증명서"
+              name="sealcertificateprovided"
+              onChange={handleCheckboxChange}
+              register={register("sealcertificateprovided")}
+              isError={!!errors.sealcertificateprovided}
+            />
+            <Checkbox
+              label="본인서명확인서"
+              name="selfsignatureconfirmationprovided"
+              onChange={handleCheckboxChange}
+              register={register("selfsignatureconfirmationprovided")}
+              isError={!!errors.selfsignatureconfirmationprovided}
+            />
+            <Checkbox
+              label="확약서"
+              name="commitmentletterprovided"
+              onChange={handleCheckboxChange}
+              register={register("commitmentletterprovided")}
+              isError={!!errors.commitmentletterprovided}
+            />
+            <Checkbox
+              label="신분증"
+              name="idcopyprovided"
+              onChange={handleCheckboxChange}
+              register={register("idcopyprovided")}
+              isError={!!errors.idcopyprovided}
+            />
+            <Checkbox
+              label="무상옵션"
+              name="freeoption"
+              onChange={handleCheckboxChange}
+              register={register("freeoption")}
+              isError={!!errors.freeoption}
+            />
+            <Checkbox
+              label="창준위용"
+              name="forfounding"
+              onChange={handleCheckboxChange}
+              register={register("forfounding")}
+              isError={!!errors.forfounding}
+            />
+            <Checkbox
+              label="총회동의서"
+              name="agreement"
+              onChange={handleCheckboxChange}
+              register={register("agreement")}
+              isError={!!errors.agreement}
+            />
+            <Checkbox
+              label="선호도조사"
+              name="preferenceattachment"
+              onChange={handleCheckboxChange}
+              register={register("preferenceattachment")}
+              isError={!!errors.preferenceattachment}
+            />
+            <Checkbox
+              label="사은품"
+              name="prizeattachment"
+              onChange={handleCheckboxChange}
+              register={register("prizeattachment")}
+              isError={!!errors.prizeattachment}
+            />
+          </div>
+          {prizeattachmentChecked && (
+            <div className={styles.prizeRow}>
+              <Inputbox
+                type="text"
+                placeholder="사은품명"
+                register={register("prizename")}
+                isError={!!errors.prizename}
+              />
+              <div className={styles.dateInputContainer}>
+                <label className={styles.dateLabel}>지급일자</label>
+                <Inputbox
+                  type="date"
+                  register={register("prizedate")}
+                  isError={!!errors.prizedate}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 파일 업로드 */}
+        <div className={styles.content_container}>
+          <div>
+            <span>파일업로드</span>
+            <FileInputbox
+              name="fileupload"
+              handleChange={handleFileChange}
+              register={register("fileupload")}
+              isupload={isupload.isuploaded}
+              value={file ? file.name : existingFileInfo}
+              isError={!!errors.fileupload}
+            />
+          </div>
+        </div>
+
+        {/* 해지/환불 정보 (회원 분류가 "x"일 때 렌더링) */}
         {customerType?.toLowerCase() === "x" && (
           <>
             <h3>해지/환불 정보</h3>
@@ -663,7 +890,7 @@ function Modify({ params }) {
           </>
         )}
 
-        {/* 다힘 (dahim) */}
+        {/* 다힘 */}
         <h3>다힘</h3>
         <div className={styles.mainbody}>
           <div className={styles.mgmRow}>
@@ -697,7 +924,6 @@ function Modify({ params }) {
               />
             </div>
           </div>
-
           <div className={styles.mgmRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>1회차청구</div>
@@ -729,7 +955,6 @@ function Modify({ params }) {
               />
             </div>
           </div>
-
           <div className={styles.mgmRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>2회차청구</div>
@@ -761,7 +986,6 @@ function Modify({ params }) {
               />
             </div>
           </div>
-
           <div className={styles.mgmRow}>
             <div className={styles.inputColumnRow}>
               <div className={styles.inputColumnLabel}>합계</div>
@@ -786,8 +1010,8 @@ function Modify({ params }) {
           </div>
         </div>
 
-        {/* 관리 정보 */}
-        <h3>관리 정보</h3>
+        {/* 담당자 */}
+        <h3>담당자</h3>
         <div className={`${styles.content_container} ${styles.responsibleContainer}`}>
           <div className={styles.responsibleRow}>
             <div className={styles.inputColumnRow}>
@@ -928,7 +1152,7 @@ function Modify({ params }) {
           </div>
         </div>
 
-        {/* 비고 -> additional */}
+        {/* 비고 */}
         <h3>비고</h3>
         <div className={styles.content_container}>
           <div className={styles.inputRow}>
@@ -940,7 +1164,7 @@ function Modify({ params }) {
           </div>
         </div>
 
-        {/* 총회 참석여부 */}
+        {/* 총회참석여부 */}
         <h3>총회참석여부</h3>
         <div className={styles.mainbody}>
           <div className={styles.mgmRow}>
@@ -1124,9 +1348,7 @@ function Modify({ params }) {
           </div>
         </div>
 
-        <h1></h1>
         <Button_Y type="submit">수정하기</Button_Y>
-        <h1></h1>
       </form>
     </div>
   );
